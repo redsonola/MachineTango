@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="105"
+   name=""
+   committed-date="2013-03-06T08:09:27.108927Z"
+   url="http://oscpack.googlecode.com/svn/trunk/ip/win32"
+   last-author="ross.bencina@gmail.com"
+   kind="dir"
+   uuid="ce15919a-c58c-e5cc-bf82-fbcfd221c16c"
+   repos="http://oscpack.googlecode.com/svn"
+   revision="122"/>
+<entry
+   committed-rev="105"
+   name="UdpSocket.cpp"
+   text-time="2014-01-25T02:40:06.000000Z"
+   committed-date="2013-03-06T08:09:27.108927Z"
+   checksum="4966832a978a1e9fb686534c56651444"
+   last-author="ross.bencina@gmail.com"
+   kind="file"
+   prop-time="2014-01-25T02:40:06.000000Z"/>
+<entry
+   committed-rev="68"
+   name="NetworkingUtils.cpp"
+   text-time="2014-01-25T02:40:06.000000Z"
+   committed-date="2013-01-24T07:11:52.712306Z"
+   checksum="922cd9decf3fa8844906137d0ab9a9e8"
+   last-author="ross.bencina@gmail.com"
+   kind="file"
+   prop-time="2014-01-25T02:40:06.000000Z"/>
+</wc-entries>
