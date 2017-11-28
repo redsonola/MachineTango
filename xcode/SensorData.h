@@ -395,7 +395,7 @@ protected:
     VisualizeShimmer *visualizer;
     int curNumAdded;
     
-    boost::thread saveWorkerThread;
+    std::thread saveWorkerThread;
 
     
     int whichDancer;

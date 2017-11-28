@@ -8,6 +8,40 @@
 
 #ifndef MelodyGeneratorAlgorithm_h
 #define MelodyGeneratorAlgorithm_h
+namespace InteractiveTango {
+    
+    class MelodyGeneratorAlgorithm
+    {
+    private:
+        bool trained;
+    public:
+        MelodyGeneratorAlgorithm()
+        {
+            trained = false;
+        };
+    
+        virtual void train(std::string _dbfileName, int track = 1)
+        {
+            trained = true;
+        };
 
+        virtual MidiNote generateNext()
+        {};
+        
+        virtual bool isTrained()
+        {
+            return trained;
+        }
+
+    };
+    
+    class PST : public MelodyGeneratorAlgorithm
+    {
+        PST()
+        {
+            
+        }
+    };
+}
 
 #endif /* MelodyGeneratorAlgorithm_h */

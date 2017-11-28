@@ -41,8 +41,8 @@ class UGEN
 public:
     enum PlacesToSend {Ableton=0, Wekinator=1};
     UGEN(){};
-    virtual std::vector<ci::osc::Message> getOSC() = 0;
-    virtual void update(float seconds=0) = 0;
+    virtual std::vector<ci::osc::Message> getOSC()=0;
+    virtual void update(float seconds=0)= 0;
 //    virtual PlacesToSend placeToSend() { return PlacesToSend::Ableton; };
     
 };

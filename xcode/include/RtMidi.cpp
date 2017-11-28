@@ -183,8 +183,10 @@ void RtMidiOut :: openMidiApi( RtMidi::Api api, const std::string &clientName )
     rtapi_ = new MidiOutWinMM( clientName );
 #endif
 #if defined(__MACOSX_CORE__)
-  if ( api == MACOSX_CORE )
-    rtapi_ = new MidiOutCore( clientName );
+    if ( api == MACOSX_CORE ){
+        rtapi_ = new MidiOutCore( clientName );
+        std::cout << "os x defined\n";
+    }
 #endif
 #if defined(__RTMIDI_DUMMY__)
   if ( api == RTMIDI_DUMMY )

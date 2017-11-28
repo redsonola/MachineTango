@@ -246,8 +246,9 @@ public:
         updateVisualizer();
         addToBuffer(mShimmerData);
         curNumAdded = mShimmerData.size();
-        
-        saveWorkerThread = boost::thread(&SensorData::save, this, seconds);
+
+        //TODO: FIX -- this change is probably why it crashed on the save -- NOTE CDB -- 11/6/2017
+//        saveWorkerThread = boost::thread(&SensorData::save, this, seconds);
 //        save(seconds);
     }; //maybe will use later
     
@@ -255,7 +256,7 @@ public:
     { //dummy
     };
     
-    virtual std::vector<ShimmerData *> getBuffer( int bufferSize = 25 )
+    virtual std::vector<ShimmerData *> getBuffer( int bufferSize = 25 ) // check this in git diff -- 11/6/2017
     {
         if( bufferSize > mBuffer.size() )
         {
@@ -318,7 +319,7 @@ protected:
     VisualizeShimmer *visualizer;
     int curNumAdded;
     
-    boost::thread saveWorkerThread;
+//    boost::thread saveWorkerThread;
 
     
     int whichDancer;

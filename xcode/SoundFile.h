@@ -616,7 +616,7 @@ namespace InteractiveTango {
         
         virtual void addNextSound(SoundFile *sf)
         {
-            assert(nexSoundBit != NULL);
+            assert(nextSoundBit != NULL);
             nextSoundBit->addSoundFile(sf);
         };
         

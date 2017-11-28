@@ -29,7 +29,7 @@ namespace InteractiveTango
         
         enum WhichDancerType { LEADER1=0, FOLLOWER1=1, LEADER2=2, FOLLOWER2=3 };
         
-        enum SongIDs{ FRAGMENTS = 0, POR_UNA_CABEZA = 1 };
+        enum SongIDs{ FRAGMENTS = 0, POR_UNA_CABEZA = 1, GENERATED_PIAZZOLLA_TEST = 2 };
         
         enum WhichSchemas{ BUSY_SPARSE_LEADER=0, BUSY_SPARSE_FOLLOWER=1, ROOMSIZE_CONTINUOUS=2, POINTY_ROUNDED_CONT_LEADER=3, POINTY_ROUNDED_CONT_FOLLOWER=4, INSTRUMENT_POINTROUND_LEADER=5, INSTRUMENT_POINTROUND_FOLLOWER=6, LEADER_VOLUME=7, FOLLOWER_VOLUME=8, LEADER_SEND_BACK=9, FOLLOWER_SEND_BACK=10 }; //just one for now
         
@@ -1305,7 +1305,7 @@ namespace InteractiveTango
         MainMelodySection *melody;
         AccompanimentSection *accompaniment;
         std::vector<OrnamentationSection *> ornaments;
-        MusicPlayer player;
+        MusicPlayer *player;
         TangoInstruments instruments;
         BeatTiming *mTimer;
         
@@ -1327,9 +1327,12 @@ namespace InteractiveTango
             mTimer = timer;
             
             curMapping = NONE;
+            
+           player = new MusicPlayer();
                         
         };
         
+
         size_t parejaCount(){ return couples.size(); };
         
         int getLeaderDancerID(int i){ return couples[i]->getLeader()->getDancerID(); };
@@ -1400,7 +1403,7 @@ namespace InteractiveTango
 //                mMappingSchemas[i]->update(seconds);
 //            }
             
-            player.update(seconds);
+            player->update(seconds);
         };
         
         //player must be the first thing to send OSC.
@@ -1409,7 +1412,7 @@ namespace InteractiveTango
             std::vector<ci::osc::Message> msgs;
             if( getCurrentMapping() == NONE ) return msgs;
             
-            msgs = player.getOSC();
+            msgs = player->getOSC();
 
             
 //            for( int i=0; i<mMappingSchemas.size(); i++ )
@@ -1512,27 +1515,28 @@ namespace InteractiveTango
         
         void destroyCurSong()
         {
-            player.setMainMelody( NULL );
+            player->setMainMelody( NULL );
             if( melody != NULL ) delete melody;
             melody = NULL;
             
-            player.clearCurAccompaniment(); //clear current accompaniments
+            player->clearCurAccompaniment(); //clear current accompaniments
             if( accompaniment != NULL ) delete accompaniment;
             accompaniment = NULL;
             
-            player.clearCurOrnaments();
+            player->clearCurOrnaments();
             for( int i=0; i<ornaments.size(); i++ )
             {
                 if( ornaments[i] != NULL ) delete ornaments[i];
             }
             ornaments.clear();
             
-            player.reset();
+            player->reset();
         };
         
         ~DanceFloor()
         {
             destroyCurSong();
+            delete player;
         };
         
     
@@ -1571,13 +1575,13 @@ namespace InteractiveTango
                 ornaments.push_back( leaderboleoL );
             
 //                player.addOrnament( orn );
-                player.addOrnament( boleo );
+                player->addOrnament( boleo );
 //                player.addOrnament( leaderorn );
-                player.addOrnament( leaderboleo );
+                player->addOrnament( leaderboleo );
 //                player.addOrnament( ornL );
-                player.addOrnament( boleoL );
+                player->addOrnament( boleoL );
 //                player.addOrnament( leaderornL );
-                player.addOrnament( leaderboleoL );
+                player->addOrnament( leaderboleoL );
             }
         };
         
@@ -1593,8 +1597,8 @@ namespace InteractiveTango
             mMappingSchemas[ACCOMPANIMENT_BS]->setName("Leader Busy Sparse");
             accompaniment->addSchema( mMappingSchemas[ACCOMPANIMENT_INSTRUMENT_PR] );
             
-            player.setMainMelody( melody );
-            player.addAccompaniment( accompaniment );
+            player->setMainMelody( melody );
+            player->addAccompaniment( accompaniment );
         };
         
         void loadCourtneyTangoSongNumberOneIntoPlayer()
@@ -1643,7 +1647,7 @@ namespace InteractiveTango
         //temp here, I think....... this restarts the music player to the beginning
         void restartPlayer()
         {
-            player.reset();
+            player->reset();
         }
 
 

@@ -34,7 +34,7 @@ public:
     
     int at(int i)
     {
-        assert( i < pattr.size() && i>0 );
+        assert( i < _pattr.size() && i>=0 );
         return _pattr[i];
     }
 
@@ -552,7 +552,7 @@ public:
         
         std::vector<double> avgAcrossDancers()
         {
-            assert( mData.size() % locationOfCrossCoVarAndNumberOfFactorsPerCouple );
+//            assert( mData.size() % locationOfCrossCoVarAndNumberOfFactorsPerCouple ); //TODO: check
             std::vector<double> factors;
             
             //avg the crosscovar across dancers

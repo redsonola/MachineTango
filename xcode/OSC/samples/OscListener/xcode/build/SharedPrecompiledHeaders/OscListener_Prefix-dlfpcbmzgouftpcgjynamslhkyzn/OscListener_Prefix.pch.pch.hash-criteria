@@ -1,0 +1,27 @@
+-x
+c++
+-arch
+i386
+-std=c++11
+-stdlib=libc++
+-gmodules
+-fpascal-strings
+-O0
+-isysroot
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk
+-fasm-blocks
+-mmacosx-version-min=10.7
+-g
+-fvisibility-inlines-hidden
+-iquote
+-iquote
+-iquote../../../../../include
+-iquote../include
+-iquote../../../src
+-I/Users/courtney/Desktop/recent_stuffz/cinder_0.8.5_mac/MagneticGardel/xcode/OSC/samples/OscListener/xcode/build/Debug/include
+-I../../../../../boost
+-F/Users/courtney/Desktop/recent_stuffz/cinder_0.8.5_mac/MagneticGardel/xcode/OSC/samples/OscListener/xcode/build/Debug
+i386-apple-darwin16.3.0
+"4.2.1 Compatible Apple LLVM 8.1.0 (clang-802.0.42)"
+SDK_PRODUCT_BUILD_VERSION=16E185
+16E185

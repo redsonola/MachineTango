@@ -1913,8 +1913,7 @@ int MidiFile::getEventCount(int aTrack) {
 
 int MidiFile::getNumEvents(int aTrack) {
    return events[aTrack]->size();
-}
-
+}   
 
 
 //////////////////////////////
