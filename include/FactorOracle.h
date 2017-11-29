@@ -65,6 +65,9 @@ public:
         n = 0;
         sp.clear();
         lrs.clear();
+        midiNotes.clear();
+        alphabet.clear();
+        trans.clear();
         
         sp.push_back(-1);
         lrs.push_back(0);
@@ -83,10 +86,12 @@ public:
         midiNotes.push_back(cc);
         addTransition();
         
-        trans[n][alphaIndex] = n + 1;
-        j = sp[p1=n];
+        trans[n][alphaIndex] = n + 1; //create a new transitiion from m to m+1
+        j = sp[p1=n]; // k <-- Sp(n);
         ++n;
-        while(j != -1 and trans[j][alphaIndex] == -1){
+        
+        
+        while(j > -1 && trans[j][alphaIndex] == -1 ){
             trans[j][alphaIndex] = n;
             j = sp[p1=j];
         }
@@ -98,7 +103,7 @@ public:
     {
         std::vector<int> alpha;
         for(int i=0; i<alphabet.size(); i++)
-            alpha.push_back(0);
+            alpha.push_back(-1);
         trans.push_back(alpha);
         sp.push_back(0);
         lrs.push_back(0);
@@ -123,7 +128,7 @@ public:
             //grow the alphabet in trans
             for(int i=0; i<trans.size(); i++)
             {
-                trans[i].push_back(0);
+                trans[i].push_back(-1);
             }
             return i;
         }
@@ -181,6 +186,16 @@ public:
         return trans.size();
     }
     
+    int midiNotesSize()
+    {
+        return midiNotes.size();
+    }
+    
+    int getLRS(int i)
+    {
+        return lrs[i];
+    }
+    
 };
     
 }
@@ -220,7 +235,7 @@ namespace InteractiveTango {
     
 class FactorOracle : public MelodyGeneratorAlgorithm
 {
-private:
+protected:
     std::string dbfileName;
     Liang::FactorOracle oracle;
     int genIndex;
@@ -231,7 +246,7 @@ public:
     FactorOracle() : MelodyGeneratorAlgorithm()
     {
         reset();
-        choiceBeweenSuffixProb = 0.3;
+        choiceBeweenSuffixProb = 0.5;
     }
     
     void setProbabilityContinueVsSuffixLink(float p)
@@ -241,29 +256,102 @@ public:
     
 //fix later
     
-//    void testTrain()
-//    {
-//        oracle.reset();
-//        int dataset[] = {'A','B','A','B','A','B','A','B','A','A','B','B'};
-//        for(int i=0; i<13; i++)
-//        {
-//            oracle.add_letter(dataset[i]);
-//        }
-//        
-//        //checks mods to factor oracle algorithm using example given in  (Assayag & Dubnov, 2004)
-//        // -1  0  0  1  2  3  4  5  6  7  0  0  0
-//
-//        
-//        std::cout << "\n------Test Train-------------------------------------------\n";
-//        
-//        std::cout << "\n";
-//        for(int i=0; i<oracle.transitionSize(); i++)
-//        {
-//            std::cout << " " << oracle.getSuffixLink(i) << " ";
-//        }
-//        std::cout << "\n-----------------------------------------------------------\n";
-//        
-//    }
+    void testTrain()
+    {
+        oracle.reset();
+        MelodyGeneratorAlgorithm::train("", 0);
+        //mimics the A and B of the example in the 2004 paper
+        int pitches[] = {60,62,60,62,60,62,60,62,60,60,62,62};
+        for(int i=0; i<12; i++)
+        {
+            oracle.add_letter(MidiNote(pitches[i]));
+        }
+        
+        //checks mods to factor oracle algorithm using example given in  (Assayag & Dubnov, 2004)
+        // -1  0  0  1  2  3  4  5  6  7  0  0  0
+        
+        /*
+        //The transition table should look like this
+         Transitions for: 60 1 2
+         -----------------------------------------------------------
+         Transitions for: 62 10 2
+         -----------------------------------------------------------
+         Transitions for: 60 3 12
+         -----------------------------------------------------------
+         Transitions for: 62 10 4
+         -----------------------------------------------------------
+         Transitions for: 60 5 -1
+         -----------------------------------------------------------
+         Transitions for: 62 10 6
+         -----------------------------------------------------------
+         Transitions for: 60 7 -1
+         -----------------------------------------------------------
+         Transitions for: 62 10 8
+         -----------------------------------------------------------
+         Transitions for: 60 9 -1
+         -----------------------------------------------------------
+         Transitions for: 60 10 -1
+         -----------------------------------------------------------
+         Transitions for: 62 -1 11
+         -----------------------------------------------------------
+         Transitions for: 62 -1 12
+         
+         */
+
+        
+        std::cout << "\n------Test Train-------------------------------------------\n";
+        
+        printTrain(); 
+        
+    }
+    
+        void printTrain()
+        {
+            
+            if (!isTrained())
+            {
+                std::cout << "Cannot print Factor Oracle. Not trained!\n";
+                return;
+            }
+    
+    
+            std::cout << "\n------Print Factor Oracle Train-------------------------------------------\n";
+    
+            std::cout << "\n";
+            std::cout << "Suffix Links: \n";
+            for(int i=0; i<oracle.transitionSize(); i++)
+            {
+                std::cout << oracle.getSuffixLink(i) << " ";
+            }
+            std::cout << "\n-----------------------------------------------------------\n";
+            
+            std::cout << "LRS: \n";
+            for(int i=0; i<oracle.transitionSize(); i++)
+            {
+                std::cout << oracle.getLRS(i) << " ";
+            }
+            std::cout << "\n-----------------------------------------------------------\n";
+            
+            std::cout << "MidiNotes: \n";
+            for(int i=0; i<oracle.transitionSize(); i++)
+            {
+                std::cout << oracle.getMidiNote(i).pitch << " ";
+            }
+            std::cout << "\n-----------------------------------------------------------\n";
+            
+            std::cout << "Transitions: \n";
+            for(int i=0; i<oracle.transitionSize(); i++)
+            {
+                std::cout << "Transitions for: "<< oracle.getMidiNote(i).pitch << " ";
+                for(int j=0; j<oracle.getTransitions(i).size(); j++)
+                    std::cout << oracle.getTransitions(i)[j] << " ";
+                
+                std::cout << "\n-----------------------------------------------------------\n";
+
+            }
+            std::cout << "\n-----------------------------------------------------------\n";
+            
+        }
     
     void reset()
     {
@@ -324,7 +412,7 @@ public:
         double choose =((double) std::rand()) / ((double) RAND_MAX);
         if(choose <= probOfChoice)
         {
-            genIndex++; //move forward a transition (as determined from prev)
+            genIndex++; //move forward a transition (as determined from prev) -- TODO:  chose between this and other factor transitions 
         }
         else
         {
@@ -345,10 +433,79 @@ public:
         }
 //        std::cout << " g:" << genIndex << " ";
         
+        if(genIndex >= oracle.midiNotesSize()  )
+        {
+            std::cout << "Factor Oracle: Back to the beginning\n";
+            genIndex = 1;
+        
+        }
+        
         return oracle.getMidiNote(genIndex);
     }
 };
+    
+    //trains on intervals instead of raw pitches......
+    //TBD -- include rhythm information
+    class FactorOracleInterval : public FactorOracle
+    {
+    protected:
+        int startPitch;
+    public:
+        FactorOracleInterval() : FactorOracle()
+        {
+        
+        }
+        
+        
+       virtual void reset()
+        {
+            std::cout << "Warning! FactorOracleInterval has not yet implemented reset!!\n";
+        }
+        virtual void train(std::string _dbfileName, int track=1)
+        {
+            MelodyGeneratorAlgorithm::train(_dbfileName, track);
+            
+            dbfileName = _dbfileName;
+            
+            MidiFileUtility midiFile;
+            midiFile.readMidiFile(_dbfileName);
+            
+            std::vector<MidiNote> notes = midiFile.getMelody(track);
+            startPitch = notes[0].pitch;
+            for(int i=1; i<notes.size(); i++)
+            {
+                oracle.add_letter(MidiNote(notes.at(i-1).pitch-notes.at(i).pitch));
+                
+            }
+            
+            //        std::cout << "\n";
+            //        for(int i=0; i<oracle.transitionSize(); i++)
+            //        {
+            //            std::cout << " " << oracle.getSuffixLink(i) << " ";
+            //        }
+            //        std::cout << "\n-----------------------------------------------------------\n";
+        }
+        
+        InteractiveTango::MidiNote generateNext()
+        {
+            if(genIndex == 0) return MidiNote(startPitch);
+            else
+            {
+                MidiNote interval = FactorOracle::generateNext();
+                startPitch  += interval.pitch;
+                return MidiNote(startPitch);
+            }
+        };
+
+    };
 }
+
+//idea for creating ornamental figures in between
+//close the gaps with Markov Chain (preceding and following, if no gaps, either create a gap OR go on to the next note
+//leave boleo as is -- represents the unpredictability of the step
+
+//the markov chain needs to be trained from ornaments specifically  -- trained from tango songs, then xposed -- could train  on how I extend it. 
+//TODO read the audio markov ----------
 
 
 #endif /* FactorOracle_h */

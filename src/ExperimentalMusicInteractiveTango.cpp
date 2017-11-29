@@ -234,6 +234,20 @@ private:
     
 };
 
+//TEST THE MELODY GENERATORS
+//void ExperimentalMusicInteractiveTango::setup()
+//{
+//    InteractiveTango::FactorOracle leaderfo;
+//    leaderfo.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.v3.mid", 2);
+////     leaderfo.testTrain();
+//    leaderfo.printTrain();
+//    
+//    
+////    followerfo.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.v3.mid", 1);
+////    follower_gen.addGeneratorAlgorithm(&followerfo);
+////    generators.push_back(follower_gen);
+//}
+
 void ExperimentalMusicInteractiveTango::prepareSettings(Settings *settings)
 {
     // settings->setWindowSize(1000,800);
@@ -1460,20 +1474,5 @@ void ExperimentalMusicInteractiveTango::drawGrid(float size, float step)
         gl::drawLine(Vec3f(-size, 0.0f, i), Vec3f(size, 0.0f, i));
     }
 }
-
-
-
-
-
-//TODO: add experimental music song to the Dancers.h
-//should inherit from dancers and override things -- don't change Dancers.h
-
-//void ExperimentalMusicInteractiveTango::update();
-//void ExperimentalMusicInteractiveTango::draw();
-//SensorData * ExperimentalMusicInteractiveTango::getSensor(std::string whichShimmer);
-
-
-
-
 
 CINDER_APP_NATIVE( ExperimentalMusicInteractiveTango, RendererGl )
