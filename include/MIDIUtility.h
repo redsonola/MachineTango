@@ -99,6 +99,11 @@ public:
         
     };
     
+    double getBPM()
+    {
+        return beatsPerMinute;
+    }
+    
     std::vector<MidiNote> getMelody(int track)
     {
         return melody[track];
@@ -222,7 +227,9 @@ public:
         std::cout << "note: " << note.pitch << "," << channel << std::endl;
         midiout->send(mm::MakeNoteOn(channel, note.pitch, note.velocity));
     };
-
+    
+    
+    mm::MidiOutput *getOut(){ return midiout; }
 };
     
 

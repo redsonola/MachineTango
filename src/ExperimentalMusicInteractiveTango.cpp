@@ -94,7 +94,6 @@ using namespace std;
 class ExperimentalMusicInteractiveTango : public AppNative {
 public:
     void setup();
-//    void mouseDown( MouseEvent event );
     void keyDown( KeyEvent event );
     void update();
     void draw();
@@ -229,24 +228,30 @@ private:
     
     bool shouldSendOSC;
     
-    
     //    Engine *ep; //matlab engine
     
 };
 
-//TEST THE MELODY GENERATORS
+////TEST THE MELODY GENERATORS
 //void ExperimentalMusicInteractiveTango::setup()
 //{
 //    InteractiveTango::FactorOracle leaderfo;
-//    leaderfo.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.v3.mid", 2);
+//    leaderfo.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.v3.mid", 1);
 ////     leaderfo.testTrain();
-//    leaderfo.printTrain();
+////    leaderfo.printTrain();
+//    
+//    for(int i=0; i<200; i++)
+//    {
+//        std::cout << leaderfo.generateNext().pitch << " ";
+//    }
 //    
 //    
 ////    followerfo.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.v3.mid", 1);
 ////    follower_gen.addGeneratorAlgorithm(&followerfo);
 ////    generators.push_back(follower_gen);
 //}
+
+
 
 void ExperimentalMusicInteractiveTango::prepareSettings(Settings *settings)
 {
@@ -1474,5 +1479,6 @@ void ExperimentalMusicInteractiveTango::drawGrid(float size, float step)
         gl::drawLine(Vec3f(-size, 0.0f, i), Vec3f(size, 0.0f, i));
     }
 }
+ 
 
 CINDER_APP_NATIVE( ExperimentalMusicInteractiveTango, RendererGl )

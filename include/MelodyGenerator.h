@@ -41,16 +41,49 @@ namespace InteractiveTango {
         
         MelodySection *melodySection; //provides organizatiion
         
+        float notesPerUpdate;
+        float note_rhythm_ratio_mod;
+        float bsMin;
+        float bsMax;
+        int maxNotesGenerated;
+
+        
     public:
-        MelodyGenerator( MelodySection *section=NULL, std::vector<MappingSchema *> *_schemas=NULL )
+                                                        //TODO set from here, yup
+        MelodyGenerator( MelodySection *section=NULL, std::vector<MappingSchema *> *_schemas=NULL, int _maxNotesGenerated = 7 )
         {
             schemas = _schemas;
-            oneToOneMode = true; //if yes, ignore profile
+            oneToOneMode = false; //if yes, ignore profile
 //            fo_probability = fp;
             melodySection = section;
             
             //load the fo files -- todo have this in a database
+            
+            if(_schemas!=NULL)
+            {
+                int i =0;
+                bool found = false;
+                while (!found && i<schemas->size())
+                {
+                    found =   schemas->at(i)->getMappingType() == MappingSchema::MappingSchemaType::EVENT;
+                    i++;
+                }
+                if(found)
+                {
+                    setMinMaxBusySparse(((PerceptualEvent *)schemas->at(i))->getMinMood(), ((PerceptualEvent *)schemas->at(i))->getMaxMood());
+                }
+                else oneToOneMode = true;
+            }
+            
+            maxNotesGenerated = _maxNotesGenerated;
         }
+        
+        void setMinMaxBusySparse(float min, float max)
+        {
+             bsMin = min;
+             bsMax = max;
+        }
+        
         
         void addGeneratorAlgorithm(MelodyGeneratorAlgorithm *alg)
         {
@@ -69,7 +102,33 @@ namespace InteractiveTango {
         
         virtual bool oneToOne()
         {
-            return oneToOneMode; 
+            return oneToOneMode;
+        }
+        
+        virtual void update(float bs, float seconds)
+        {
+            if(bs == 1)
+                notesPerUpdate = 1;
+            else
+            {
+                notesPerUpdate = (int) std::round((((double) std::rand()) / ((double) RAND_MAX) ) * (maxNotesGenerated * (double)bs/(double)bsMax * 0.25 )) +
+                std::round(maxNotesGenerated * (double)bs/(double)bsMax * 0.75);
+            }
+            
+            //okay so this maps into a 1-3 thing -- 2, 1, 0.5 -- basically makes notes shorter or longer based on busy sparse
+            float which = (double)bs/(double)bsMax ;
+            if(which <= 1.0/3.0) note_rhythm_ratio_mod = 2;
+            else if(which <= 2.0/3.0) note_rhythm_ratio_mod = 1;
+            else note_rhythm_ratio_mod = 0.5;
+            
+            for(int i=0; i<notesPerUpdate; i++)
+            {
+                MidiNote note = generators[0]->generateNext();
+                if(i==0) note.tick = 0;
+                else note.tick *= note_rhythm_ratio_mod;
+                melodyFragment.push_back(note);
+            }
+
         }
         
         virtual void update(float seconds=0)
@@ -79,9 +138,14 @@ namespace InteractiveTango {
                 std::cerr << "MelodyGenerator can't generate! No algorithm!\n";
             }
             
-            melodyFragment.push_back(generators[0]->generateNext());
+            if(oneToOneMode)
+                melodyFragment.push_back(generators[0]->generateNext());
+            else
+            {
+                //react to busy/sparse
+                std::cout << "This will not react to busy sparse since this generator is being used in one to one mode\n";
+            }
             
-            //TODO: respond to busy/sparse
         }
         
         //also empties out the note buffer.

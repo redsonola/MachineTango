@@ -14,6 +14,8 @@ namespace InteractiveTango {
     {
     private:
         bool trained;
+    protected:
+        float bpm;
     public:
         MelodyGeneratorAlgorithm()
         {
@@ -31,6 +33,11 @@ namespace InteractiveTango {
         virtual bool isTrained()
         {
             return trained;
+        }
+        
+        virtual float getBPM()
+        {
+            return bpm;
         }
 
     };

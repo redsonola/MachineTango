@@ -175,6 +175,16 @@ protected:
 
 public:
     
+    double getMinMood()
+    {
+        return minMood;
+    }
+    
+    double getMaxMood()
+    {
+        return maxMood;
+    }
+    
     PerceptualEvent(BeatTiming *timer, double window_size = 15) :  MappingSchema(timer)
     {
         //defaults... 5 second window... to start...

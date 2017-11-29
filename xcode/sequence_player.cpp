@@ -144,8 +144,10 @@ void MidiSequencePlayer::run()
     if (loop && shouldSequence == true) 
         run();
         
-    if (stoppedEvent)
+    if (stoppedEvent){
         stoppedEvent();
+        responder->playerStopped(getTag());
+    }
 }
 
 void MidiSequencePlayer::stop()

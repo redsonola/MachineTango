@@ -216,6 +216,11 @@ namespace mm
         return MidiMessage(MakeCommand(MessageType::NOTE_ON, channel), note, velocity);
     }
     
+    inline MidiMessage *MakeNoteOnPtr(uint8_t channel, uint8_t note, uint8_t velocity)
+    {
+        return new MidiMessage(MakeCommand(MessageType::NOTE_ON, channel), note, velocity);
+    }
+    
     inline MidiMessage MakeNoteOff(uint8_t channel, uint8_t note, uint8_t velocity)
     {
         return MidiMessage(MakeCommand(MessageType::NOTE_OFF, channel), note, velocity);

@@ -942,7 +942,6 @@ namespace InteractiveTango {
             hsprofile = main_melody->getHarmonySectionProfile();
             curMelodyOrchestration.addfromOtherOrchestra( main_melody->getOrchestration() );
             
-            
             //use last harmony profile for melody that is not playing, etc., if not first one
             if( hsprofile.get() == NULL ) hsprofile = curHarmonyProfile;
             

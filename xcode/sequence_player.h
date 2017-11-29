@@ -42,6 +42,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace mm 
 {
+    
+class MidiSequencePlayerResponder
+    { public:
+       virtual void playerStopped(int _tag)=0;
+    };
 
 // This class is always a work in progress, and does not currently handle things like
 // mid-track tempo changes.
@@ -51,10 +56,8 @@ class MidiSequencePlayer
     
     void run();
     
-    // Default behavior of this function is to reject playing any metadata events
-    void addTimestampedEvent(int track, double when, std::shared_ptr<TrackEvent> ev);
+
     
-    double ticksToSeconds(int ticks);
     
     int secondsToTicks(float seconds);
 
@@ -69,14 +72,22 @@ class MidiSequencePlayer
     std::thread sequencerThread;
     std::atomic<bool> shouldSequence;
     bool loop = false;
+    int tag;
+    MidiSequencePlayerResponder *responder;
     
 public:
+    
+    double ticksToSeconds(int ticks);
+
 
     MidiSequencePlayer(MidiOutput & output);
     ~MidiSequencePlayer();
         
     void loadSingleTrack(const MidiTrack & track, double ticksPerBeat = 480, double beatsPerMinute = 120);
     void loadMultipleTracks(const std::vector<MidiTrack> & tracks, double ticksPerBeat = 480, double beatsPerMinute = 120);
+    
+    // Default behavior of this function is to reject playing any metadata events
+    void addTimestampedEvent(int track, double when, std::shared_ptr<TrackEvent> ev);
 
     void start();
     void stop();
@@ -95,6 +106,21 @@ public:
     ConcurrentQueue<MidiPlayerEvent> eventQueue;
 
     std::vector<MidiPlayerEvent> eventList; // indexed by track
+    
+    inline int getTag()
+    {
+        return tag;
+    }
+    
+    inline void setTag(int t)
+    {
+        tag = t;
+    }
+    
+    inline void setResponder(MidiSequencePlayerResponder *_responder)
+    {
+         responder = _responder;
+    };
 };
 
 } // mm

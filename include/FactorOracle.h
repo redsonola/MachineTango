@@ -316,7 +316,7 @@ public:
     
     
             std::cout << "\n------Print Factor Oracle Train-------------------------------------------\n";
-    
+            std::cout << "Transition size: " << oracle.transitionSize() << std::endl;
             std::cout << "\n";
             std::cout << "Suffix Links: \n";
             for(int i=0; i<oracle.transitionSize(); i++)
@@ -370,6 +370,7 @@ public:
         
         MidiFileUtility midiFile;
         midiFile.readMidiFile(_dbfileName);
+        bpm = (float) midiFile.getBPM();
         
         std::vector<MidiNote> notes = midiFile.getMelody(track);
         for(int i=0; i<notes.size(); i++)
@@ -399,6 +400,48 @@ public:
         }
     }
     
+    void checkTransitionBounds()
+    {
+    
+        if(genIndex >= oracle.midiNotesSize()  )
+        {
+//            std::cout << "Factor Oracle: Back to the beginning\n";
+            genIndex = 1;
+        
+        }
+    }
+    
+    //choose among factor transitions
+    MidiNote getFactorTransition()
+    {
+        //TODO: refactor the factor oracle so that this isn't stupid/bloated -- YIKES
+        std::vector<int> possibilities;
+        std::vector<int> alphaIndex;
+
+        for(int i=0;i<oracle.getTransitions(genIndex).size(); i++)
+        {
+            if(oracle.getTransitions(genIndex)[i] > -1){
+                possibilities.push_back(oracle.getTransitions(genIndex)[i]);
+                alphaIndex.push_back(i);
+            }
+        }
+        
+        //for now give each possibility the same weight
+        double prob = ((double) std::rand()) / ((double) RAND_MAX);
+        double i = 0;
+        bool found = false;
+        while( !found && i<possibilities.size())
+        {
+            i++;
+            found = prob < (1.0/possibilities.size()) * i;
+        }
+        genIndex = possibilities[i-1];
+        checkTransitionBounds();
+        
+        return oracle.getAlphabet(alphaIndex[i-1]);
+    }
+    
+    
     //returns a midi note, if seed is -1 then it is start
     //from Assayag & Dubnov, 2004
     InteractiveTango::MidiNote generateNext()
@@ -412,7 +455,7 @@ public:
         double choose =((double) std::rand()) / ((double) RAND_MAX);
         if(choose <= probOfChoice)
         {
-            genIndex++; //move forward a transition (as determined from prev) -- TODO:  chose between this and other factor transitions 
+//            genIndex++; //move forward a transition (as determined from prev) -- TODO:  chose between this and other factor transitions 
         }
         else
         {
@@ -433,14 +476,7 @@ public:
         }
 //        std::cout << " g:" << genIndex << " ";
         
-        if(genIndex >= oracle.midiNotesSize()  )
-        {
-            std::cout << "Factor Oracle: Back to the beginning\n";
-            genIndex = 1;
-        
-        }
-        
-        return oracle.getMidiNote(genIndex);
+        return getFactorTransition();
     }
 };
     

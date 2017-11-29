@@ -9,6 +9,8 @@
 #ifndef ExperimentalMusicPlayer_h
 #define ExperimentalMusicPlayer_h
 
+#include "sequence_player.h"
+
 namespace InteractiveTango
 {
     
@@ -49,6 +51,10 @@ namespace InteractiveTango
                 //ok now generate a melody
                 generator->update(seconds);
             } //else implement a non-one to one mode solution
+            else
+            {
+                generator->update(findBusySparse(), seconds);
+            }
             
             
         };
@@ -73,10 +79,12 @@ namespace InteractiveTango
 
     };
     
-    class ExperimentalMusicPlayer : public MusicPlayer
+    class ExperimentalMusicPlayer : public MusicPlayer, public mm::MidiSequencePlayerResponder
     {
     protected:
         MidiOutUtility midiOut; //for now have the player own it... hmmmmmmmm....
+        std::vector<mm::MidiSequencePlayer *> players;
+
     public:
         ExperimentalMusicPlayer() : MusicPlayer()
         {
@@ -151,8 +159,49 @@ namespace InteractiveTango
         sendMidiMessages();
 
     };
+        
+        
+        
+        virtual void playerStopped(int tag)
+        {
+            int i = 0;
+            bool found = false;
+            while(!found && i<players.size())
+            {
+                found = players[i]->getTag() == tag;
+                i++;
+            }
+            if(found)
+            {
+                delete players[i-1];
+                players.erase(players.begin()+i-1);
+            }
+        }
     
     
+        virtual void sendNoteSeq(std::vector<MidiNote> notes, int channel)
+        {
+            mm::MidiSequencePlayer *player = new mm::MidiSequencePlayer(*midiOut.getOut());
+            
+            for(int i=0; i<notes.size(); i++)
+            {
+                if(notes[i].tick > 0){
+                    //mm::MessageType::NOTE_ON
+                    //        MidiMessage(const uint8_t b1, const uint8_t b2, const uint8_t b3, const double ts = 0) : timestamp(ts) { data = {b1, b2, b3}; }
+
+                    std::shared_ptr<mm::MidiMessage> m(mm::MakeNoteOnPtr(channel, notes[i].pitch, notes[i].velocity));
+                    std::shared_ptr<mm::TrackEvent> ev(new mm::TrackEvent(notes[i].tick, channel, m));
+                    
+                    player->addTimestampedEvent(1, player->ticksToSeconds(notes[i].tick), ev);
+                    
+                    
+                }
+                else midiOut.send(notes[i], channel);
+            }
+            player->setResponder(this);
+            player->start(); //start it
+            players.push_back(player);
+        }
         
         
         //OK this is bogus and ridic refactor ASAP
@@ -166,10 +215,7 @@ namespace InteractiveTango
             }
             
             //now send them
-            for(int i=0; i<notes.size(); i++)
-            {
-                midiOut.send(notes[i]);
-            }
+            sendNoteSeq(notes, 1);
             
             notes.clear();
             
@@ -177,10 +223,7 @@ namespace InteractiveTango
             {
                 notes = ((GeneratedMelodySection *) c_melodies[i])->getBufferedNotes();
                 
-                for(int j=0; j<notes.size(); j++)
-                {
-                    midiOut.send(notes[j], i+2);
-                }
+                sendNoteSeq(notes, 2);
                 
                 notes.clear();
             }
