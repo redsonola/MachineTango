@@ -77,6 +77,12 @@ namespace InteractiveTango {
             reset();
         };
         
+        std::vector<MappingSchema *> getMappingSchemas()
+        {
+//            std::cout << "mMappingSchemas: " << mMappingSchemas.size(); 
+            return mMappingSchemas;
+        }
+        
         void setInstrumentsAvailable( Instruments *instruments )
         {
             instrumentsAvailable = instruments;
@@ -169,6 +175,11 @@ namespace InteractiveTango {
             
             return msgs;
         };
+    
+        BeatTiming *getTimer()
+        {
+            return beatTimer; 
+        }
         
     };
     

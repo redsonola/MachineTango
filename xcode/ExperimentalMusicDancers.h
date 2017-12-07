@@ -35,16 +35,23 @@ namespace InteractiveTango
         void loadSong(BeatTiming *timer)
         {
             melody->addSchema( mMappingSchemas[MELODY_BS] );  //not using to choose melodies at the MOMENT //choosing again 8/2014
-            mMappingSchemas[MELODY_BS]->setName("Melody Busy Sparse");
+            mMappingSchemas[MELODY_BS]->setName("Follower Busy Sparse");
             melody->addSchema( mMappingSchemas[MELODY_INSTRUMENT_PR] );
             
+            //leader once controlled only the harmonyr
             //                accompaniment->addSchema( mMappingSchemas[THICK_THIN] ); //7-29 deleting for now... busy/spare more accurate... I think... look at later...
-//            accompaniment->addSchema( mMappingSchemas[ACCOMPANIMENT_BS] );
-//            mMappingSchemas[ACCOMPANIMENT_BS]->setName("Leader Busy Sparse");
-//            accompaniment->addSchema( mMappingSchemas[ACCOMPANIMENT_INSTRUMENT_PR] );
+            leaderMelody->addSchema( mMappingSchemas[ACCOMPANIMENT_BS] );
+            mMappingSchemas[ACCOMPANIMENT_BS]->setName("Leader Busy Sparse");
+            leaderMelody->addSchema( mMappingSchemas[ACCOMPANIMENT_INSTRUMENT_PR] );
             
             ((ExperimentalMusicPlayer *) player)->addGeneratedMelodySection( (GeneratedMelodySection *) melody );
             ((ExperimentalMusicPlayer *) player)->addGeneratedMelodySection( (GeneratedMelodySection *) leaderMelody );
+            
+            follower_gen.setMelodySection(melody);
+            leader_gen.setMelodySection(leaderMelody);
+//            
+//            follower_gen.turnOn1to1();
+//            leader_gen.turnOn1to1();
 
             //player->addAccompaniment( accompaniment ); // not yet implemented
         };

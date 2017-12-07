@@ -33,15 +33,18 @@ using namespace mm;
 
 MidiSequencePlayer::MidiSequencePlayer(MidiOutput & output) : shouldSequence(false), output(output)
 {
-
+    responder = NULL; 
 }
     
 MidiSequencePlayer::~MidiSequencePlayer()
 {
     shouldSequence = false;
+    loop = false;
 
     if (sequencerThread.joinable())
         sequencerThread.join();
+    
+
 }
 
 double MidiSequencePlayer::ticksToSeconds(int ticks)
@@ -73,7 +76,7 @@ void MidiSequencePlayer::loadSingleTrack(const MidiTrack & track, double ticksPe
     {
         localElapsedTicks += m->tick;
         double deltaTimestampInSeconds = ticksToSeconds( int(localElapsedTicks) );
-        if (m->m->getMessageType() == MessageType::NOTE_ON) addTimestampedEvent(0, deltaTimestampInSeconds, m); // already checks if non-meta message
+//        if (m->m->getMessageType() == MessageType::NOTE_ON) addTimestampedEvent(0, deltaTimestampInSeconds, m); // already checks if non-meta message
     }
 }
 
@@ -105,7 +108,7 @@ void MidiSequencePlayer::start()
     }
 #endif
     
-    //sequencerThread.detach();
+    sequencerThread.detach();
 
     if (startedEvent)
         startedEvent();
@@ -113,39 +116,45 @@ void MidiSequencePlayer::start()
     
 void MidiSequencePlayer::run()
 {
-    double lastTime = 0;
     size_t eventCursor = 0;
 
     PlatformTimer timer;
     timer.start();
+    mTimer.start();
+    double lastTime = mTimer.getSeconds();
+
+
+    
 
     while (eventCursor < eventList.size())
     {
-        auto outputMsg = eventList[eventCursor];
-        
-        //std::cout << "Delta: " << lastTime - outputMsg.timestamp << std::endl;
+        double res = bt->getTimeInSeconds() - lastTime;
+//        std::cout << "Delta: " << res  << " ticksToSeconds(eventList[eventCursor].tick):" << ticksToSeconds(eventList[eventCursor].tick) << " eventCursor: " << eventCursor<< " eventList.size(): " << eventList.size() << std::endl;
 
-        while((timer.running_time_s()) <= (outputMsg.timestamp))
+        
+        while(ticksToSeconds(eventList[eventCursor].tick) >= mTimer.getSeconds() - lastTime )
         {
-            continue;
+//            continue;
+//            std::cout << "Delta: " << bt->getTimeInSeconds() - lastTime  << " lastTime:" << lastTime<<  " bt->getTimeInSeconds():" << bt->getTimeInSeconds() << " ticksToSeconds(eventList[eventCursor].tick):" << ticksToSeconds(eventList[eventCursor].tick) << std::endl;
+
         }
 
-        output.send(*outputMsg.msg);
+        //TODO -- send to correct channel
+        output.send(*eventList[eventCursor].msg.get());
 
         if (shouldSequence == false) 
             break;
 
-        lastTime = outputMsg.timestamp;
+        lastTime = mTimer.getSeconds() ;
         eventCursor++;
     }
-
-    timer.stop(); 
-
-    if (loop && shouldSequence == true) 
-        run();
+    timer.stop();
+    mTimer.stop();
         
     if (stoppedEvent){
-        stoppedEvent();
+        stoppedEvent();}
+    if(responder != NULL){
+//        std::cout << "sending stopped event\n";
         responder->playerStopped(getTag());
     }
 }
@@ -155,11 +164,11 @@ void MidiSequencePlayer::stop()
     shouldSequence = false;
 }
     
-void MidiSequencePlayer::addTimestampedEvent(int track, double when, std::shared_ptr<TrackEvent> ev)
+void MidiSequencePlayer::addTimestampedEvent(int track, double when, std::shared_ptr<MidiPlayerEvent> ev)
 {
-    if (ev->m->isMetaEvent() == false)
+    if (ev->msg->isMetaEvent() == false)
     {
-        eventList.push_back(MidiPlayerEvent(when, ev->m, track));
+        eventList.push_back(*ev.get());
     }
 }
 

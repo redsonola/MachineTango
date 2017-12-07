@@ -44,6 +44,8 @@ namespace mm
         double timestamp;
         int trackIdx;
         std::shared_ptr<MidiMessage> msg;
+        int tick;
+        int channel;
     };
 
     template<class C, class R> std::basic_ostream<C, R> & operator << (std::basic_ostream<C, R> & ss, const MidiPlayerEvent & v) 
@@ -63,6 +65,7 @@ namespace mm
         TrackEvent(int tick, int track, std::shared_ptr<MidiMessage> m) : tick(tick), track(track), m(m) { }
         TrackEvent(TrackEvent && r) { *this = std::move(r); }
         TrackEvent & operator = (TrackEvent && r) { tick = r.tick; track = r.track; m = std::move(r.m); return *this; }
+
         virtual ~TrackEvent() {};
     };
 

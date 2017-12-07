@@ -16,6 +16,7 @@ namespace InteractiveTango {
         bool trained;
     protected:
         float bpm;
+        double tpb;
     public:
         MelodyGeneratorAlgorithm()
         {
@@ -38,6 +39,10 @@ namespace InteractiveTango {
         virtual float getBPM()
         {
             return bpm;
+        }
+        virtual double getTicksPerBeat()
+        {
+            return tpb;
         }
 
     };

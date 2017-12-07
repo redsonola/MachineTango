@@ -11,6 +11,8 @@
 
 #include "sequence_player.h"
 
+#define MAX_DEAD_PLAYERS 20
+
 namespace InteractiveTango
 {
     
@@ -27,31 +29,21 @@ namespace InteractiveTango
         
         virtual void update(boost::shared_ptr<std::vector<int>> hsprofile, float seconds = 0)
         {
-            update(seconds);
+            if( fo->isStepping())
+                update(seconds);
         }
+
         
         virtual void update(float seconds = 0)
         {
-            //for now this always plays -- phrases determined by dancer
-   
-//TODO -- implement -- for now, we are just playing in one-to-mode
-//            
-//            secondsPlayed = beatTimer->getTimeInSeconds() - secondsStarted; //how long in seconds has the file been playing?
-//            curSeconds = seconds;
-//            
-//            if( beatTimer->isOnBeat(0.0, seconds) ) //exactly on beat
-//            {
-//                beatsPlayed++;
-//            }
-            
-            //lastStepped = fo->isStepping() ;
+
             
             if(generator->oneToOne() && fo->isStepping() ) //wait for a foot onset to start
             {
                 //ok now generate a melody
                 generator->update(seconds);
             } //else implement a non-one to one mode solution
-            else
+            else if( fo->isStepping())
             {
                 generator->update(findBusySparse(), seconds);
             }
@@ -76,7 +68,12 @@ namespace InteractiveTango
         {
             song_structure.push_back(1); //only one section for now, but a 2nd section may draw upon different melodic material
         }
-
+        
+        double getTicksPerBeat()
+        {
+            return generator->getTicksPerBeat(0);
+        }
+        
     };
     
     class ExperimentalMusicPlayer : public MusicPlayer, public mm::MidiSequencePlayerResponder
@@ -84,6 +81,8 @@ namespace InteractiveTango
     protected:
         MidiOutUtility midiOut; //for now have the player own it... hmmmmmmmm....
         std::vector<mm::MidiSequencePlayer *> players;
+        std::vector<int> deletePlayerTag;
+        
 
     public:
         ExperimentalMusicPlayer() : MusicPlayer()
@@ -111,6 +110,7 @@ namespace InteractiveTango
 //            
 //            
 //        }
+        
         
         virtual void update(float seconds = 0)
         {
@@ -157,6 +157,8 @@ namespace InteractiveTango
         curHarmonyProfile = hsprofile;
         
         sendMidiMessages();
+            
+            deleteDeadPlayers();
 
     };
         
@@ -164,41 +166,69 @@ namespace InteractiveTango
         
         virtual void playerStopped(int tag)
         {
-            int i = 0;
-            bool found = false;
-            while(!found && i<players.size())
+//            std::cout << "putting in queue to delete...\n";
+            deletePlayerTag.push_back(tag);
+
+        }
+        
+        //so, delete these after 10 or 12
+        void deleteDeadPlayers()
+        {
+            while (deletePlayerTag.size() > MAX_DEAD_PLAYERS)
             {
-                found = players[i]->getTag() == tag;
-                i++;
+                int tag = deletePlayerTag[0];
+                int i=0;
+                bool found = false;
+                while (!found && i<players.size())
+                {
+                    found = players[i]->getTag() == tag;
+                    i++;
+                }
+
+                if(found)
+                {
+                    delete players[i-1];
+                    players.erase(players.begin()+i-1);
+                }
+                deletePlayerTag.erase(deletePlayerTag.begin());
             }
-            if(found)
-            {
-                delete players[i-1];
-                players.erase(players.begin()+i-1);
-            }
+            
+            
         }
     
     
-        virtual void sendNoteSeq(std::vector<MidiNote> notes, int channel)
+        virtual void sendNoteSeq(std::vector<MidiNote> notes, int channel, GeneratedMelodySection *section )
         {
+            if(notes.size() <= 0) return;
+            
             mm::MidiSequencePlayer *player = new mm::MidiSequencePlayer(*midiOut.getOut());
             
             for(int i=0; i<notes.size(); i++)
             {
-                if(notes[i].tick > 0){
+//                if(notes[i].tick > 0){
                     //mm::MessageType::NOTE_ON
                     //        MidiMessage(const uint8_t b1, const uint8_t b2, const uint8_t b3, const double ts = 0) : timestamp(ts) { data = {b1, b2, b3}; }
 
-                    std::shared_ptr<mm::MidiMessage> m(mm::MakeNoteOnPtr(channel, notes[i].pitch, notes[i].velocity));
-                    std::shared_ptr<mm::TrackEvent> ev(new mm::TrackEvent(notes[i].tick, channel, m));
+                    std::shared_ptr<mm::MidiMessage> m(mm::MakeNoteOnPtr(channel,notes[i].pitch, notes[i].velocity));
+//                    std::cout << "Sending to sequencer: note:" <<notes[i].pitch << "," << notes[i].velocity << std::endl;
+                    std::shared_ptr<mm::MidiPlayerEvent> ev(new mm::MidiPlayerEvent(notes[i].tick, m, 1)); //MidiPlayerEvent(double t,std::shared_ptr<MidiMessage> m, int track)
                     
-                    player->addTimestampedEvent(1, player->ticksToSeconds(notes[i].tick), ev);
+                    ev->channel = channel;
+                    ev->tick = notes[i].tick;
+                    
+                    player->addTimestampedEvent(1, time(NULL), ev);
                     
                     
-                }
-                else midiOut.send(notes[i], channel);
+//                }
+//                else midiOut.send(notes[i], channel);
             }
+            
+//            if(notes.size() <= 1) return ;
+            
+            player->setBeatTiming(main_melody->getTimer());
+            player->setTag(players.size());
             player->setResponder(this);
+            player->setTicksPerBeat(section->getTicksPerBeat());
             player->start(); //start it
             players.push_back(player);
         }
@@ -215,7 +245,9 @@ namespace InteractiveTango
             }
             
             //now send them
-            sendNoteSeq(notes, 1);
+            sendNoteSeq(notes, 1, (GeneratedMelodySection *) main_melody);
+//            std::cout << "Sending Follower notes:" << notes.size();
+
             
             notes.clear();
             
@@ -223,7 +255,8 @@ namespace InteractiveTango
             {
                 notes = ((GeneratedMelodySection *) c_melodies[i])->getBufferedNotes();
                 
-                sendNoteSeq(notes, 2);
+                sendNoteSeq(notes, 2, (GeneratedMelodySection *) c_melodies[i]);
+//                std::cout << "Sending Leader notes:" << notes.size();
                 
                 notes.clear();
             }

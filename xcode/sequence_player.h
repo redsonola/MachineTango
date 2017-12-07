@@ -39,6 +39,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <atomic>
 
 #include "midi_output.h"
+//#include "ReadCSV.h"
+#include <sstream>
+#include "BeatTiming.h"
 
 namespace mm 
 {
@@ -74,11 +77,24 @@ class MidiSequencePlayer
     bool loop = false;
     int tag;
     MidiSequencePlayerResponder *responder;
+    InteractiveTango::BeatTiming *bt;
+    ci::Timer   mTimer;
+
     
 public:
     
     double ticksToSeconds(int ticks);
-
+    
+    void setBeatTiming(InteractiveTango::BeatTiming *b)
+    {
+        bt = b;
+        beatsPerMinute = bt->getBPM();
+    };
+    
+    void setTicksPerBeat(double stpbs)
+    {
+        ticksPerBeat = stpbs;
+    }
 
     MidiSequencePlayer(MidiOutput & output);
     ~MidiSequencePlayer();
@@ -87,7 +103,7 @@ public:
     void loadMultipleTracks(const std::vector<MidiTrack> & tracks, double ticksPerBeat = 480, double beatsPerMinute = 120);
     
     // Default behavior of this function is to reject playing any metadata events
-    void addTimestampedEvent(int track, double when, std::shared_ptr<TrackEvent> ev);
+    void addTimestampedEvent(int track, double when, std::shared_ptr<MidiPlayerEvent> ev);
 
     void start();
     void stop();
@@ -121,6 +137,8 @@ public:
     {
          responder = _responder;
     };
+    
+
 };
 
 } // mm

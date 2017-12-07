@@ -371,6 +371,7 @@ public:
         MidiFileUtility midiFile;
         midiFile.readMidiFile(_dbfileName);
         bpm = (float) midiFile.getBPM();
+        tpb = midiFile.getTicksPerBeat(); 
         
         std::vector<MidiNote> notes = midiFile.getMelody(track);
         for(int i=0; i<notes.size(); i++)
@@ -414,6 +415,8 @@ public:
     //choose among factor transitions
     MidiNote getFactorTransition()
     {
+        assert(genIndex > -1);
+        
         //TODO: refactor the factor oracle so that this isn't stupid/bloated -- YIKES
         std::vector<int> possibilities;
         std::vector<int> alphaIndex;
@@ -435,7 +438,16 @@ public:
             i++;
             found = prob < (1.0/possibilities.size()) * i;
         }
-        genIndex = possibilities[i-1];
+        if(found){
+            genIndex = possibilities[i-1];
+            assert(genIndex > -1);
+        }
+        else if(possibilities.size() <= 0)
+        {
+            std::cout << "Warning! No factor transition at: " <<  genIndex << std::endl;
+            genIndex++;
+            return oracle.getMidiNote(genIndex);
+        }
         checkTransitionBounds();
         
         return oracle.getAlphabet(alphaIndex[i-1]);
@@ -449,15 +461,11 @@ public:
         float probOfChoice = choiceBeweenSuffixProb;
         
         //if at the end, take the suffix link
-        if (oracle.getSuffixLink(genIndex) == 0)
+        if (oracle.getSuffixLink(genIndex) == 0 || genIndex == 0)
             probOfChoice   =  1;
         
         double choose =((double) std::rand()) / ((double) RAND_MAX);
-        if(choose <= probOfChoice)
-        {
-//            genIndex++; //move forward a transition (as determined from prev) -- TODO:  chose between this and other factor transitions 
-        }
-        else
+        if(choose > probOfChoice)
         {
             //choose a suffix backwards transition from oracle.sp[]
             
@@ -471,7 +479,7 @@ public:
             
             //use the suffix to transition backwards in the tree.
             genIndex = oracle.getSuffixLink(genIndex);
-            
+            assert(genIndex > -1);
             
         }
 //        std::cout << " g:" << genIndex << " ";

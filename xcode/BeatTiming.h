@@ -9,6 +9,10 @@
 #ifndef InteractiveTangoReadFromAndroid_BeatTiming_h
 #define InteractiveTangoReadFromAndroid_BeatTiming_h
 
+#pragma once
+
+#include "ReadCSV.h"
+
 namespace InteractiveTango  {
     
 class BeatTimerSaveToFile

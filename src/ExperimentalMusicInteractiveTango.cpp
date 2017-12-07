@@ -67,6 +67,7 @@
 
 #include "ExperimentalMusicPlayer.h"
 #include "ExperimentalMusicDancers.h"
+#include "sequence_player.h"
 
 //#include "MagneticTime.h"
 
