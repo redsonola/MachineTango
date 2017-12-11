@@ -1169,6 +1169,8 @@ protected:
         }
     };
     
+    booleaan fakeStep;
+    
 public:
     enum MotionDataIndices { STEP_COUNT=0, AVG_PEAK=1, TIME_SINCE_LAST_STEP=2 };
     
@@ -1185,6 +1187,7 @@ public:
         leftID = id1;
         rightID = id2;
         timeSinceLastStep = 0;
+        fakeStep = false;
         
         motionData.push_back(new MotionAnalysisEvent(MotionAnalysisDataType::DoubleEvent, MotionDataIndices::STEP_COUNT));
         motionData.push_back(new MotionAnalysisEvent(MotionAnalysisDataType::DoubleEvent, MotionDataIndices::AVG_PEAK));
@@ -1211,6 +1214,15 @@ public:
         
         leftOnset = leftFoot->getCombinedPeak();
         rightOnset = rightFoot->getCombinedPeak();
+        
+        //for testing via keyboard
+        if(fakeStep)
+        {
+            leftOnset = rightOnset = true;
+            fakeStep = false;
+            
+            //currently peak will be 0
+        }
         
         if( leftOnset && rightOnset )
         {
@@ -1261,6 +1273,11 @@ public:
     {
         return leftOnset;
     };
+    
+    inline void createFakeStep()
+    {
+        fakeStep = true; 
+    }
 
     inline bool isStepping()
     {

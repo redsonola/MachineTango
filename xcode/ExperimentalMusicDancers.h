@@ -31,6 +31,15 @@ namespace InteractiveTango
             std::cout << "Cannot load Fragments ornaments -- Not relevant for this dance floor!\n" ;
         };
         
+        void leaderFakeStep()
+        {
+            couples[0]->getFollower()->getOnsets()->createFakeStep();
+        }
+        
+        void followerFakeStep()
+        {
+            couples[0]->getLeader()->getOnsets()->createFakeStep();
+        }
         
         void loadSong(BeatTiming *timer)
         {

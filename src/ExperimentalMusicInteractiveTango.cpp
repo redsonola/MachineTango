@@ -225,6 +225,8 @@ private:
     bool addLiveDancers;
     void addLivePareja(std::map<int, int> &l, std::map<int, int> &f, int lID, int fID);
     void addLiveDancer(SensorData *sensor, int sid);
+    void addTestDancersNoSensors();
+    
     std::map<int, int> leader, follower, leader2, follower2;
     
     bool shouldSendOSC;
@@ -348,6 +350,38 @@ void ExperimentalMusicInteractiveTango::keyDown( KeyEvent event )
     else if( event.getChar() == 'z' )
     {
         restartSong();
+    }
+    else if( event.getChar() == 't' )
+    {
+        addTestDancersNoSensors();
+    }
+    else if( event.getChar() == '1')
+    {
+        if(danceFloor->parejaCount() < 1)
+        {
+            std::cout << "Cannot create a fake step because there are no dancers on the floor\n";
+            return;
+        }
+        else{
+            std::cout << "Creating a fake step for leader...";
+            danceFloor->leaderFakeStep();
+            std::cout << "done\n";
+            
+        }
+    }
+    else if( event.getChar() == '2')
+    {
+        if(danceFloor->parejaCount() < 1)
+        {
+            std::cout << "Cannot create a fake step because there are no dancers on the floor\n";
+            return;
+        }
+        else{
+            std::cout << "Creating a fake step for follower...";
+            danceFloor->followerFakeStep();
+            std::cout << "done\n";
+            
+        }
     }
 }
 
@@ -1335,6 +1369,67 @@ void ExperimentalMusicInteractiveTango::addLiveDancer(SensorData *sensor, int si
     }
 }
 
+void ExperimentalMusicInteractiveTango::addTestDancersNoSensors()
+{
+    std::cout << "Adding a test couple to floor to be controlled via keyboard...\n";
+    
+
+
+    
+    int wekIndexStart = sendOSCToWekinators.size();
+    
+    //create wekinator senders -- right legs then left legs for ea. couple... legacy TODO: fix!!!
+    for( int i=wekIndexStart; i<wekIndexStart+4; i++ )
+        addSendtoWekinator();
+    
+    
+    //create fake sensors
+    SensorData * leaderback = getSensor("Brent", 5);
+    SensorData * leaderright = getSensor("Brent", 2);
+    SensorData * leaderleft = getSensor("Brent", 1);
+    
+    //add the leader
+    InteractiveTango::Dancer *dancer = new InteractiveTango::Dancer(&mBeatTimer, sendOSCToWekinators[wekIndexStart], sendOSCToWekinators[wekIndexStart+2]);
+    dancer->addSensorBodyPart(0, leaderleft, &mUGENs, InteractiveTango::Dancer::LeftFoot);
+    dancer->addSensorBodyPart(1, leaderright, &mUGENs, InteractiveTango::Dancer::RightFoot);
+    dancer->addSensorBodyPart(2, leaderback, &mUGENs, InteractiveTango::Dancer::Back);
+    dancer->setDancerID( 0, &mUGENs );
+    mDancers.push_back(dancer);
+
+    
+    std::cout << "Added Brent as dancer\n";
+    
+    //add the follower
+    
+    //create fake sensors
+    SensorData * followerback = getSensor("Courtney", 5);
+    SensorData * followerright = getSensor("Courtney", 2);
+    SensorData * followerleft = getSensor("Courtney", 1);
+    
+    InteractiveTango::Dancer *dancer2 = new InteractiveTango::Dancer(&mBeatTimer, sendOSCToWekinators[wekIndexStart+1], sendOSCToWekinators[wekIndexStart+3]);
+    dancer2->addSensorBodyPart(3, followerleft, &mUGENs, InteractiveTango::Dancer::LeftFoot);
+    dancer2->addSensorBodyPart(4, followerright, &mUGENs, InteractiveTango::Dancer::RightFoot);
+    dancer2->addSensorBodyPart(5, followerback, &mUGENs, InteractiveTango::Dancer::Back);
+    dancer2->setDancerID( 1, &mUGENs );
+    mDancers.push_back(dancer2);
+    
+    std::cout << "Added Courtney as dancer\n";
+    
+    //add the dancer
+    InteractiveTango::Pareja *pareja = new InteractiveTango::Pareja(mDancers[mDancers.size()-2], mDancers[mDancers.size()-1], &mUGENs, &mBeatTimer );
+    mParejas.push_back(pareja);
+    danceFloor->addPareja(pareja);
+    std::cout << "Incluye la pareja\n";
+    
+    //saving all the sensor info
+    //TODO: make this work again.
+    //       saveAllSensors();
+    
+    
+    danceFloor->loadGeneratedSong();
+
+}
+
 void ExperimentalMusicInteractiveTango::addLivePareja(std::map<int, int> &l, std::map<int, int> &f, int lID, int fID)
 {
     if(f.size()==3 && l.size() ==3)
@@ -1480,6 +1575,7 @@ void ExperimentalMusicInteractiveTango::drawGrid(float size, float step)
         gl::drawLine(Vec3f(-size, 0.0f, i), Vec3f(size, 0.0f, i));
     }
 }
- 
+
+
 
 CINDER_APP_NATIVE( ExperimentalMusicInteractiveTango, RendererGl )

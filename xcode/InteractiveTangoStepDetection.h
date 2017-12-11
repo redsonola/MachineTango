@@ -1022,7 +1022,9 @@ protected:
     float stepsPerSampleSize;
     double curPeak, avgPeak;
     DataWindow stepPeaks;
-
+    
+    bool fakeStep;
+    
 //    std::vector<float> stepTimes; // in seconds
 //    std::vector<float> stepPeaks; // in seconds
     
@@ -1139,6 +1141,13 @@ public:
         leftOnset = leftFoot->getCombinedPeak();
         rightOnset = rightFoot->getCombinedPeak();
         
+        if(fakeStep)
+        {
+            fakeStep = false;
+            leftOnset = rightOnset = true;
+            //peak will still be 0 or whatever
+        }
+        
         if( leftOnset && rightOnset )
         {
             if ( !lastLeftOnset )
@@ -1188,6 +1197,11 @@ public:
     {
         return ( rightOnset || leftOnset );
     };
+    
+    inline void createFakeStep()
+    {
+        fakeStep = true;
+    }
     
     virtual std::vector<ci::osc::Message> getOSC()
     {
