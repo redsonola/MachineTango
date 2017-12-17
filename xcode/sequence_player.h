@@ -70,7 +70,6 @@ class MidiSequencePlayer
     
     float playTimeSeconds = 0;
     float startTime = 0;
-    int eventCursor = 0;
     
     std::thread sequencerThread;
     std::atomic<bool> shouldSequence;

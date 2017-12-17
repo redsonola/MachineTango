@@ -107,6 +107,11 @@ namespace InteractiveTango {
             return generators[i]->getTicksPerBeat();
         }
         
+        double getBPM(int i=0)
+        {
+            assert(i<generators.size() && i>=0);
+            return generators[i]->getBPM();
+        }
         
         void addGeneratorAlgorithm(MelodyGeneratorAlgorithm *alg)
         {
@@ -142,7 +147,7 @@ namespace InteractiveTango {
                 return; 
             }
             
-            bs = bsevent->getCurMood();
+           // std::cout << "busy/sparse in generator: " << bs << std::endl;
             
             if(bs == 1)
                 notesPerUpdate = 1;

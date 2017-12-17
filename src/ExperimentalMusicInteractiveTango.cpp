@@ -189,6 +189,10 @@ private:
     
     bool                playing_done;
     
+    bool                fakeBSLeaderMode;
+    bool                fakeBSFollowerMode;
+
+    
     std::string         whichShimmer;
     osc::Sender         syncSender;
     int                 selectedPareja; //for changing motion params, etc.
@@ -330,10 +334,43 @@ void ExperimentalMusicInteractiveTango::setup()
     
     //start timer AFTER initialization...
     mTimer.start();
+    
+    fakeBSFollowerMode = false;
+    fakeBSLeaderMode = false;
 }
 
 void ExperimentalMusicInteractiveTango::keyDown( KeyEvent event )
 {
+    if(fakeBSLeaderMode || fakeBSFollowerMode)
+    {
+        
+        if(event.getChar() != '1' && event.getChar() != '2' && event.getChar() != '3')
+        {
+            std::cout << "Not a valid value to change busy/sparse. Exiting mode...";
+        }
+        
+        char c[1]; c[0] = event.getChar();
+        std::string s(c);
+        double res = std::atof(s.c_str());
+        
+        if(fakeBSLeaderMode)
+        {
+            danceFloor->leaderFakeBusySparse(res);
+            std::cout << "Set leader busy/sparse to :" << res << std::endl;
+            
+        }
+        else
+        {
+            danceFloor->followerFakeBusySparse(res);
+            std::cout << "Set follower busy/sparse to :" << res << std::endl;
+            
+        }
+        
+        fakeBSLeaderMode = false;
+        fakeBSFollowerMode = false;
+        
+    }
+    
     if( event.getChar() == 's' )
     {
         mSaveFilePath = App::getSaveFilePath().c_str();
@@ -355,7 +392,7 @@ void ExperimentalMusicInteractiveTango::keyDown( KeyEvent event )
     {
         addTestDancersNoSensors();
     }
-    else if( event.getChar() == '1')
+    else if( event.getChar() == 'l')
     {
         if(danceFloor->parejaCount() < 1)
         {
@@ -369,7 +406,7 @@ void ExperimentalMusicInteractiveTango::keyDown( KeyEvent event )
             
         }
     }
-    else if( event.getChar() == '2')
+    else if( event.getChar() == 'f')
     {
         if(danceFloor->parejaCount() < 1)
         {
@@ -382,7 +419,33 @@ void ExperimentalMusicInteractiveTango::keyDown( KeyEvent event )
             std::cout << "done\n";
             
         }
+    }   else if( event.getChar() == 'b')
+    {
+        if(danceFloor->parejaCount() < 1)
+        {
+            std::cout << "Cannot create a fake busy/sparse because there are no dancers on the floor\n";
+            return;
+        }
+        else{
+            std::cout << "In fake busy/sparse for follower. Please choose a value 1-3\n";
+            fakeBSFollowerMode = true;
+        }
     }
+    else if( event.getChar() == 'n')
+    {
+        if(danceFloor->parejaCount() < 1)
+        {
+            std::cout << "Cannot create a fake busy/sparse because there are no dancers on the floor\n";
+            return;
+        }
+        else{
+            std::cout << "In fake busy/sparse for leader. Please choose a value 1-3\n";
+            fakeBSLeaderMode = true;
+        }
+    }
+    
+
+
 }
 
 void ExperimentalMusicInteractiveTango::stopStartOSCToAbleton()
@@ -1396,7 +1459,6 @@ void ExperimentalMusicInteractiveTango::addTestDancersNoSensors()
     dancer->setDancerID( 0, &mUGENs );
     mDancers.push_back(dancer);
 
-    
     std::cout << "Added Brent as dancer\n";
     
     //add the follower

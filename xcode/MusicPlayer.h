@@ -509,8 +509,10 @@ namespace InteractiveTango {
                 //            std::cout << "in Curfile :"<< ((PerceptualEvent * )mMappingSchemas[i])->getName() << ":  " << moodNum << "     " << seconds << "  \n";
                 
                 if ( (mMappingSchemas[i]->getMappingType() == MappingSchema::MappingSchemaType::EVENT) &&
-                    (!mMappingSchemas[i]->getName().compare("Melody Busy Sparse") ))
+                    (!mMappingSchemas[i]->getName().compare("Melody Busy Sparse")  || !mMappingSchemas[i]->getName().compare("Follower Busy Sparse") || !mMappingSchemas[i]->getName().compare("Leader Busy Sparse")))
+                {
                     bvs = moodNum;
+                }
             }
             return bvs;
         };

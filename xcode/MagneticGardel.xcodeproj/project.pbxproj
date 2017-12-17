@@ -20,6 +20,7 @@
 		835A6A07A9D9423EB405524A /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 11B4B775062F4B1E99BAD88E /* CinderApp.icns */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E6B896E9447D4C42B78063F7 /* ExperimentalMusicInteractiveTango.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E4CF8B4579A461D9F20BE79 /* ExperimentalMusicInteractiveTango.cpp */; };
+		F117D8771FD1F66800CDE064 /* ReadCSV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F117D8761FD1F66800CDE064 /* ReadCSV.cpp */; };
 		F1365EAF1FB1005C00DD0B69 /* rtmidi_c.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1365EA91FB1005C00DD0B69 /* rtmidi_c.cpp */; };
 		F1365EB01FB1005C00DD0B69 /* rtmidi-config.in in Resources */ = {isa = PBXBuildFile; fileRef = F1365EAB1FB1005C00DD0B69 /* rtmidi-config.in */; };
 		F1365EB11FB1005C00DD0B69 /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F1365EAC1FB1005C00DD0B69 /* RtMidi.cpp */; };
@@ -77,6 +78,7 @@
 		6A069804A9D24469A011FFE8 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
 		71D08D871B9E4A02B1BDF663 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* MagneticGardel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagneticGardel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F117D8761FD1F66800CDE064 /* ReadCSV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReadCSV.cpp; sourceTree = "<group>"; };
 		F1365EA91FB1005C00DD0B69 /* rtmidi_c.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtmidi_c.cpp; sourceTree = "<group>"; };
 		F1365EAA1FB1005C00DD0B69 /* rtmidi_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtmidi_c.h; sourceTree = "<group>"; };
 		F1365EAB1FB1005C00DD0B69 /* rtmidi-config.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "rtmidi-config.in"; sourceTree = "<group>"; };
@@ -148,7 +150,6 @@
 		F1B2A4ED1F55FF700092E099 /* ShimmerWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShimmerWrapper.h; sourceTree = "<group>"; };
 		F1B2A4EE1F55FF700092E099 /* VisualizeShimmer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualizeShimmer.h; sourceTree = "<group>"; };
 		F1B2A4F21F55FF700092E099 /* fasper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fasper.h; sourceTree = "<group>"; };
-		F1B2A4F41F55FF700092E099 /* InteractiveTangoStepDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InteractiveTangoStepDetection.h; sourceTree = "<group>"; };
 		F1B2A4F51F55FF700092E099 /* MocapCam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MocapCam.h; sourceTree = "<group>"; };
 		F1B2A4F61F55FF700092E099 /* nrutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nrutil.h; sourceTree = "<group>"; };
 		F1B2A4F81F55FF700092E099 /* Resources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Resources.h; sourceTree = "<group>"; };
@@ -162,7 +163,6 @@
 		F1D07BF11FBCE8B000AC4558 /* Instruments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Instruments.h; sourceTree = "<group>"; };
 		F1D07BF21FBCE8B000AC4558 /* GestureRecognizerUGENs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GestureRecognizerUGENs.h; sourceTree = "<group>"; };
 		F1D07BF31FBCEA3400AC4558 /* MusicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicPlayer.h; sourceTree = "<group>"; };
-		F1D07BF41FBCEAF400AC4558 /* PerceptualMappingScheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerceptualMappingScheme.h; sourceTree = "<group>"; };
 		F1E35A221FBE1F0C0041E5A0 /* SoundFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundFile.h; sourceTree = "<group>"; };
 		F1E35A231FBE20040041E5A0 /* PerceptualSchemas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerceptualSchemas.h; sourceTree = "<group>"; };
 		F1E35A241FBE24070041E5A0 /* MelodyGeneratorAlgorithm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MelodyGeneratorAlgorithm.h; path = ../include/MelodyGeneratorAlgorithm.h; sourceTree = "<group>"; };
@@ -297,15 +297,15 @@
 				F1E35A451FBE31460041E5A0 /* MappingSchemaEventInContinuousOut.h */,
 				F1E35A441FBE30A80041E5A0 /* SendOSCUGENs.h */,
 				F1E35A431FBE2FC00041E5A0 /* Dancers.h */,
-				F19DCC811FBF96C0008E8136 /* ExperimentalMusicDancers.h */,
 				F1E35A231FBE20040041E5A0 /* PerceptualSchemas.h */,
+				F19DCC811FBF96C0008E8136 /* ExperimentalMusicDancers.h */,
 				F1E35A221FBE1F0C0041E5A0 /* SoundFile.h */,
-				F1D07BF41FBCEAF400AC4558 /* PerceptualMappingScheme.h */,
 				F1D07BF31FBCEA3400AC4558 /* MusicPlayer.h */,
 				F1B2A4FB1F5600020092E099 /* MotionAnalysisParameterRanges.h */,
 				F19DCC801FBF7E92008E8136 /* ExperimentalMusicPlayer.h */,
 				F1D07BEF1FBCE8B000AC4558 /* InteractiveTangoStepDetection.h */,
 				F1D07BF01FBCE8B000AC4558 /* BeatTiming.h */,
+				F117D8761FD1F66800CDE064 /* ReadCSV.cpp */,
 				F1D07BF11FBCE8B000AC4558 /* Instruments.h */,
 				F1D07BF21FBCE8B000AC4558 /* GestureRecognizerUGENs.h */,
 				F16868491FBB8D5D00B71CE2 /* PerceptualMappingScheme.h */,
@@ -456,7 +456,6 @@
 				F1E35A251FBE2BD60041E5A0 /* ModernMIDI */,
 				F16868321FBA392600B71CE2 /* MidiFileExtLibrary */,
 				F1B2A4F21F55FF700092E099 /* fasper.h */,
-				F1B2A4F41F55FF700092E099 /* InteractiveTangoStepDetection.h */,
 				F1B2A4F51F55FF700092E099 /* MocapCam.h */,
 				F1B2A4F61F55FF700092E099 /* nrutil.h */,
 				F1B2A4F81F55FF700092E099 /* Resources.h */,
@@ -570,6 +569,7 @@
 				F1B2A4491F55E9E90092E099 /* nrutil.cpp in Sources */,
 				F16868411FBA397100B71CE2 /* MidiEventList.cpp in Sources */,
 				F1E35A421FBE2BF80041E5A0 /* sequence_player.cpp in Sources */,
+				F117D8771FD1F66800CDE064 /* ReadCSV.cpp in Sources */,
 				F1E35A3B1FBE2BF80041E5A0 /* midi_file_reader.cpp in Sources */,
 				F1E35A411FBE2BF80041E5A0 /* port_manager.cpp in Sources */,
 				F1B2A4D21F55F6D90092E099 /* NetworkingUtils.cpp in Sources */,
@@ -627,7 +627,6 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../../osc/lib/macosx\"",
 					/usr/local/lib,
 				);
 				OTHER_LDFLAGS = (
@@ -678,7 +677,6 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../../osc/lib/macosx\"",
 					/usr/local/lib,
 				);
 				OTHER_LDFLAGS = (

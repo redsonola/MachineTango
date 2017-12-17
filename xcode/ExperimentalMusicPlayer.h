@@ -20,6 +20,7 @@ namespace InteractiveTango
     {
     protected:
         MelodyGenerator *generator;
+        float lastTimePlayed;
     public:
         
         GeneratedMelodySection (BeatTiming *timer, FootOnset *onset, MelodyGenerator *gen, Instruments *ins=NULL, float perWindowSize=1) : MainMelodySection(timer, onset, ins, perWindowSize)
@@ -36,7 +37,16 @@ namespace InteractiveTango
         
         virtual void update(float seconds = 0)
         {
+            //if busy/sparse = 1 then wait a bit (at least an eighth note) before re-genning
+            float timeDiff = seconds - lastTimePlayed;
+            float quarter = (1.0f / ((float) generator->getBPM() /  60.0f)) ;
+            float eight = quarter / 2.0f;
 
+            int bs = findBusySparse();
+            
+            if( timeDiff < quarter && bs == 1 ) return;
+            if( timeDiff < eight && bs == 2 ) return;
+            
             
             if(generator->oneToOne() && fo->isStepping() ) //wait for a foot onset to start
             {
@@ -45,10 +55,9 @@ namespace InteractiveTango
             } //else implement a non-one to one mode solution
             else if( fo->isStepping())
             {
-                generator->update(findBusySparse(), seconds);
+                generator->update(bs, seconds);
+                lastTimePlayed = seconds; //beatTimer->getTimeInSeconds();
             }
-            
-            
         };
         
         
@@ -167,6 +176,8 @@ namespace InteractiveTango
         virtual void playerStopped(int tag)
         {
 //            std::cout << "putting in queue to delete...\n";
+            
+            //cannot delete immediately upon this event call as will cause seg fault shit since this would be deleleting the object that is calling that function.
             deletePlayerTag.push_back(tag);
 
         }
@@ -260,10 +271,6 @@ namespace InteractiveTango
                 
                 notes.clear();
             }
-            
-            
-//
-            
         }
         
 

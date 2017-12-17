@@ -138,8 +138,11 @@ void MidiSequencePlayer::run()
 //            std::cout << "Delta: " << bt->getTimeInSeconds() - lastTime  << " lastTime:" << lastTime<<  " bt->getTimeInSeconds():" << bt->getTimeInSeconds() << " ticksToSeconds(eventList[eventCursor].tick):" << ticksToSeconds(eventList[eventCursor].tick) << std::endl;
 
         }
+        
+        //std::cout << "eventList[eventCursor].tick: " << eventList[eventCursor].tick << " ticks per beat: " << ticksPerBeat << " bpm: " << beatsPerMinute << std::endl;;
 
         //TODO -- send to correct channel
+        if(eventCursor < eventList.size())
         output.send(*eventList[eventCursor].msg.get());
 
         if (shouldSequence == false) 
@@ -185,7 +188,6 @@ void MidiSequencePlayer::setLooping(bool newState)
 void MidiSequencePlayer::reset()
 {
     eventList.clear();
-    eventCursor = 0;
     startTime = 0;
     playTimeSeconds = 0;
 }

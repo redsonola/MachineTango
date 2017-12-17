@@ -171,6 +171,8 @@ protected:
     DataWindow moods;
     std::vector<MappingTimeCycle *> timeCycles;
     float curSeconds;
+    
+    bool fakeMode;
 
 
 public:
@@ -192,6 +194,7 @@ public:
         maxMood = 3;
         moods.setWindowSize(window_size);
         _mappingtype = MappingSchemaType::EVENT;
+        fakeMode = false;
     };
     
     ~PerceptualEvent()
@@ -201,6 +204,19 @@ public:
             delete motionData[0];
         }
     };
+    
+    void fakeModeOn()
+    {
+        fakeMode = true;
+    }
+    
+    void setFakeMood(double m)
+    {
+        fakeMode = true;
+        curMood = m;
+ //       std::cout << "the current fake mood  is" << m << "\n";
+ //       std::cout << "name: " << getName() << std::endl;
+    }
     
     virtual MappingSchemaType getMappingType() { return _mappingtype; };
     
@@ -213,7 +229,9 @@ public:
     
     virtual double getCurMood(double windowsz = 0, double seconds = 0) //returns average over window (confusing, but TODO: refactor
     {
-//        std::cout << "name: " << getName() << "    ";
+  //      std::cout << "name: " << getName() << " and mood is " << curMood << " and is fake? " << fakeMode << std::endl ;
+        
+       if(fakeMode) return curMood;
         
         double newMood;
         if( windowsz==0 ) //just means default
@@ -232,6 +250,7 @@ public:
 //        std::cout << "min mood is: " << minMood << "     ";
 //        std::cout << "avg mood is: " << moods.getAvg() << "     ";
 //        std::cout << "New mood is: " << moods.getAverageOverWindow(windowsz, seconds) << std::endl ;
+        
         return (int) std::min(newMood, maxMood) ;
             
     };
@@ -245,16 +264,21 @@ public:
     
     virtual void update(float seconds = 0)
     {
+        if(fakeMode) return;
+        
         curSeconds = seconds; 
         determineMood();
         moods.push_back(curMood, seconds);
         moods.update(seconds);
         updateMotionData();
+        
     };
     
     //TODO fix for all
     virtual double findMood()
     {
+        if(fakeMode) return curMood;
+        
 //        double equalWeight = ( (double) maxMood )/( (double) mData.size() );
         double mood = 0;
         for(int i=0; i<mWeights.size(); i++)

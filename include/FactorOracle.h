@@ -241,12 +241,14 @@ protected:
     int genIndex;
     std::vector<MidiNote> generatedMidiNotes;
     float choiceBeweenSuffixProb;
+    float choiceBetweenNearOrFar;
     
 public:
     FactorOracle() : MelodyGeneratorAlgorithm()
     {
         reset();
         choiceBeweenSuffixProb = 0.5;
+        choiceBetweenNearOrFar = 0.7; //choose something near most of the time
     }
     
     void setProbabilityContinueVsSuffixLink(float p)
@@ -420,6 +422,15 @@ public:
         //TODO: refactor the factor oracle so that this isn't stupid/bloated -- YIKES
         std::vector<int> possibilities;
         std::vector<int> alphaIndex;
+        
+        //weight heavily towards the next choice -- could still end up on the next choice
+        double choose =((double) std::rand()) / ((double) RAND_MAX);
+        if ( choose < choiceBetweenNearOrFar )
+        {
+            genIndex++;
+            checkTransitionBounds();
+            return oracle.getMidiNote(genIndex);
+        }
 
         for(int i=0;i<oracle.getTransitions(genIndex).size(); i++)
         {

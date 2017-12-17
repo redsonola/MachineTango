@@ -41,16 +41,26 @@ namespace InteractiveTango
             couples[0]->getLeader()->getOnsets()->createFakeStep();
         }
         
+        void followerFakeBusySparse(double m)
+        {
+            ((PerceptualEvent *) couples[0]->getMappingSchema(BUSY_SPARSE_FOLLOWER))->setFakeMood(m);
+        }
+        
+        void leaderFakeBusySparse(double m)
+        {
+            ((PerceptualEvent *) couples[0]->getMappingSchema(BUSY_SPARSE_LEADER))->setFakeMood(m);
+        }
+        
         void loadSong(BeatTiming *timer)
         {
-            melody->addSchema( mMappingSchemas[MELODY_BS] );  //not using to choose melodies at the MOMENT //choosing again 8/2014
             mMappingSchemas[MELODY_BS]->setName("Follower Busy Sparse");
+            melody->addSchema( mMappingSchemas[MELODY_BS] );  //not using to choose melodies at the MOMENT //choosing again 8/2014
             melody->addSchema( mMappingSchemas[MELODY_INSTRUMENT_PR] );
             
             //leader once controlled only the harmonyr
             //                accompaniment->addSchema( mMappingSchemas[THICK_THIN] ); //7-29 deleting for now... busy/spare more accurate... I think... look at later...
-            leaderMelody->addSchema( mMappingSchemas[ACCOMPANIMENT_BS] );
             mMappingSchemas[ACCOMPANIMENT_BS]->setName("Leader Busy Sparse");
+            leaderMelody->addSchema( mMappingSchemas[ACCOMPANIMENT_BS] );
             leaderMelody->addSchema( mMappingSchemas[ACCOMPANIMENT_INSTRUMENT_PR] );
             
             ((ExperimentalMusicPlayer *) player)->addGeneratedMelodySection( (GeneratedMelodySection *) melody );
