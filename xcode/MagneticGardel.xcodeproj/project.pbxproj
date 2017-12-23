@@ -79,6 +79,7 @@
 		71D08D871B9E4A02B1BDF663 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* MagneticGardel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagneticGardel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F117D8761FD1F66800CDE064 /* ReadCSV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReadCSV.cpp; sourceTree = "<group>"; };
+		F11B53281FEC740000D84318 /* ChordGeneration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChordGeneration.h; sourceTree = "<group>"; };
 		F1365EA91FB1005C00DD0B69 /* rtmidi_c.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtmidi_c.cpp; sourceTree = "<group>"; };
 		F1365EAA1FB1005C00DD0B69 /* rtmidi_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtmidi_c.h; sourceTree = "<group>"; };
 		F1365EAB1FB1005C00DD0B69 /* rtmidi-config.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "rtmidi-config.in"; sourceTree = "<group>"; };
@@ -305,6 +306,7 @@
 				F19DCC801FBF7E92008E8136 /* ExperimentalMusicPlayer.h */,
 				F1D07BEF1FBCE8B000AC4558 /* InteractiveTangoStepDetection.h */,
 				F1D07BF01FBCE8B000AC4558 /* BeatTiming.h */,
+				F11B53281FEC740000D84318 /* ChordGeneration.h */,
 				F117D8761FD1F66800CDE064 /* ReadCSV.cpp */,
 				F1D07BF11FBCE8B000AC4558 /* Instruments.h */,
 				F1D07BF21FBCE8B000AC4558 /* GestureRecognizerUGENs.h */,

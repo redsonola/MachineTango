@@ -200,7 +200,8 @@ protected:
     
     mm::MidiOutput *midiout;
 public:
-    MidiOutUtility(std::string portname = "IAC Driver IAC Bus 1")
+   MidiOutUtility(std::string portname = "IAC Driver IAC Bus 1")
+ //   MidiOutUtility(std::string portname = "IAC Bus 1")
     {
         midiout = new mm::MidiOutput("midiout");
         bool success = midiout->openVirtualPort(portname);

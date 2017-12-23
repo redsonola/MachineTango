@@ -17,7 +17,7 @@
 #define SHIMMER_PORT 57121
 #define SC_LANG_PORT 57120
 #define G_FORCE 9.80665
-#define FRAMERATE 102
+#define FRAMERATE 102 
 
 #define TYPE_ACCEL 0
 #define TYPE_GYR 1

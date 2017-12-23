@@ -18,6 +18,7 @@ namespace InteractiveTango
         MelodyGenerator follower_gen, leader_gen;
         FactorOracle leaderfo, followerfo;
         MelodySection *leaderMelody;
+        AccompanimentSection *accompSection;
     public:
         ExperimentalDanceFloor(BeatTiming *timer) : DanceFloor(timer)
         {
@@ -59,12 +60,13 @@ namespace InteractiveTango
             
             //leader once controlled only the harmonyr
             //                accompaniment->addSchema( mMappingSchemas[THICK_THIN] ); //7-29 deleting for now... busy/spare more accurate... I think... look at later...
-            mMappingSchemas[ACCOMPANIMENT_BS]->setName("Leader Busy Sparse");
-            leaderMelody->addSchema( mMappingSchemas[ACCOMPANIMENT_BS] );
-            leaderMelody->addSchema( mMappingSchemas[ACCOMPANIMENT_INSTRUMENT_PR] );
+            couples[0]->getMappingSchema(BUSY_SPARSE_LEADER)->setName("Leader Busy Sparse");
+            leaderMelody->addSchema( couples[0]->getMappingSchema(BUSY_SPARSE_LEADER) );
+            leaderMelody->addSchema( couples[0]->getMappingSchema(POINTY_ROUNDED_CONT_LEADER));
             
             ((ExperimentalMusicPlayer *) player)->addGeneratedMelodySection( (GeneratedMelodySection *) melody );
             ((ExperimentalMusicPlayer *) player)->addGeneratedMelodySection( (GeneratedMelodySection *) leaderMelody );
+            player->addAccompaniment(accompaniment);
             
             follower_gen.setMelodySection(melody);
             leader_gen.setMelodySection(leaderMelody);
@@ -103,8 +105,7 @@ namespace InteractiveTango
             melody = new GeneratedMelodySection( mTimer, melodyOnsetDancer->getOnsets(), &follower_gen, &instruments );
             leaderMelody = new GeneratedMelodySection( mTimer, couples[0]->getLeader()->getOnsets(), &leader_gen, &instruments ); //added leader...
             
-            
-            accompaniment = NULL; //not implemented yet -- new AccompanimentPorUnaCabeza( mTimer, &instruments );
+            accompaniment = new GeneratedAccompanmentSection( mTimer, &instruments );
             
             for( int i=0; i<couples.size(); i++ )
                 couples[i]->setMotionAnalysisParamsForSong(TangoEntity::SongIDs::FRAGMENTS); //just use settings for fragments for now

@@ -11,7 +11,7 @@
 
 #include "sequence_player.h"
 
-#define MAX_DEAD_PLAYERS 20
+#define MAX_DEAD_PLAYERS 50
 
 namespace InteractiveTango
 {
@@ -41,12 +41,11 @@ namespace InteractiveTango
             float timeDiff = seconds - lastTimePlayed;
             float quarter = (1.0f / ((float) generator->getBPM() /  60.0f)) ;
             float eight = quarter / 2.0f;
+            float sixteenth = eight / 2.0f;
 
             int bs = findBusySparse();
             
-            if( timeDiff < quarter && bs == 1 ) return;
-            if( timeDiff < eight && bs == 2 ) return;
-            
+            if( timeDiff < sixteenth ) return; // no faster than sixteenth notes but don't place such a hard limit on density... see. 
             
             if(generator->oneToOne() && fo->isStepping() ) //wait for a foot onset to start
             {
@@ -85,13 +84,75 @@ namespace InteractiveTango
         
     };
     
+    class GeneratedAccompanmentSection : public AccompanimentSection
+    {
+    protected:
+        ChordGeneration generator;
+        std::vector<MidiNote> notes; 
+        
+    public:
+        
+        GeneratedAccompanmentSection(BeatTiming *timer, Instruments *ins) : AccompanimentSection(timer, ins)
+        {
+        
+        }
+    
+        //has to be updated with the harmony/section profile
+        virtual void update(float seconds = 0 )
+        {
+            notes.clear();
+            
+            
+            if( beatTimer->isOnBeat(0.0, seconds) ) //exactly on beat
+            {
+                beatsPlayed++;
+            }
+
+            if( beatsPlayed >= 4)
+            {
+                beatsPlayed = 0;
+                shouldStartFile = true;
+                
+                
+                notes = generator.getNextChord();
+
+                //switch the constant instrument
+                if( phraseStart )
+                {
+                    phraseStart = false;
+                    
+                    continuingInstrumentsThroughPhrase.clear();
+                    Orchestra *curOrch = curSoundFile->getOrchestration();
+                    //                    assert( !curOrch->empty() );
+                    for(int i=0; i<maxInstrumentsToHoldConstantThroughPhrase && i<curOrch->size(); i++)
+                    {
+                        continuingInstrumentsThroughPhrase.addInstrument(curOrch->getInstrViaIndex(i));
+                    }
+                }
+                
+            } else shouldStartFile = false;
+        };
+        
+        std::vector<MidiNote> getBufferedNotes()
+        {
+            return notes;
+        }
+        
+        virtual std::vector<ci::osc::Message> getOSC()
+        {
+            std::vector<ci::osc::Message> msgs;
+            return msgs; 
+        }
+    };
+    
     class ExperimentalMusicPlayer : public MusicPlayer, public mm::MidiSequencePlayerResponder
     {
     protected:
         MidiOutUtility midiOut; //for now have the player own it... hmmmmmmmm....
         std::vector<mm::MidiSequencePlayer *> players;
         std::vector<int> deletePlayerTag;
-        
+        double ticksPerBeat;
+
 
     public:
         ExperimentalMusicPlayer() : MusicPlayer()
@@ -149,12 +210,12 @@ namespace InteractiveTango
                     curMelodyOrchestration.addfromOtherOrchestra( c_melodies[i]->getOrchestration() );
                 }
                 
-//                for(int i=0; i<accompaniments.size(); i++)
-//                {
-//                    if( main_melody->isStartOfPhrase() )
-//                        accompaniments[i]->startPhrase();
-//                    accompaniments[i]->update(hsprofile, seconds);
-//                }
+                for(int i=0; i<accompaniments.size(); i++)
+                {
+                    if( main_melody->isStartOfPhrase() )
+                        accompaniments[i]->startPhrase();
+                    ((GeneratedAccompanmentSection *)accompaniments[i])->update(seconds);
+               }
 //            }
 //            //TODO: OK FIX SOON!!!!!
 //            for(int i=0; i<ornaments.size(); i++)
@@ -208,7 +269,7 @@ namespace InteractiveTango
         }
     
     
-        virtual void sendNoteSeq(std::vector<MidiNote> notes, int channel, GeneratedMelodySection *section )
+        virtual void sendNoteSeq(std::vector<MidiNote> notes, int channel )
         {
             if(notes.size() <= 0) return;
             
@@ -239,7 +300,7 @@ namespace InteractiveTango
             player->setBeatTiming(main_melody->getTimer());
             player->setTag(players.size());
             player->setResponder(this);
-            player->setTicksPerBeat(section->getTicksPerBeat());
+            player->setTicksPerBeat(ticksPerBeat);
             player->start(); //start it
             players.push_back(player);
         }
@@ -254,9 +315,11 @@ namespace InteractiveTango
             {
                 notes = ((GeneratedMelodySection *) main_melody)->getBufferedNotes();
             }
+            ticksPerBeat = ((GeneratedMelodySection *) main_melody)->getTicksPerBeat();
             
             //now send them
-            sendNoteSeq(notes, 1, (GeneratedMelodySection *) main_melody);
+            sendNoteSeq(notes, 1);
+            
 //            std::cout << "Sending Follower notes:" << notes.size();
 
             
@@ -266,10 +329,16 @@ namespace InteractiveTango
             {
                 notes = ((GeneratedMelodySection *) c_melodies[i])->getBufferedNotes();
                 
-                sendNoteSeq(notes, 2, (GeneratedMelodySection *) c_melodies[i]);
+                sendNoteSeq(notes, 2);
 //                std::cout << "Sending Leader notes:" << notes.size();
                 
                 notes.clear();
+            }
+            
+            for(int i=0; i<accompaniments.size(); i++)
+            {
+                notes = ((GeneratedAccompanmentSection *) accompaniments[i])->getBufferedNotes();
+                sendNoteSeq(notes, 3);
             }
         }
         

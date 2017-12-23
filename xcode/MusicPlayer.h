@@ -339,8 +339,7 @@ namespace InteractiveTango {
             mMappingSchemas.push_back(schema);
         }
         
-        
-        //has to be updated with the harmony/section profile
+                //has to be updated with the harmony/section profile
         virtual void update(boost::shared_ptr<std::vector<int>> hsprofile, float seconds = 0 )
         {
             if( beatTimer->isOnBeat(0.0, seconds) ) //exactly on beat

@@ -131,7 +131,7 @@ void MidiSequencePlayer::run()
         double res = bt->getTimeInSeconds() - lastTime;
 //        std::cout << "Delta: " << res  << " ticksToSeconds(eventList[eventCursor].tick):" << ticksToSeconds(eventList[eventCursor].tick) << " eventCursor: " << eventCursor<< " eventList.size(): " << eventList.size() << std::endl;
 
-        
+        if(eventCursor < eventList.size())
         while(ticksToSeconds(eventList[eventCursor].tick) >= mTimer.getSeconds() - lastTime )
         {
 //            continue;
@@ -144,9 +144,6 @@ void MidiSequencePlayer::run()
         //TODO -- send to correct channel
         if(eventCursor < eventList.size())
         output.send(*eventList[eventCursor].msg.get());
-
-        if (shouldSequence == false) 
-            break;
 
         lastTime = mTimer.getSeconds() ;
         eventCursor++;

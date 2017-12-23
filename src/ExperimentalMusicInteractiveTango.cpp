@@ -10,6 +10,8 @@
 
 //after melody generation really need to experiment on just myself.
 
+//NOTE: TODO RAISE THE SAMPLE RATE ON OUR PHONES WILL MAKE THE STEP DETECTION MUCH BETTER!!!!!
+
 #include "cinder/app/AppNative.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
@@ -56,6 +58,7 @@
 #include "MelodyGeneratorAlgorithm.h"
 #include "FactorOracle.h"
 
+#include "ChordGeneration.h"
 #include "MelodyGenerator.h"
 
 #include "SendOSCUGENs.h"
@@ -71,7 +74,7 @@
 
 //#include "MagneticTime.h"
 
-#define MAX_PORT 89898s
+#define MAX_PORT 89898
 
 
 using namespace ci;
