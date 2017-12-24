@@ -3,7 +3,8 @@
 //  MagneticGardel
 //
 //  Created by courtney on 11/17/17.
-//
+//  This class is for performing an experimental music piece I am performing. Organizes sensors into dancers, dancers into couples, into a dance floor
+//  THe music player is created and connections are made here to song structures, etc.
 //
 
 #ifndef ExperimentalMusicDancers_h
@@ -11,6 +12,30 @@
 
 namespace InteractiveTango
 {
+    class ExperimentalPareja : public Pareja
+    {
+    public:
+        ExperimentalPareja(Dancer *l, Dancer *f, std::vector<UGEN * > *ugens, BeatTiming *timer) :  Pareja(l,f,ugens, timer){
+        }
+    protected:
+        virtual void createSchemas(std::vector<UGEN * > *ugens, BeatTiming *timer) //TODO set default min and maxes in the signal analysis classes
+        {
+            Pareja::createSchemas(ugens, timer);
+
+            //send back sensors in real time
+            SendSignal *sigs[] = {
+                new SendSignal( (Filter *) getLeader()->getLeftFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getLeader()->getDancerID(), SEND_LEFTFOOT  ),
+                new SendSignal( (Filter *) getFollower()->getLeftFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getFollower()->getDancerID(), SEND_LEFTFOOT ),
+                new SendSignal( (Filter *) getLeader()->getRightFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getLeader()->getDancerID(), SEND_RIGHTFOOT  ),
+                new SendSignal( (Filter *) getFollower()->getRightFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getFollower()->getDancerID(),  SEND_RIGHTFOOT ) };
+            
+            for(int i=0; i<4; i++)
+            {
+                ugens->push_back(sigs[i]);
+            }
+        }
+    };
+    
     class ExperimentalDanceFloor : public DanceFloor
     {
     protected:
@@ -121,15 +146,9 @@ namespace InteractiveTango
             std::cout << "Cannot load Por Una Cabeza song -- Not relevant for this dance floor!\n" ;
         }
         
-        
-         
     };
 
         
 };
-
-
-
-
 
 #endif /* ExperimentalMusicDancers_h */

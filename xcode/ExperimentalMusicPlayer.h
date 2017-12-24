@@ -88,13 +88,14 @@ namespace InteractiveTango
     {
     protected:
         ChordGeneration generator;
-        std::vector<MidiNote> notes; 
+        std::vector<MidiNote> notes;
+        int BEATSPERMEASURE;
         
     public:
         
         GeneratedAccompanmentSection(BeatTiming *timer, Instruments *ins) : AccompanimentSection(timer, ins)
         {
-        
+            BEATSPERMEASURE = 4;
         }
     
         //has to be updated with the harmony/section profile
@@ -108,7 +109,7 @@ namespace InteractiveTango
                 beatsPlayed++;
             }
 
-            if( beatsPlayed >= 4)
+            if( beatsPlayed >= BEATSPERMEASURE) //TODO: fix hardcoding
             {
                 beatsPlayed = 0;
                 shouldStartFile = true;

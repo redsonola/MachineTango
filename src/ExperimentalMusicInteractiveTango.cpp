@@ -1481,7 +1481,7 @@ void ExperimentalMusicInteractiveTango::addTestDancersNoSensors()
     std::cout << "Added Courtney as dancer\n";
     
     //add the dancer
-    InteractiveTango::Pareja *pareja = new InteractiveTango::Pareja(mDancers[mDancers.size()-2], mDancers[mDancers.size()-1], &mUGENs, &mBeatTimer );
+    InteractiveTango::Pareja *pareja = new InteractiveTango::ExperimentalPareja(mDancers[mDancers.size()-2], mDancers[mDancers.size()-1], &mUGENs, &mBeatTimer );
     mParejas.push_back(pareja);
     danceFloor->addPareja(pareja);
     std::cout << "Incluye la pareja\n";
@@ -1537,7 +1537,7 @@ void ExperimentalMusicInteractiveTango::addLivePareja(std::map<int, int> &l, std
         std::cout << "Added Courtney as dancer\n";
         
         //add the dancer
-        InteractiveTango::Pareja *pareja = new InteractiveTango::Pareja(mDancers[mDancers.size()-2], mDancers[mDancers.size()-1], &mUGENs, &mBeatTimer );
+        InteractiveTango::Pareja *pareja = new InteractiveTango::ExperimentalPareja(mDancers[mDancers.size()-2], mDancers[mDancers.size()-1], &mUGENs, &mBeatTimer );
         mParejas.push_back(pareja);
         danceFloor->addPareja(pareja);
         std::cout << "Added a pareja\n";

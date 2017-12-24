@@ -103,6 +103,9 @@
 #define LONGSTEP_START "/InteractiveTango/LongStep/Start"
 #define LONGSTEP_END "/InteractiveTango/LongStep/End"
 #define SEND_BACK "/InteractiveTango/BackSignal"
+#define SEND_LEFTFOOT "/InteractiveTango/LeftFootSignal"
+#define SEND_RIGHTFOOT "/InteractiveTango/RightFootSignal"
+
 
 //Wekinator messages to send
 #define WEKINATOR_RECORD "/wekinator/control/startRecording"

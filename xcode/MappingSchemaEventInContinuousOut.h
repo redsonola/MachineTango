@@ -926,10 +926,12 @@ public:
 
         SlopeEnergySignal *energy;
         SlopeEnergySignal *accelEnergy;
+        
+        std::string oscMessage;
 
         int _id;
     public:
-        SendSignal( Filter *signal, int did = 0, int srDiv = 6 ) : ContinousOutMappingSchema(did)
+        SendSignal( Filter *signal, int did = 0, std::string oMsg = SEND_BACK, int srDiv = 6 ) : ContinousOutMappingSchema(did)
         {
             filteredSignal  = (Filter *) signal;
             filteredSignal->calcMotionData(true);
@@ -940,6 +942,8 @@ public:
             energy = new SlopeEnergySignal(slope);
             accel = new DegradedAccelSignal(slope, dmd);
             accelEnergy = new SlopeEnergySignal(accel);
+            
+            oscMessage = oMsg; //default
         };
         
         ~SendSignal()
@@ -956,6 +960,7 @@ public:
             accelEnergy->update();
         };
         
+        
         virtual std::vector<ci::osc::Message> getOSC()
         {
             
@@ -964,7 +969,7 @@ public:
             {
                 OSCMessageITM msg;
                 
-                msg.setAddress(SEND_BACK);
+                msg.setAddress(oscMessage);
                 msg.addIntArg(_id);
 //                std::vector<float> vals = dmd->valuesForOSC();
 //                std::vector<float> slopeVals = slope->valuesForOSC();

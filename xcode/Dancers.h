@@ -1371,7 +1371,7 @@ namespace InteractiveTango
             curMapping = CurrentMapping::NONE;
         };
         
-        void addPareja(Pareja *pareja)
+        virtual void addPareja(Pareja *pareja)
         {
             couples.push_back(pareja);
 
