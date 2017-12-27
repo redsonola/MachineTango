@@ -1172,7 +1172,7 @@ std::vector<ci::osc::Message> ExperimentalMusicInteractiveTango::collectMessages
     while ( i < msgs->size() )
     {
         //boleo messages (last ones) are getting lost -- trying to see if sending through another port helps.
-        if( !(msgs->at(i).getAddress().compare(SEND_BACK) ) )
+        if( !(msgs->at(i).getAddress().compare(SEND_BACK)) || !(msgs->at(i).getAddress().compare(SEND_LEFTFOOT)) || !(msgs->at(i).getAddress().compare(SEND_RIGHTFOOT) ) )
         {
             nmsgs.push_back(msgs->at(i));
             toDelete.push_back(i);

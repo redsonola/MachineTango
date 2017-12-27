@@ -173,10 +173,9 @@ public:
     virtual double findMood()
     {
         double  m = PerceptualEvent::findMood();
-//        if( !_name.compare("Follower Busy Sparse") )
-//            std::cout << "Follower Busy Sparse - in find mood" << "," << m << "\n";
+//        if( !_name.compare("Leader Busy Sparse") )
+//            std::cout << "Leader Busy Sparse - in find mood" << "," << m << "\n";
 
-        
         return std::min(m, maxMood);
     };
 

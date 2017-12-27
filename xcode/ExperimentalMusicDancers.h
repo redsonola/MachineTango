@@ -24,10 +24,10 @@ namespace InteractiveTango
 
             //send back sensors in real time
             SendSignal *sigs[] = {
-                new SendSignal( (Filter *) getLeader()->getLeftFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getLeader()->getDancerID(), SEND_LEFTFOOT  ),
-                new SendSignal( (Filter *) getFollower()->getLeftFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getFollower()->getDancerID(), SEND_LEFTFOOT ),
-                new SendSignal( (Filter *) getLeader()->getRightFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getLeader()->getDancerID(), SEND_RIGHTFOOT  ),
-                new SendSignal( (Filter *) getFollower()->getRightFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getFollower()->getDancerID(),  SEND_RIGHTFOOT ) };
+                new SendSignal( (Filter *) getLeader()->getLeftFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getLeader()->getDancerID(), SEND_LEFTFOOT, 1  ),
+                new SendSignal( (Filter *) getFollower()->getLeftFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getFollower()->getDancerID(), SEND_LEFTFOOT, 1 ),
+                new SendSignal( (Filter *) getLeader()->getRightFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getLeader()->getDancerID(), SEND_RIGHTFOOT, 1  ),
+                new SendSignal( (Filter *) getFollower()->getRightFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getFollower()->getDancerID(),  SEND_RIGHTFOOT, 1 ) };
             
             for(int i=0; i<4; i++)
             {

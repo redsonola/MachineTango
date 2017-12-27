@@ -502,6 +502,7 @@ namespace InteractiveTango {
         int findBusySparse()
         {
             int bvs = 1;
+//            int found = -1;
             for(int i=0; i<mMappingSchemas.size(); i++)
             {
                 int moodNum =  ((PerceptualEvent * )mMappingSchemas[i])->getCurMood(mappingPerceptionWindowForMelody, curSeconds) ;
@@ -511,7 +512,29 @@ namespace InteractiveTango {
                     (!mMappingSchemas[i]->getName().compare("Melody Busy Sparse")  || !mMappingSchemas[i]->getName().compare("Follower Busy Sparse") || !mMappingSchemas[i]->getName().compare("Leader Busy Sparse")))
                 {
                     bvs = moodNum;
+//                    found = 1;
                 }
+//                if(found==-1) std::cout << "NOT FOUND\n";
+//                    else std::cout << "FOUND: " << bvs << std::endl;
+            }
+            return bvs;
+        };
+        
+        std::string findBusySparseName()
+        {
+            std::string bvs;
+//            int found = -1;
+            for(int i=0; i<mMappingSchemas.size(); i++)
+            {
+                
+                if ( (mMappingSchemas[i]->getMappingType() == MappingSchema::MappingSchemaType::EVENT) &&
+                    (!mMappingSchemas[i]->getName().compare("Melody Busy Sparse")  || !mMappingSchemas[i]->getName().compare("Follower Busy Sparse") || !mMappingSchemas[i]->getName().compare("Leader Busy Sparse")))
+                {
+                    bvs = mMappingSchemas[i]->getName();
+//                    found = 1;
+                }
+//                if(found==-1) std::cout << "NOT FOUND\n";
+//                else std::cout << "FOUND: " << bvs << std::endl;
             }
             return bvs;
         };

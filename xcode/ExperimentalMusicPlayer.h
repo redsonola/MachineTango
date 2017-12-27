@@ -37,6 +37,8 @@ namespace InteractiveTango
         
         virtual void update(float seconds = 0)
         {
+            curSeconds = seconds;
+            
             //if busy/sparse = 1 then wait a bit (at least an eighth note) before re-genning
             float timeDiff = seconds - lastTimePlayed;
             float quarter = (1.0f / ((float) generator->getBPM() /  60.0f)) ;
@@ -199,36 +201,30 @@ namespace InteractiveTango
             //use last harmony profile for melody that is not playing, etc., if not first one
             if( hsprofile.get() == NULL ) hsprofile = curHarmonyProfile;
             
-            //for now
-//            if( hsprofile.get() != NULL )
-//            {
-            
-                //                if( !main_melody->shouldPause() )
-                //                {
-                for(int i=0; i<c_melodies.size(); i++)
-                {
-                    c_melodies[i]->update(hsprofile, seconds);
-                    curMelodyOrchestration.addfromOtherOrchestra( c_melodies[i]->getOrchestration() );
-                }
+
+            for(int i=0; i<c_melodies.size(); i++)
+            {
+                c_melodies[i]->update(hsprofile, seconds);
+                curMelodyOrchestration.addfromOtherOrchestra( c_melodies[i]->getOrchestration() );
+            }
                 
-                for(int i=0; i<accompaniments.size(); i++)
-                {
-                    if( main_melody->isStartOfPhrase() )
-                        accompaniments[i]->startPhrase();
-                    ((GeneratedAccompanmentSection *)accompaniments[i])->update(seconds);
-               }
-//            }
-//            //TODO: OK FIX SOON!!!!!
-//            for(int i=0; i<ornaments.size(); i++)
-//            {
-//                ornaments[i]->update(hsprofile, &curMelodyOrchestration, seconds);
-//            }
+            for(int i=0; i<accompaniments.size(); i++)
+            {
+                if( main_melody->isStartOfPhrase() )
+                    accompaniments[i]->startPhrase();
+                ((GeneratedAccompanmentSection *)accompaniments[i])->update(seconds);
+            }
+//
+//          //TODO: OK FIX SOON!!!!!
+//          for(int i=0; i<ornaments.size(); i++)
+//          {
+//             ornaments[i]->update(hsprofile, &curMelodyOrchestration, seconds);
+//          }
 //        }
-        curHarmonyProfile.reset();
-        curHarmonyProfile = hsprofile;
+            curHarmonyProfile.reset();
+            curHarmonyProfile = hsprofile;
         
-        sendMidiMessages();
-            
+            sendMidiMessages();
             deleteDeadPlayers();
 
     };
