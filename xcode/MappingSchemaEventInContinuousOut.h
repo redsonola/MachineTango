@@ -965,6 +965,7 @@ public:
         {
             
             std::vector<ci::osc::Message>  msgs;
+//            std::cout << oscMessage << " getting OSC\n";
             if( dmd->shouldSend() )
             {
                 OSCMessageITM msg;

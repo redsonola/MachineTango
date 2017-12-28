@@ -703,7 +703,9 @@ void ExperimentalMusicInteractiveTango::updateSignalTree(float seconds, float pa
         
         //ok now send OSC messages for rest of signal tree
         for(int i=0; i<mUGENs.size(); i++)
+        {
             sendOSCMessages(mUGENs[i]->getOSC(), seconds);
+        }
     }
     
     //update sendToWekinator -- must be at the end...
@@ -1175,6 +1177,7 @@ std::vector<ci::osc::Message> ExperimentalMusicInteractiveTango::collectMessages
         if( !(msgs->at(i).getAddress().compare(SEND_BACK)) || !(msgs->at(i).getAddress().compare(SEND_LEFTFOOT)) || !(msgs->at(i).getAddress().compare(SEND_RIGHTFOOT) ) )
         {
             nmsgs.push_back(msgs->at(i));
+            std::cout <<  "messages: " << msgs->at(i).getAddress() << std::endl;
             toDelete.push_back(i);
         }
         i++;

@@ -1068,7 +1068,9 @@ namespace InteractiveTango
 
             };
         
-            virtual void createSchemas(std::vector<UGEN * > *ugens, BeatTiming *timer) //TODO set default min and maxes in the signal analysis classes
+    protected:
+        
+           virtual void createSchemas(std::vector<UGEN * > *ugens, BeatTiming *timer) //TODO set default min and maxes in the signal analysis classes
             {
                 
                 //probably a more efficient way to do this
@@ -1276,6 +1278,7 @@ namespace InteractiveTango
 
 
             };
+    public:
         
             virtual void update(float seconds = 0)
             {

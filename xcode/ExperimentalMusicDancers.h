@@ -16,11 +16,14 @@ namespace InteractiveTango
     {
     public:
         ExperimentalPareja(Dancer *l, Dancer *f, std::vector<UGEN * > *ugens, BeatTiming *timer) :  Pareja(l,f,ugens, timer){
+            createEXPSchemas(ugens, timer);
         }
     protected:
-        virtual void createSchemas(std::vector<UGEN * > *ugens, BeatTiming *timer) //TODO set default min and maxes in the signal analysis classes
+        virtual void createEXPSchemas(std::vector<UGEN * > *ugens, BeatTiming *timer) //TODO set default min and maxes in the signal analysis classes
         {
-            Pareja::createSchemas(ugens, timer);
+//            Pareja::createSchemas(ugens, timer);
+            
+            std::cout << "setting up experimental pareja\n";
 
             //send back sensors in real time
             SendSignal *sigs[] = {
