@@ -17,6 +17,7 @@ class ChordGeneration
     
     std::vector<std::vector<int>> possibleProgressions;
     std::vector<std::vector<MidiNote>> chords;
+    std::vector<std::vector<MidiNote>> bass;
     int chordIndex;
     int progressionIndex;
     
@@ -49,13 +50,23 @@ public:
     void loadMidi()
     {
         std::string enclosingFolder = "/Users/courtney/Documents/Interactive Tango Milonga/emtango chord patterns/";
+        std::string enclosingOneHand = "one_hand_chords/";
+        std::string enclosingWalkingBass = "walking_bass/";
+        std::string bass_prefix = "bass_";
+
+        
         std::vector<std::string> filenames =  {"tonic_1.mid", "dominant_2.mid", "two_3.mid", "subDom_4.mid", "six_five_5.mid"};
         
         for(int i=0; i<filenames.size(); i++)
         {
             MidiFileUtility midi;
-            midi.readMidiFile(enclosingFolder + filenames[i]);
+            MidiFileUtility midibass;
+            
+            midi.readMidiFile(enclosingFolder + enclosingOneHand + filenames[i]);
             chords.push_back(midi.getMelody(1));
+            
+            midibass.readMidiFile(enclosingFolder + enclosingWalkingBass + bass_prefix + filenames[i]);
+            bass.push_back(midibass.getMelody(1));
         }
     }
     
@@ -82,6 +93,13 @@ public:
         chordIndex++;
         return chords[possibleProgressions[progressionIndex][chordIndex-1]-1];
     }
+    
+    //returns relevant bass notes
+    std::vector<MidiNote> getBass()
+    {
+        return bass[possibleProgressions[progressionIndex][chordIndex-1]-1];
+    }
+
     
 };
 

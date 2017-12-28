@@ -90,7 +90,7 @@ namespace InteractiveTango
     {
     protected:
         ChordGeneration generator;
-        std::vector<MidiNote> notes;
+       std::vector<std::vector<MidiNote>> notes;
         int BEATSPERMEASURE;
         
     public:
@@ -117,7 +117,9 @@ namespace InteractiveTango
                 shouldStartFile = true;
                 
                 
-                notes = generator.getNextChord();
+                notes.push_back(generator.getNextChord());
+                notes.push_back(generator.getBass());
+
 
                 //switch the constant instrument
                 if( phraseStart )
@@ -136,9 +138,13 @@ namespace InteractiveTango
             } else shouldStartFile = false;
         };
         
-        std::vector<MidiNote> getBufferedNotes()
+        std::vector<MidiNote> getBufferedNotes(int i=0)
         {
-            return notes;
+            return notes[i];
+        }
+        size_t voiceCount()
+        {
+            return notes.size();
         }
         
         virtual std::vector<ci::osc::Message> getOSC()
@@ -334,8 +340,10 @@ namespace InteractiveTango
             
             for(int i=0; i<accompaniments.size(); i++)
             {
-                notes = ((GeneratedAccompanmentSection *) accompaniments[i])->getBufferedNotes();
-                sendNoteSeq(notes, 3);
+                for(int j=0; j<((GeneratedAccompanmentSection *) accompaniments[i])->voiceCount(); j++){
+                notes = ((GeneratedAccompanmentSection *) accompaniments[i])->getBufferedNotes(j);
+                    sendNoteSeq(notes, 3+j); //TODO: change for multiple accompaniment sections, altho not relevant
+                }
             }
         }
         

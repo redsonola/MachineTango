@@ -1177,7 +1177,7 @@ std::vector<ci::osc::Message> ExperimentalMusicInteractiveTango::collectMessages
         if( !(msgs->at(i).getAddress().compare(SEND_BACK)) || !(msgs->at(i).getAddress().compare(SEND_LEFTFOOT)) || !(msgs->at(i).getAddress().compare(SEND_RIGHTFOOT) ) )
         {
             nmsgs.push_back(msgs->at(i));
-            std::cout <<  "messages: " << msgs->at(i).getAddress() << std::endl;
+//            std::cout <<  "messages: " << msgs->at(i).getAddress() << std::endl;
             toDelete.push_back(i);
         }
         i++;
