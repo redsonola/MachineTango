@@ -119,6 +119,7 @@ namespace InteractiveTango
                 
                 notes.push_back(generator.getNextChord());
                 notes.push_back(generator.getBass());
+                notes.push_back(generator.getTop());
 
 
                 //switch the constant instrument
@@ -340,8 +341,10 @@ namespace InteractiveTango
             
             for(int i=0; i<accompaniments.size(); i++)
             {
-                for(int j=0; j<((GeneratedAccompanmentSection *) accompaniments[i])->voiceCount(); j++){
-                notes = ((GeneratedAccompanmentSection *) accompaniments[i])->getBufferedNotes(j);
+                for(int j=0; j<((GeneratedAccompanmentSection *) accompaniments[i])->voiceCount(); j++)
+                {
+                    notes.clear(); 
+                    notes = ((GeneratedAccompanmentSection *) accompaniments[i])->getBufferedNotes(j);
                     sendNoteSeq(notes, 3+j); //TODO: change for multiple accompaniment sections, altho not relevant
                 }
             }

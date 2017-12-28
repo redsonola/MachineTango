@@ -18,6 +18,8 @@ class ChordGeneration
     std::vector<std::vector<int>> possibleProgressions;
     std::vector<std::vector<MidiNote>> chords;
     std::vector<std::vector<MidiNote>> bass;
+    std::vector<std::vector<MidiNote>> top;
+
     int chordIndex;
     int progressionIndex;
     
@@ -52,6 +54,8 @@ public:
         std::string enclosingFolder = "/Users/courtney/Documents/Interactive Tango Milonga/emtango chord patterns/";
         std::string enclosingOneHand = "one_hand_chords/";
         std::string enclosingWalkingBass = "walking_bass/";
+        std::string enclosingtop = "top_voice_accomp/";
+
         std::string bass_prefix = "bass_";
 
         
@@ -61,12 +65,18 @@ public:
         {
             MidiFileUtility midi;
             MidiFileUtility midibass;
+            MidiFileUtility miditop;
+
             
             midi.readMidiFile(enclosingFolder + enclosingOneHand + filenames[i]);
             chords.push_back(midi.getMelody(1));
             
             midibass.readMidiFile(enclosingFolder + enclosingWalkingBass + bass_prefix + filenames[i]);
             bass.push_back(midibass.getMelody(1));
+            
+            miditop.readMidiFile(enclosingFolder + enclosingtop + filenames[i]);
+            top.push_back(miditop.getMelody(1));
+
         }
     }
     
@@ -98,6 +108,12 @@ public:
     std::vector<MidiNote> getBass()
     {
         return bass[possibleProgressions[progressionIndex][chordIndex-1]-1];
+    }
+    
+    //returns relevant top decorative accomp. voice
+    std::vector<MidiNote> getTop()
+    {
+        return top[possibleProgressions[progressionIndex][chordIndex-1]-1];
     }
 
     
