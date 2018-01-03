@@ -11,7 +11,7 @@
 
 #include "sequence_player.h"
 
-#define MAX_DEAD_PLAYERS 50
+#define MAX_DEAD_PLAYERS 200
 
 namespace InteractiveTango
 {
@@ -70,7 +70,7 @@ namespace InteractiveTango
          virtual std::vector<ci::osc::Message> getOSC()
         {
             //probably do nothing here... we'll see
-            std::vector<ci::osc::Message> msgs = MainMelodySection::getOSC(); //this should return nothing.
+            std::vector<ci::osc::Message> msgs = MainMelodySection::getOSC(); //this should return nothing so far.
             return msgs;
         }
         
@@ -89,15 +89,93 @@ namespace InteractiveTango
     class GeneratedAccompanmentSection : public AccompanimentSection
     {
     protected:
-        ChordGeneration generator;
-       std::vector<std::vector<MidiNote>> notes;
+        std::vector<ChordGeneration *> generators;
+        std::vector<std::vector<MidiNote>> notes;
         int BEATSPERMEASURE;
+        
+        //responds to busy sparse by doing the opposite or doing the parallel
+        int MEASURES_TO_FLIP_BVS_MIRROR_OR_COUNTER;
+        bool bvsMirror;
+        bool percBvsMirror;
+        bool percBvsChanged;
+        int measureBVSCount;
+        int bvs;
+        int percbvs;  //sends to max for percussion values
+        
+        int curGen;
         
     public:
         
         GeneratedAccompanmentSection(BeatTiming *timer, Instruments *ins) : AccompanimentSection(timer, ins)
         {
             BEATSPERMEASURE = 4;
+            generators.push_back(new ChordGeneration());
+            generators.push_back(new ChordGenerationPizzInspired());
+            curGen = 0;
+            
+            MEASURES_TO_FLIP_BVS_MIRROR_OR_COUNTER = 8;
+            measureBVSCount = 0;
+            
+            bvsMirror = true;
+            percBvsMirror = true;
+            percBvsChanged = true; //only send OSC to Max 7 if this is aa different value
+            percbvs = -1;
+        }
+        
+        void setBVSMirroring()
+        {
+            
+            if(measureBVSCount >= MEASURES_TO_FLIP_BVS_MIRROR_OR_COUNTER)
+            {
+                measureBVSCount = 0;
+                bvsMirror = chooseRandom() <= 0.5;
+                percBvsMirror = chooseRandom() <= 0.5;
+            }
+        }
+        
+        double chooseRandom()
+        {
+            double choose =((double) std::rand()) / ((double) RAND_MAX);
+            return choose;
+        }
+        
+        void determineBVS(float seconds)
+        {
+            int lastPBVS = percbvs; //saves last value to check for change.
+            
+            float accompwindow = 6;
+            int origbvs = findBusySparse(accompwindow, seconds);
+            PerceptualEvent *ev = findBusySparseSchema();
+            std::cout << "Couple Busy Sparse: " <<  origbvs << " range:" << ev->getMinMood() << "-" << ev->getMaxMood() << std::endl;
+            setBVSMirroring();
+            if(!bvsMirror)
+            {
+                //then do opposite -- TODO: FIX FOR IF I DON'T KNOW MIN MAX --> THIS WAY HACKY VERY FAST TO CHECK!!!!! YIUKES HORRIBLE
+                bvs = 5 + origbvs * -1 + 1; //max + bvs*-1 + min -- but will have to find it in schemas blah
+            } else bvs = origbvs;
+            if(!percBvsMirror)
+            {
+                percbvs = 5 + origbvs * -1 + 1; //max + bvs*-1 + min -- but will have to find it in schemas blah - also refactor
+            }  else percbvs = origbvs;
+            percBvsChanged = percbvs != lastPBVS;
+        }
+        
+        void getChordGenerationNotes(float seconds)
+        {
+            if(generators[curGen]->atProgressionEnd())
+            {
+                double choose = chooseRandom();
+                if(choose < 0.5) curGen = 1; else curGen = 0;
+            }
+            
+            determineBVS(seconds);
+            
+            //ok... well for now just add lines for each bvs step
+            if(bvs >= 2) notes.push_back(generators[curGen]->getNextChord());
+            if(bvs >= 3) notes.push_back(generators[curGen]->getBass());
+            if(bvs >= 4) notes.push_back(generators[curGen]->getTop());
+            //we'll see... for 5, maybe send commands to the percussion parts...
+            
         }
     
         //has to be updated with the harmony/section profile
@@ -115,26 +193,23 @@ namespace InteractiveTango
             {
                 beatsPlayed = 0;
                 shouldStartFile = true;
-                
-                
-                notes.push_back(generator.getNextChord());
-                notes.push_back(generator.getBass());
-                notes.push_back(generator.getTop());
+                measureBVSCount++;
 
+                getChordGenerationNotes(seconds);
 
                 //switch the constant instrument
-                if( phraseStart )
-                {
-                    phraseStart = false;
-                    
-                    continuingInstrumentsThroughPhrase.clear();
-                    Orchestra *curOrch = curSoundFile->getOrchestration();
-                    //                    assert( !curOrch->empty() );
-                    for(int i=0; i<maxInstrumentsToHoldConstantThroughPhrase && i<curOrch->size(); i++)
-                    {
-                        continuingInstrumentsThroughPhrase.addInstrument(curOrch->getInstrViaIndex(i));
-                    }
-                }
+//                if( phraseStart )
+//                {
+//                    phraseStart = false;
+//                    
+//                    continuingInstrumentsThroughPhrase.clear();
+//                    Orchestra *curOrch = curSoundFile->getOrchestration();
+//                    //                    assert( !curOrch->empty() );
+//                    for(int i=0; i<maxInstrumentsToHoldConstantThroughPhrase && i<curOrch->size(); i++)
+//                    {
+//                        continuingInstrumentsThroughPhrase.addInstrument(curOrch->getInstrViaIndex(i));
+//                    }
+//                }
                 
             } else shouldStartFile = false;
         };
@@ -151,6 +226,15 @@ namespace InteractiveTango
         virtual std::vector<ci::osc::Message> getOSC()
         {
             std::vector<ci::osc::Message> msgs;
+            //ok! now we are actually sending osc
+            if(percBvsChanged)
+            {
+                ci::osc::Message msg;
+                msg.setAddress(BUSY_SPARSE_PERCUSSION);
+                msg.addIntArg(percbvs);
+                msgs.push_back(msg);
+            }
+            
             return msgs; 
         }
     };
@@ -343,7 +427,7 @@ namespace InteractiveTango
             {
                 for(int j=0; j<((GeneratedAccompanmentSection *) accompaniments[i])->voiceCount(); j++)
                 {
-                    notes.clear(); 
+                    notes.clear();
                     notes = ((GeneratedAccompanmentSection *) accompaniments[i])->getBufferedNotes(j);
                     sendNoteSeq(notes, 3+j); //TODO: change for multiple accompaniment sections, altho not relevant
                 }

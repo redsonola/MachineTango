@@ -17,7 +17,7 @@
 #define SHIMMER_PORT 57121
 #define SC_LANG_PORT 57120
 #define G_FORCE 9.80665
-#define FRAMERATE 102 
+#define FRAMERATE 51
 
 #define TYPE_ACCEL 0
 #define TYPE_GYR 1
@@ -105,6 +105,9 @@
 #define SEND_BACK "/InteractiveTango/BackSignal"
 #define SEND_LEFTFOOT "/InteractiveTango/LeftFootSignal"
 #define SEND_RIGHTFOOT "/InteractiveTango/RightFootSignal"
+
+//for sending busy spase to max 7
+#define BUSY_SPARSE_PERCUSSION "/InteractiveTango/BusySparse/Beats"
 
 
 //Wekinator messages to send

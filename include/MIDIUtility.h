@@ -80,7 +80,9 @@ public:
     void readMidiFile(std::string midifile)
     {
         MidiFile reader;
-        reader.read(midifile);
+        int status = reader.read(midifile);
+        if( status == 0 )
+            std::cout << "Could not open file: " << midifile << std::endl;
         track=0;
         beatsPerMinute = -1;
         reader.splitTracks(); //just in case

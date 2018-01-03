@@ -53,7 +53,7 @@ namespace InteractiveTango {
         
     public:
         
-        MelodyGenerator( MelodySection *section=NULL,  int _maxNotesGenerated = 5, float _sparseShortNoteCutOff = 1.0f/8.0f)
+        MelodyGenerator( MelodySection *section=NULL,  int _maxNotesGenerated = 4, float _sparseShortNoteCutOff = 1.0f/8.0f)
         {
             oneToOneMode = false; //if yes, ignore profile
 //            fo_probability = fp;

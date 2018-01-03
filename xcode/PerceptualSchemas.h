@@ -156,17 +156,17 @@ public:
         curMood = std::max(std::round(findMood()), (double) minMood);
         curMood = std::min(curMood, (double) maxMood);
         
-//        if( !_name.compare("Follower Busy Sparse") )
-//        {
+        if( !_name.compare("Couple Busy Sparse") )
+        {
 //            std::cout << getName() << "," << curMood << "  , Values: ";
 //        for( int i=0; i<mData.size(); i++ )
 //            std::cout  <<  ((MotionAnalysisEvent *) mData[i] )->scaledValuePolyFit() << ","  ;
 //        std::cout << std::endl;
-//            
-//            for( int i=0; i<mData.size(); i++ )
-//                std::cout  << ((MotionAnalysisEvent *) mData[i] )->asFloat() << ","  ;
-//            std::cout << std::endl;
-//        }
+            
+            for( int i=0; i<mData.size(); i++ )
+                std::cout  << ((MotionAnalysisEvent *) mData[i] )->asFloat() << ","  ;
+            std::cout << std::endl;
+        }
 
     };
     

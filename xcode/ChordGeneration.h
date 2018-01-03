@@ -9,12 +9,12 @@
 #ifndef ChordGeneration_h
 #define ChordGeneration_h
 
-//for now just always follow the same progressions...
+//for now just always follow the same progressions... -- this is hacky -- TODO: FIX AND USE DATABASE
 namespace InteractiveTango {
     
 class ChordGeneration
 {
-    
+protected:
     std::vector<std::vector<int>> possibleProgressions;
     std::vector<std::vector<MidiNote>> chords;
     std::vector<std::vector<MidiNote>> bass;
@@ -32,7 +32,7 @@ public:
     }
     
     //TODO -- put in database -- ALSO note -- could generate melody ahead of time then choose chord based on melody.... !
-    void buildPossibleProgressions()
+    virtual void buildPossibleProgressions()
     {
         std::vector<int> pp1 = {1, 2, 3, 4, 5, 1};
         std::vector<int> pp2 = {1, 1, 2, 2, 1};
@@ -49,12 +49,13 @@ public:
     }
     
     //should be in database?
-    void loadMidi()
+    virtual void loadMidi()
     {
         std::string enclosingFolder = "/Users/courtney/Documents/Interactive Tango Milonga/emtango chord patterns/";
         std::string enclosingOneHand = "one_hand_chords/";
         std::string enclosingWalkingBass = "walking_bass/";
         std::string enclosingtop = "top_voice_accomp/";
+        std::string enclosingpizz = "pizzolla_inspired/";
 
         std::string bass_prefix = "bass_";
 
@@ -80,7 +81,7 @@ public:
         }
     }
     
-    void chooseNextProgressionIndex()
+    virtual void chooseNextProgressionIndex()
     {
         double choose =((double) std::rand()) / ((double) RAND_MAX);
         
@@ -96,7 +97,7 @@ public:
     
     std::vector<MidiNote> getNextChord()
     {
-        if( chordIndex >= possibleProgressions[progressionIndex].size() )
+        if( atProgressionEnd() )
         {
             chooseNextProgressionIndex();
         }
@@ -115,10 +116,64 @@ public:
     {
         return top[possibleProgressions[progressionIndex][chordIndex-1]-1];
     }
-
+    
+    bool atProgressionEnd()
+    {
+        return chordIndex >= possibleProgressions[progressionIndex].size();
+    }
     
 };
 
-}
+
+class ChordGenerationPizzInspired : public ChordGeneration
+{
+public:
+    ChordGenerationPizzInspired() : ChordGeneration()
+    {
+        possibleProgressions.clear();
+        chords.clear();
+        buildPossibleProgressions2();
+    }
+    
+    //should be in database?
+    virtual void loadMidi2()
+    {
+        std::string enclosingFolder = "/Users/courtney/Documents/Interactive Tango Milonga/emtango chord patterns/";
+        std::string enclosingpizz = "piazzolla_inspired/";
+        
+        std::vector<std::string> pizzfilenames =  {"tonic_1.mid", "dominant_2.mid", "subdom_3.mid", "two_4.mid", "predom5.mid", "dom6.mid"};
+        
+        for(int i=0; i<pizzfilenames.size(); i++)
+        {
+            MidiFileUtility midi;
+
+            midi.readMidiFile(enclosingFolder + enclosingpizz + pizzfilenames[i]);
+            chords.push_back(midi.getMelody(1));
+        }
+        
+        //rearrange other parts to make sense kind of
+        bass = { bass[0], bass[1] , bass[3], bass[2], bass[3], bass[1]};
+        top = { top[0], top[1] , top[3], top[2], top[3], top[1]};
+    }
+    
+    virtual void buildPossibleProgressions2()
+    {
+        std::vector<int> pp1 = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6};
+        std::vector<int> pp2 = {1, 1, 2, 2, 1, 1};
+            
+        possibleProgressions.push_back(pp1);
+        possibleProgressions.push_back(pp2);
+            
+        loadMidi2();
+            
+        chordIndex = 0;
+        progressionIndex = 0;
+    }
+    
+
+};
+
+};
+
 
 #endif /* ChordGeneration_h */

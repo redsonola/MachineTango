@@ -208,11 +208,15 @@ class SectionASongCoupleParams : public GeneralMotionParams
 public:
     SectionASongCoupleParams()
     {
-        windowedVarCoEfficients = {0, 0.05};
-        footOnsetCoEfficients = {0.0, 0.45};
-        windowedDiffVarCoEfficients = {0.0, 0.028};
+//        windowedVarCoEfficients = {0, 0.05};
+//        footOnsetCoEfficients = {0.0, 0.45};
+//        windowedDiffVarCoEfficients = {0.0, 0.028};
         crossCoVarCoEfficients = {0.0, 1.5};
-        stepNumCoEfficients = {0, 4};
+//        stepNumCoEfficients = {0, 4};
+        windowedVarCoEfficients = {0, 0.001};
+        footOnsetCoEfficients = {0.0, 0.4};
+        windowedDiffVarCoEfficients = {0.0, 0.05};
+        stepNumCoEfficients = {0, 2};
         whichDancer = WhichDancer::couple;
 
     };

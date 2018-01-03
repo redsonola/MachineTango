@@ -77,6 +77,67 @@ namespace InteractiveTango {
             reset();
         };
         
+        virtual int findBusySparse(double window = -1, double secs = -1)
+        {
+            int bvs = 1;
+            //            int found = -1;
+            for(int i=0; i<mMappingSchemas.size(); i++)
+            {
+                int moodNum =  ((PerceptualEvent * )mMappingSchemas[i])->getCurMood(window, secs) ;
+                //            std::cout << "in Curfile :"<< ((PerceptualEvent * )mMappingSchemas[i])->getName() << ":  " << moodNum << "     " << seconds << "  \n";
+                
+                if ( (mMappingSchemas[i]->getMappingType() == MappingSchema::MappingSchemaType::EVENT) &&
+                    (!mMappingSchemas[i]->getName().compare("Melody Busy Sparse")  || !mMappingSchemas[i]->getName().compare("Follower Busy Sparse") || !mMappingSchemas[i]->getName().compare("Leader Busy Sparse") || !mMappingSchemas[i]->getName().compare("Couple Busy Sparse")))
+                {
+                    bvs = moodNum;
+                    //                    found = 1;
+                }
+                //                if(found==-1) std::cout << "NOT FOUND\n";
+                //                    else std::cout << "FOUND: " << bvs << std::endl;
+            }
+            return bvs;
+        };
+        
+        virtual PerceptualEvent * findBusySparseSchema()
+        {
+            PerceptualEvent * bvs = NULL;
+            //            int found = -1;
+            for(int i=0; i<mMappingSchemas.size(); i++)
+            {
+  
+                
+                if ( (mMappingSchemas[i]->getMappingType() == MappingSchema::MappingSchemaType::EVENT) &&
+                    (!mMappingSchemas[i]->getName().compare("Melody Busy Sparse")  || !mMappingSchemas[i]->getName().compare("Follower Busy Sparse") || !mMappingSchemas[i]->getName().compare("Leader Busy Sparse") || !mMappingSchemas[i]->getName().compare("Couple Busy Sparse")))
+                {
+                    bvs = (PerceptualEvent *) mMappingSchemas[i];
+                    //                    found = 1;
+                }
+                //                if(found==-1) std::cout << "NOT FOUND\n";
+                //                    else std::cout << "FOUND: " << bvs << std::endl;
+            }
+            return bvs;
+        };
+        
+        std::string findBusySparseName()
+        {
+            std::string bvs;
+            //            int found = -1;
+            for(int i=0; i<mMappingSchemas.size(); i++)
+            {
+                
+                if ( (mMappingSchemas[i]->getMappingType() == MappingSchema::MappingSchemaType::EVENT) &&
+                    (!mMappingSchemas[i]->getName().compare("Melody Busy Sparse")  || !mMappingSchemas[i]->getName().compare("Follower Busy Sparse") || !mMappingSchemas[i]->getName().compare("Leader Busy Sparse")))
+                {
+                    bvs = mMappingSchemas[i]->getName();
+                    //                    found = 1;
+                }
+                //                if(found==-1) std::cout << "NOT FOUND\n";
+                //                else std::cout << "FOUND: " << bvs << std::endl;
+            }
+            return bvs;
+        };
+
+        
         std::vector<MappingSchema *> getMappingSchemas()
         {
 //            std::cout << "mMappingSchemas: " << mMappingSchemas.size(); 
@@ -407,7 +468,7 @@ namespace InteractiveTango {
     protected:
         FootOnset *fo;
         double secondsPlayed, secondsStarted; //melodies measure in seconds, since last shorter than accompaniment measures
-        float mappingPerceptionWindowForMelody; //maybe change the placement of this param????
+        float  mappingPerceptionWindowForMelody ; //maybe change the placement of this param????
         
         bool lastStepped;
         
@@ -479,6 +540,13 @@ namespace InteractiveTango {
             }
         };
         
+        virtual int findBusySparse(double window = -1, double secs = -1)
+        {
+            if(window==-1) window = mappingPerceptionWindowForMelody;
+            if(secs ==-1) secs = curSeconds;
+            return MusicSection::findBusySparse(mappingPerceptionWindowForMelody, window);
+        }
+        
         virtual boost::shared_ptr<std::vector<int>> getHarmonySectionProfile()
         {
             if ( curSoundFile != NULL )
@@ -499,45 +567,6 @@ namespace InteractiveTango {
             
         };
         
-        int findBusySparse()
-        {
-            int bvs = 1;
-//            int found = -1;
-            for(int i=0; i<mMappingSchemas.size(); i++)
-            {
-                int moodNum =  ((PerceptualEvent * )mMappingSchemas[i])->getCurMood(mappingPerceptionWindowForMelody, curSeconds) ;
-                //            std::cout << "in Curfile :"<< ((PerceptualEvent * )mMappingSchemas[i])->getName() << ":  " << moodNum << "     " << seconds << "  \n";
-                
-                if ( (mMappingSchemas[i]->getMappingType() == MappingSchema::MappingSchemaType::EVENT) &&
-                    (!mMappingSchemas[i]->getName().compare("Melody Busy Sparse")  || !mMappingSchemas[i]->getName().compare("Follower Busy Sparse") || !mMappingSchemas[i]->getName().compare("Leader Busy Sparse")))
-                {
-                    bvs = moodNum;
-//                    found = 1;
-                }
-//                if(found==-1) std::cout << "NOT FOUND\n";
-//                    else std::cout << "FOUND: " << bvs << std::endl;
-            }
-            return bvs;
-        };
-        
-        std::string findBusySparseName()
-        {
-            std::string bvs;
-//            int found = -1;
-            for(int i=0; i<mMappingSchemas.size(); i++)
-            {
-                
-                if ( (mMappingSchemas[i]->getMappingType() == MappingSchema::MappingSchemaType::EVENT) &&
-                    (!mMappingSchemas[i]->getName().compare("Melody Busy Sparse")  || !mMappingSchemas[i]->getName().compare("Follower Busy Sparse") || !mMappingSchemas[i]->getName().compare("Leader Busy Sparse")))
-                {
-                    bvs = mMappingSchemas[i]->getName();
-//                    found = 1;
-                }
-//                if(found==-1) std::cout << "NOT FOUND\n";
-//                else std::cout << "FOUND: " << bvs << std::endl;
-            }
-            return bvs;
-        };
         
         //REFACTOR -- THIS IS A HACK FOR NOW!!!!
         virtual bool shouldPlayNewFile()

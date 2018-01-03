@@ -18,7 +18,11 @@ namespace InteractiveTango
         ExperimentalPareja(Dancer *l, Dancer *f, std::vector<UGEN * > *ugens, BeatTiming *timer) :  Pareja(l,f,ugens, timer){
             createEXPSchemas(ugens, timer);
         }
+        BusyVsSparseEvent *getCoupleBS() { return bsCouple; };
+
     protected:
+        BusyVsSparseEvent *bsCouple; //for now...
+        
         virtual void createEXPSchemas(std::vector<UGEN * > *ugens, BeatTiming *timer) //TODO set default min and maxes in the signal analysis classes
         {
 //            Pareja::createSchemas(ugens, timer);
@@ -32,11 +36,22 @@ namespace InteractiveTango
                 new SendSignal( (Filter *) getLeader()->getRightFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getLeader()->getDancerID(), SEND_RIGHTFOOT, 1  ),
                 new SendSignal( (Filter *) getFollower()->getRightFoot()->at(Dancer::WhichSignals::LPFILTER15Hz), getFollower()->getDancerID(),  SEND_RIGHTFOOT, 1 ) };
             
+            std::cout << "leader dancerid: " << getLeader()->getDancerID() << std::endl;
+            
             for(int i=0; i<4; i++)
             {
                 ugens->push_back(sigs[i]);
             }
+            
+            //since we use this for accompaniment
+            bsCouple = new BusyVsSparseEvent(timer, mMotionAnalysisEvents[COUPLE_WINDOWED_VAR], mMotionAnalysisEvents[COUPLE_STEPNUM],  mMotionAnalysisEvents[CROSSCOVAR] );
+            bsCouple->setName("Couple Busy Sparse");
+            bsCouple->setMinMaxMood(1, 5); //more gradiations
+            
+            ugens->push_back(bsCouple);
         }
+        
+        
     };
     
     class ExperimentalDanceFloor : public DanceFloor
@@ -98,6 +113,7 @@ namespace InteractiveTango
             
             follower_gen.setMelodySection(melody);
             leader_gen.setMelodySection(leaderMelody);
+            leader_gen.turnOn1to1(); 
 //            
 //            follower_gen.turnOn1to1();
 //            leader_gen.turnOn1to1();
@@ -134,6 +150,7 @@ namespace InteractiveTango
             leaderMelody = new GeneratedMelodySection( mTimer, couples[0]->getLeader()->getOnsets(), &leader_gen, &instruments ); //added leader...
             
             accompaniment = new GeneratedAccompanmentSection( mTimer, &instruments );
+            accompaniment->addSchema( ((ExperimentalPareja *) couples[0])->getCoupleBS() );
             
             for( int i=0; i<couples.size(); i++ )
                 couples[i]->setMotionAnalysisParamsForSong(TangoEntity::SongIDs::FRAGMENTS); //just use settings for fragments for now
