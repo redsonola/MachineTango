@@ -220,11 +220,14 @@ public:
     
     virtual MappingSchemaType getMappingType() { return _mappingtype; };
     
-    void setMinMaxMood(double mi, double ma)
+    virtual void setMinMaxMood(double mi, double ma)
     {
         minMood = mi;
         maxMood = ma;
+
+        //WTF MATE DISABLING 1/2/2017w
         ( (MotionAnalysisEvent *)motionData[0])->setMinMax(minMood, maxMood);
+        
     };
     
     virtual double getCurMood(double windowsz = 0, double seconds = 0) //returns average over window (confusing, but TODO: refactor
@@ -241,9 +244,7 @@ public:
         }
         else
         {
-            
              newMood = std::max( std::round(moods.getAverageOverWindow(windowsz, seconds)), minMood );
-
         }
 //        std::cout << "seconds: " << seconds << "    ";
 //        std::cout << "windowsz: " << windowsz << "          ";

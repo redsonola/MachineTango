@@ -1459,6 +1459,7 @@ void ExperimentalMusicInteractiveTango::addTestDancersNoSensors()
     
     //add the leader
     InteractiveTango::Dancer *dancer = new InteractiveTango::Dancer(&mBeatTimer, sendOSCToWekinators[wekIndexStart], sendOSCToWekinators[wekIndexStart+2]);
+    dancer->setDancerType(InteractiveTango::TangoEntity::WhichDancerType::LEADER1);
     dancer->addSensorBodyPart(0, leaderleft, &mUGENs, InteractiveTango::Dancer::LeftFoot);
     dancer->addSensorBodyPart(1, leaderright, &mUGENs, InteractiveTango::Dancer::RightFoot);
     dancer->addSensorBodyPart(2, leaderback, &mUGENs, InteractiveTango::Dancer::Back);
@@ -1475,6 +1476,7 @@ void ExperimentalMusicInteractiveTango::addTestDancersNoSensors()
     SensorData * followerleft = getSensor("Courtney", 1);
     
     InteractiveTango::Dancer *dancer2 = new InteractiveTango::Dancer(&mBeatTimer, sendOSCToWekinators[wekIndexStart+1], sendOSCToWekinators[wekIndexStart+3]);
+    dancer->setDancerType(InteractiveTango::TangoEntity::WhichDancerType::FOLLOWER1);
     dancer2->addSensorBodyPart(3, followerleft, &mUGENs, InteractiveTango::Dancer::LeftFoot);
     dancer2->addSensorBodyPart(4, followerright, &mUGENs, InteractiveTango::Dancer::RightFoot);
     dancer2->addSensorBodyPart(5, followerback, &mUGENs, InteractiveTango::Dancer::Back);
@@ -1510,6 +1512,7 @@ void ExperimentalMusicInteractiveTango::addLivePareja(std::map<int, int> &l, std
         
         //add the leader
         InteractiveTango::Dancer *dancer = new InteractiveTango::Dancer(&mBeatTimer, sendOSCToWekinators[wekIndexStart], sendOSCToWekinators[wekIndexStart+2]);
+        dancer->setDancerType(InteractiveTango::TangoEntity::WhichDancerType::LEADER1);
         dancer->addSensorBodyPart(l[0], mSensorData[l[0]], &mUGENs, InteractiveTango::Dancer::LeftFoot);
         dancer->addSensorBodyPart(l[1], mSensorData[l[1]], &mUGENs, InteractiveTango::Dancer::RightFoot);
         dancer->addSensorBodyPart(l[2], mSensorData[l[2]], &mUGENs, InteractiveTango::Dancer::Back);
@@ -1526,6 +1529,7 @@ void ExperimentalMusicInteractiveTango::addLivePareja(std::map<int, int> &l, std
         
         //add the follower
         InteractiveTango::Dancer *dancer2 = new InteractiveTango::Dancer(&mBeatTimer, sendOSCToWekinators[wekIndexStart+1], sendOSCToWekinators[wekIndexStart+3]);
+        dancer->setDancerType(InteractiveTango::TangoEntity::WhichDancerType::FOLLOWER1);
         dancer2->addSensorBodyPart(f[0], mSensorData[f[0]], &mUGENs, InteractiveTango::Dancer::LeftFoot);
         dancer2->addSensorBodyPart(f[1], mSensorData[f[1]], &mUGENs, InteractiveTango::Dancer::RightFoot);
         dancer2->addSensorBodyPart(f[2], mSensorData[f[2]], &mUGENs, InteractiveTango::Dancer::Back);

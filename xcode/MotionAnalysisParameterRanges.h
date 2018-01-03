@@ -213,10 +213,10 @@ public:
 //        windowedDiffVarCoEfficients = {0.0, 0.028};
         crossCoVarCoEfficients = {0.0, 1.5};
 //        stepNumCoEfficients = {0, 4};
-        windowedVarCoEfficients = {0, 0.001};
+        windowedVarCoEfficients = {0, 0.25};
         footOnsetCoEfficients = {0.0, 0.4};
         windowedDiffVarCoEfficients = {0.0, 0.05};
-        stepNumCoEfficients = {0, 2};
+        stepNumCoEfficients = {0, 3};
         whichDancer = WhichDancer::couple;
 
     };

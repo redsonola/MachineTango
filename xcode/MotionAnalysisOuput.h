@@ -65,7 +65,7 @@ public:
     void setValue(int v){ val = v; };
     void setValue(float f){ val = f;};
     void setValue(double d){ val = d;};
-    void setMinMax(double minv, double maxv)
+    virtual void setMinMax(double minv, double maxv)
     {
         minVal = minv;
         maxVal = maxv;
@@ -121,6 +121,16 @@ public:
     {
         coefficients = coeffs;
     };
+    
+    virtual void setMinMax(double minv, double maxv)
+    {
+        coefficients.clear();
+        minVal = minv;
+        maxVal = maxv;
+        coefficients.push_back(minVal);
+        coefficients.push_back(maxVal);
+    };
+
 
     void setMin(double m)
     {

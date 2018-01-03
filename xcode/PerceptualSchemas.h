@@ -121,8 +121,8 @@ public:
         setMinMaxMood(1, 3);
         
         //add weights to those factors --> changed to equal 3
-        mWeights.push_back(1.5);
-        mWeights.push_back(1.5);
+        mWeights.push_back(0.5);
+        mWeights.push_back(0.5);
 //        mWeights.push_back(0.5);
         
 //        maxMaxMood = 0;
@@ -143,6 +143,21 @@ public:
         
     };
     
+    //fixed for busy vs sparse herre -- TODO --- propogate to all.
+    virtual double findMoodfixed()
+    {
+        if(fakeMode) return curMood;
+        
+        //        double equalWeight = ( (double) maxMood )/( (double) mData.size() );
+        double mood = 0;
+        for(int i=0; i<mWeights.size(); i++)
+        {
+            mood = mood + (mWeights[i]*(maxMood-minMood+1)* ((MotionAnalysisEvent *)mData[i])->scaledValuePolyFit());//*equalWeight; //CHANGED!!! 3/4/2016
+        }
+        mood = mood * scale;
+        return mood;
+    };
+    
     //for stepping peak... b
     virtual void updateMotionData()
     {
@@ -156,23 +171,23 @@ public:
         curMood = std::max(std::round(findMood()), (double) minMood);
         curMood = std::min(curMood, (double) maxMood);
         
-        if( !_name.compare("Couple Busy Sparse") )
-        {
-//            std::cout << getName() << "," << curMood << "  , Values: ";
-//        for( int i=0; i<mData.size(); i++ )
-//            std::cout  <<  ((MotionAnalysisEvent *) mData[i] )->scaledValuePolyFit() << ","  ;
-//        std::cout << std::endl;
-            
-            for( int i=0; i<mData.size(); i++ )
-                std::cout  << ((MotionAnalysisEvent *) mData[i] )->asFloat() << ","  ;
-            std::cout << std::endl;
-        }
+//        if( !_name.compare("Couple Busy Sparse") )
+//        {
+////            std::cout << getName() << "," << curMood << "  , Values: ";
+////        for( int i=0; i<mData.size(); i++ )
+////            std::cout  <<  ((MotionAnalysisEvent *) mData[i] )->scaledValuePolyFit() << ","  ;
+////        std::cout << std::endl;
+//            
+//            for( int i=0; i<mData.size(); i++ )
+//                std::cout  << ((MotionAnalysisEvent *) mData[i] )->asFloat() << ","  ;
+//            std::cout << std::endl;
+//        }
 
     };
     
     virtual double findMood()
     {
-        double  m = PerceptualEvent::findMood();
+        double  m = findMoodfixed();
 //        if( !_name.compare("Leader Busy Sparse") )
 //            std::cout << "Leader Busy Sparse - in find mood" << "," << m << "\n";
 

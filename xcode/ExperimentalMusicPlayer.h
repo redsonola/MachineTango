@@ -145,8 +145,8 @@ namespace InteractiveTango
             
             float accompwindow = 6;
             int origbvs = findBusySparse(accompwindow, seconds);
-            PerceptualEvent *ev = findBusySparseSchema();
-            std::cout << "Couple Busy Sparse: " <<  origbvs << " range:" << ev->getMinMood() << "-" << ev->getMaxMood() << std::endl;
+//            PerceptualEvent *ev = findBusySparseSchema();
+//            std::cout << "Couple Busy Sparse: " <<  origbvs << " range:" << ev->getMinMood() << "-" << ev->getMaxMood() << std::endl;
             setBVSMirroring();
             if(!bvsMirror)
             {
