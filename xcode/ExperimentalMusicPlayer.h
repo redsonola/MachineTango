@@ -45,7 +45,7 @@ namespace InteractiveTango
             float eight = quarter / 2.0f;
             float sixteenth = eight / 2.0f;
 
-            int bs = findBusySparse();
+            int bs = findBusySparse(0.01, seconds);
             
             if( timeDiff < sixteenth ) return; // no faster than sixteenth notes but don't place such a hard limit on density... see. 
             
@@ -104,6 +104,8 @@ namespace InteractiveTango
         
         int curGen;
         
+        std::vector<ci::osc::Message> harmonyMessages;
+        
     public:
         
         GeneratedAccompanmentSection(BeatTiming *timer, Instruments *ins) : AccompanimentSection(timer, ins)
@@ -125,7 +127,7 @@ namespace InteractiveTango
         void setBVSMirroring()
         {
             
-            if(measureBVSCount >= MEASURES_TO_FLIP_BVS_MIRROR_OR_COUNTER)
+            if(measureBVSCount >= MEASURES_TO_FLIP_BVS_MIRROR_OR_COUNTER && generators[curGen]->atProgressionEnd() )
             {
                 measureBVSCount = 0;
                 bvsMirror = chooseRandom() <= 0.5;
@@ -143,7 +145,7 @@ namespace InteractiveTango
         {
             int lastPBVS = percbvs; //saves last value to check for change.
             
-            float accompwindow = 6;
+            float accompwindow = 2;
             int origbvs = findBusySparse(accompwindow, seconds);
 //            PerceptualEvent *ev = findBusySparseSchema();
 //            std::cout << "Couple Busy Sparse: " <<  origbvs << " range:" << ev->getMinMood() << "-" << ev->getMaxMood() << std::endl;
@@ -158,6 +160,18 @@ namespace InteractiveTango
                 percbvs = 5 + origbvs * -1 + 1; //max + bvs*-1 + min -- but will have to find it in schemas blah - also refactor
             }  else percbvs = origbvs;
             percBvsChanged = percbvs != lastPBVS;
+            
+        }
+        
+        void createSampleHarmonyMessages()
+        {
+            if(bvs >=2)
+            {
+                ci::osc::Message msg;
+                msg.setAddress(EXPMUSIC_HARMONY);
+                msg.addIntArg(generators[curGen]->getCurHarmony());
+                harmonyMessages.push_back(msg);
+            }
         }
         
         void getChordGenerationNotes(float seconds)
@@ -174,6 +188,7 @@ namespace InteractiveTango
             if(bvs >= 2) notes.push_back(generators[curGen]->getNextChord());
             if(bvs >= 3) notes.push_back(generators[curGen]->getBass());
             if(bvs >= 4) notes.push_back(generators[curGen]->getTop());
+            createSampleHarmonyMessages();
             //we'll see... for 5, maybe send commands to the percussion parts...
             
         }
@@ -234,6 +249,13 @@ namespace InteractiveTango
                 msg.addIntArg(percbvs);
                 msgs.push_back(msg);
             }
+            
+            if(!harmonyMessages.empty())
+            {
+                msgs.push_back(harmonyMessages[0]);
+            }
+            harmonyMessages.clear();
+
             
             return msgs; 
         }

@@ -108,6 +108,8 @@
 
 //for sending busy spase to max 7
 #define BUSY_SPARSE_PERCUSSION "/InteractiveTango/BusySparse/Beats"
+#define EXPMUSIC_HARMONY "/InteractiveTango/Experimental/Harmony"
+
 
 
 //Wekinator messages to send

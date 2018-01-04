@@ -122,6 +122,11 @@ public:
         return chordIndex >= possibleProgressions[progressionIndex].size();
     }
     
+    int getCurHarmony()
+    {
+        return possibleProgressions[progressionIndex][chordIndex-1];
+    }
+    
 };
 
 
