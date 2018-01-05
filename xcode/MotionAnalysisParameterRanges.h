@@ -216,7 +216,7 @@ public:
         windowedVarCoEfficients = {0, 0.25};
         footOnsetCoEfficients = {0.0, 0.4};
         windowedDiffVarCoEfficients = {0.0, 0.05};
-        stepNumCoEfficients = {0, 3};
+        stepNumCoEfficients = {0, 2}; //changed for smaller window size
         whichDancer = WhichDancer::couple;
 
     };

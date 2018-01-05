@@ -273,7 +273,7 @@ namespace InteractiveTango
             bUgens->push_back( peaks );
         
             LPFilter15Hz *filter15 = new LPFilter15Hz(signal_input);
-            WindowedVariance *variance = new WindowedVariance(filter15, SR / 3, idz, sensor->getPort() ) ;
+            WindowedVariance *variance = new WindowedVariance(filter15, SR / 10, idz, sensor->getPort() ) ; //changed for exp. music 1/4/2017
             
             WindowedVarianceDifference *varianceDiff = new WindowedVarianceDifference(variance, idz, sensor->getPort());
             
@@ -340,7 +340,8 @@ namespace InteractiveTango
             //add the step onset once both legs are added
             if( rightFootInit && leftFootInit && !stepDInit)
             {
-                onsets = new FootOnset( (SnapPeaks *) leftFoot.at(SNAP_PEAKS),(SnapPeaks *)rightFoot.at(SNAP_PEAKS), leftFootID , rightFootID);
+                float footOnsetSampleSize = 2; // changed to see if can change window - half of previous
+                onsets = new FootOnset( (SnapPeaks *) leftFoot.at(SNAP_PEAKS),(SnapPeaks *)rightFoot.at(SNAP_PEAKS), leftFootID , rightFootID,  footOnsetSampleSize);
                 ugens->push_back(onsets);
                 
                 float bps = timer->getBPM() / (60.0) ;

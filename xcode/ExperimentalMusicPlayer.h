@@ -101,6 +101,10 @@ namespace InteractiveTango
         int measureBVSCount;
         int bvs;
         int percbvs;  //sends to max for percussion values
+        bool pauseForFillOrClose;
+        
+        bool fiveStopped;
+        bool bvsChangedTo2;
         
         int curGen;
         
@@ -122,6 +126,10 @@ namespace InteractiveTango
             percBvsMirror = true;
             percBvsChanged = true; //only send OSC to Max 7 if this is aa different value
             percbvs = -1;
+            
+            pauseForFillOrClose = false;
+            fiveStopped = false;
+            bvsChangedTo2 = false;
         }
         
         void setBVSMirroring()
@@ -141,31 +149,115 @@ namespace InteractiveTango
             return choose;
         }
         
+        //make busy accompaniments less likely and harder to invoke
+        int scaleBVSFrom20to5(int whichBVS)
+        {
+            //ok this is hard-coded yikes but will fix later...
+            if(whichBVS  <= 4 )
+            {
+                return 1;
+            }
+            else if(whichBVS <= 9 )
+            {
+                return 2;
+            }
+            else if(whichBVS <= 14 )
+            {
+                return 3;
+            }
+            else if(whichBVS <= 17 )
+            {
+                return 4;
+            }
+            else return 5;
+        }
+        
+        void makeBothFivesLessLikely()
+        {
+            double chooseRemainFive = chooseRandom();
+            if(chooseRemainFive > 0.25) // 75% likely that one will be modified to a 2.
+            {
+                if(fiveStopped) //five was also stopped previously so suppressed the previously suppreseed bvs value
+                {
+                    if(bvsChangedTo2) bvs = 2;
+                    else percbvs = 2;
+                }
+                else
+                {
+                    double chooseBVS = chooseRandom();
+                    if(chooseBVS > 0.5)
+                    {
+                        bvs = 2;
+                    }
+                    else percbvs = 2;
+                }
+                bvsChangedTo2 = bvs == 2;
+                fiveStopped = true;
+            }
+            else fiveStopped = false;
+        }
+        
         void determineBVS(float seconds)
         {
             int lastPBVS = percbvs; //saves last value to check for change.
+            int lastBVS = bvs;
             
             float accompwindow = 2;
             int origbvs = findBusySparse(accompwindow, seconds);
-//            PerceptualEvent *ev = findBusySparseSchema();
+            
+            
+            PerceptualEvent *ev = findBusySparseSchema();
 //            std::cout << "Couple Busy Sparse: " <<  origbvs << " range:" << ev->getMinMood() << "-" << ev->getMaxMood() << std::endl;
             setBVSMirroring();
             if(!bvsMirror)
             {
                 //then do opposite -- TODO: FIX FOR IF I DON'T KNOW MIN MAX --> THIS WAY HACKY VERY FAST TO CHECK!!!!! YIUKES HORRIBLE
-                bvs = 5 + origbvs * -1 + 1; //max + bvs*-1 + min -- but will have to find it in schemas blah
+                bvs = ev->getMaxMood() + origbvs * -1 + ev->getMinMood(); //max + bvs*-1 + min
             } else bvs = origbvs;
             if(!percBvsMirror)
             {
-                percbvs = 5 + origbvs * -1 + 1; //max + bvs*-1 + min -- but will have to find it in schemas blah - also refactor
+                percbvs = ev->getMaxMood() + origbvs * -1 + ev->getMinMood(); //max + bvs*-1 + min --
             }  else percbvs = origbvs;
-            percBvsChanged = percbvs != lastPBVS;
             
+            //favors  low and middle values over higher ones.
+            bvs = scaleBVSFrom20to5(bvs);
+            percbvs = scaleBVSFrom20to5(percbvs);
+
+            //if both bvs are 5, change to something else 75% of the time -- include 4
+            if(percbvs >= 4 && bvs >= 4)
+                makeBothFivesLessLikely();
+            
+            percBvsChanged = percbvs != lastPBVS;
+
+            makeBothFivesLessLikely();
+            
+            //if bvs did go from 0 to 5 or 4, then add a fill
+            addFills(lastBVS);
+            
+        }
+        
+        void addFills(float lastBVS)
+        {
+            //if bvs did go from 0 to 5 or 4 or 5-4 down to 0, then add a fill
+            if( bvs - lastBVS >= 4 )
+            {
+                ci::osc::Message msg;
+                msg.setAddress(EXPMUSIC_INTROFILL);
+                harmonyMessages.push_back(msg);
+                pauseForFillOrClose = true;
+            }
+            else if(bvs - lastBVS <= -4)
+            {
+                ci::osc::Message msg;
+                msg.setAddress(EXPMUSIC_CLOSEFILL);
+                harmonyMessages.push_back(msg);
+                pauseForFillOrClose = true;
+            }
         }
         
         void createSampleHarmonyMessages()
         {
-            if(bvs >=2)
+            if(bvs >=3)
             {
                 ci::osc::Message msg;
                 msg.setAddress(EXPMUSIC_HARMONY);
@@ -176,7 +268,7 @@ namespace InteractiveTango
         
         void getChordGenerationNotes(float seconds)
         {
-            if(generators[curGen]->atProgressionEnd())
+            if( generators[curGen]->atProgressionEnd() )
             {
                 double choose = chooseRandom();
                 if(choose < 0.5) curGen = 1; else curGen = 0;
@@ -184,11 +276,16 @@ namespace InteractiveTango
             
             determineBVS(seconds);
             
-            //ok... well for now just add lines for each bvs step
-            if(bvs >= 2) notes.push_back(generators[curGen]->getNextChord());
-            if(bvs >= 3) notes.push_back(generators[curGen]->getBass());
-            if(bvs >= 4) notes.push_back(generators[curGen]->getTop());
-            createSampleHarmonyMessages();
+            if( !pauseForFillOrClose )
+            {
+                //ok... well for now just add lines for each bvs step
+                if(bvs >= 2) notes.push_back(generators[curGen]->getNextChord());
+                if(bvs >= 3) notes.push_back(generators[curGen]->getBass());
+                if(bvs >= 5) notes.push_back(generators[curGen]->getTop());
+                createSampleHarmonyMessages();
+            }
+            else pauseForFillOrClose = false;
+        
             //we'll see... for 5, maybe send commands to the percussion parts...
             
         }
@@ -209,7 +306,7 @@ namespace InteractiveTango
                 beatsPlayed = 0;
                 shouldStartFile = true;
                 measureBVSCount++;
-
+                
                 getChordGenerationNotes(seconds);
 
                 //switch the constant instrument
@@ -252,7 +349,8 @@ namespace InteractiveTango
             
             if(!harmonyMessages.empty())
             {
-                msgs.push_back(harmonyMessages[0]);
+                for(int i=0; i<harmonyMessages.size(); i++)
+                    msgs.push_back(harmonyMessages[i]);
             }
             harmonyMessages.clear();
 

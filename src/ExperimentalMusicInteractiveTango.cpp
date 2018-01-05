@@ -1442,9 +1442,6 @@ void ExperimentalMusicInteractiveTango::addTestDancersNoSensors()
 {
     std::cout << "Adding a test couple to floor to be controlled via keyboard...\n";
     
-
-
-    
     int wekIndexStart = sendOSCToWekinators.size();
     
     //create wekinator senders -- right legs then left legs for ea. couple... legacy TODO: fix!!!

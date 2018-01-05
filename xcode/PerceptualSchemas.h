@@ -121,8 +121,8 @@ public:
         setMinMaxMood(1, 3);
         
         //add weights to those factors --> changed to equal 3
-        mWeights.push_back(0.5);
-        mWeights.push_back(0.5);
+        mWeights.push_back(0.75);
+        mWeights.push_back(0.25);
 //        mWeights.push_back(0.5);
         
 //        maxMaxMood = 0;

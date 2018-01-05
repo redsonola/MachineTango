@@ -46,7 +46,7 @@ namespace InteractiveTango
             //since we use this for accompaniment
             bsCouple = new BusyVsSparseEvent(timer, mMotionAnalysisEvents[COUPLE_WINDOWED_VAR], mMotionAnalysisEvents[COUPLE_STEPNUM],  mMotionAnalysisEvents[CROSSCOVAR] );
             bsCouple->setName("Couple Busy Sparse");
-            bsCouple->setMinMaxMood(1, 5); //more gradiations
+            bsCouple->setMinMaxMood(1, 20); //more gradiations
             
             ugens->push_back(bsCouple);
         }
