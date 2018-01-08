@@ -128,6 +128,8 @@ void MidiSequencePlayer::run()
 
     while (eventCursor < eventList.size())
     {
+        beatsPerMinute = bt->getBPM(); //check every time
+        
         double res = bt->getTimeInSeconds() - lastTime;
 //        std::cout << "Delta: " << res  << " ticksToSeconds(eventList[eventCursor].tick):" << ticksToSeconds(eventList[eventCursor].tick) << " eventCursor: " << eventCursor<< " eventList.size(): " << eventList.size() << std::endl;
 

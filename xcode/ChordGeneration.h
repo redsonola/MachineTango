@@ -61,7 +61,7 @@ public:
 
         
         std::vector<std::string> filenames =  {"tonic_1.mid", "dominant_2.mid", "two_3.mid", "subDom_4.mid", "six_five_5.mid"};
-        
+
         for(int i=0; i<filenames.size(); i++)
         {
             MidiFileUtility midi;
@@ -144,10 +144,10 @@ public:
     virtual void loadMidi2()
     {
         std::string enclosingFolder = "/Users/courtney/Documents/Interactive Tango Milonga/emtango chord patterns/";
-        std::string enclosingpizz = "piazzolla_inspired/";
+        std::string enclosingpizz = "piazzolla_inspired2/";
         
-        std::vector<std::string> pizzfilenames =  {"tonic_1.mid", "dominant_2.mid", "subdom_3.mid", "two_4.mid", "predom5.mid", "dom6.mid"};
-        
+        std::vector<std::string> pizzfilenames =  {"tonic_1.mid", "four_2.mid", "dom_3.mid"};
+
         for(int i=0; i<pizzfilenames.size(); i++)
         {
             MidiFileUtility midi;
@@ -163,8 +163,8 @@ public:
     
     virtual void buildPossibleProgressions2()
     {
-        std::vector<int> pp1 = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6};
-        std::vector<int> pp2 = {1, 1, 2, 2, 1, 1};
+        std::vector<int> pp1 = {1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3};
+        std::vector<int> pp2 = {1, 1, 3, 3, 1, 1, 2, 2, 1, 1, 3, 3, 1, 1};
             
         possibleProgressions.push_back(pp1);
         possibleProgressions.push_back(pp2);
@@ -175,7 +175,28 @@ public:
         progressionIndex = 0;
     }
     
-
+    int translateToPizzProg()
+    {
+        int i = chordIndex;
+        
+        //xlate the chordIndex to this progression if needed
+        if (chordIndex == 2) i = 3;
+        else if (chordIndex == 1) i = 4;
+        
+        return i;
+    }
+    
+    //returns relevant bass notes
+    std::vector<MidiNote> getBass()
+    {
+        return bass[possibleProgressions[progressionIndex][translateToPizzProg()-1]-1];
+    }
+    
+    //returns relevant top decorative accomp. voice
+    std::vector<MidiNote> getTop()
+    {
+        return top[possibleProgressions[progressionIndex][translateToPizzProg()-1]-1];
+    }
 };
 
 };

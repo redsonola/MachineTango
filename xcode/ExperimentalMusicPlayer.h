@@ -238,15 +238,15 @@ namespace InteractiveTango
         
         void addFills(float lastBVS)
         {
-            //if bvs did go from 0 to 5 or 4 or 5-4 down to 0, then add a fill
-            if( bvs - lastBVS >= 4 )
+            //if bvs did go to or from 1, then add a fill or close
+            if( bvs > lastBVS && lastBVS == 1 )
             {
                 ci::osc::Message msg;
                 msg.setAddress(EXPMUSIC_INTROFILL);
                 harmonyMessages.push_back(msg);
                 pauseForFillOrClose = true;
             }
-            else if(bvs - lastBVS <= -4)
+            else if(bvs < lastBVS && bvs == 1)
             {
                 ci::osc::Message msg;
                 msg.setAddress(EXPMUSIC_CLOSEFILL);
@@ -261,6 +261,7 @@ namespace InteractiveTango
             {
                 ci::osc::Message msg;
                 msg.setAddress(EXPMUSIC_HARMONY);
+                msg.addIntArg(curGen);
                 msg.addIntArg(generators[curGen]->getCurHarmony());
                 harmonyMessages.push_back(msg);
             }
