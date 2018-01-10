@@ -194,6 +194,7 @@ private:
     
     bool                fakeBSLeaderMode;
     bool                fakeBSFollowerMode;
+    bool                fakeBSAccompMode;
 
     
     std::string         whichShimmer;
@@ -340,15 +341,18 @@ void ExperimentalMusicInteractiveTango::setup()
     
     fakeBSFollowerMode = false;
     fakeBSLeaderMode = false;
+    fakeBSAccompMode = false;
 }
 
 void ExperimentalMusicInteractiveTango::keyDown( KeyEvent event )
 {
-    if(fakeBSLeaderMode || fakeBSFollowerMode)
+    if(fakeBSLeaderMode || fakeBSFollowerMode || fakeBSAccompMode)
     {
         
-        if(event.getChar() != '1' && event.getChar() != '2' && event.getChar() != '3')
+        if((event.getChar() != '1' && event.getChar() != '2' && event.getChar() != '3') ||
+           !(fakeBSAccompMode && (event.getChar() == '4' || event.getChar() == '5') ))
         {
+            
             std::cout << "Not a valid value to change busy/sparse. Exiting mode...";
         }
         
@@ -362,17 +366,22 @@ void ExperimentalMusicInteractiveTango::keyDown( KeyEvent event )
             std::cout << "Set leader busy/sparse to :" << res << std::endl;
             
         }
-        else
+        else if(fakeBSFollowerMode)
         {
             danceFloor->followerFakeBusySparse(res);
             std::cout << "Set follower busy/sparse to :" << res << std::endl;
-            
+        }
+        else{
+            danceFloor->accompFakeBusySparse(res);
+            std::cout << "Set accompaniment busy/sparse to :" << res << std::endl;
         }
         
         fakeBSLeaderMode = false;
         fakeBSFollowerMode = false;
+        fakeBSAccompMode = false;
         
     }
+    
     
     if( event.getChar() == 's' )
     {
@@ -444,6 +453,18 @@ void ExperimentalMusicInteractiveTango::keyDown( KeyEvent event )
         else{
             std::cout << "In fake busy/sparse for leader. Please choose a value 1-3\n";
             fakeBSLeaderMode = true;
+        }
+    }
+    else if( event.getChar() == 'm')
+    {
+        if(danceFloor->parejaCount() < 1)
+        {
+            std::cout << "Cannot create an accomp. fake busy/sparse because there are not enouh dancers on the floor\n";
+            return;
+        }
+        else{
+            std::cout << "In fake busy/sparse for leader. Please choose a value 1-3\n";
+            fakeBSAccompMode = true;
         }
     }
     

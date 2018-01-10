@@ -356,13 +356,11 @@ namespace InteractiveTango
             {
                 //assign var and dvar HERE
                 vars.push_back( (SignalAnalysisEventOutput *) leftFoot.at(WhichSignals::WINDOWED_VAR) );
-                if(getDancerType() != InteractiveTango::TangoEntity::WhichDancerType::LEADER1) //THIS IS WHERE I DISABLE THE BROKEN SENSOR
-                    vars.push_back( (SignalAnalysisEventOutput *) rightFoot.at(WhichSignals::WINDOWED_VAR) );
+                vars.push_back( (SignalAnalysisEventOutput *) rightFoot.at(WhichSignals::WINDOWED_VAR) );
                 vars.push_back( (SignalAnalysisEventOutput *) back.at(WhichSignals::WINDOWED_VAR) );
                 
                 varDiffs.push_back( (SignalAnalysisEventOutput *) leftFoot.at(WhichSignals::WINDOWED_VARDIFF) );
-                if(getDancerType() != InteractiveTango::TangoEntity::WhichDancerType::LEADER1) //THIS IS WHERE I DISABLE THE BROKEN SENSOR
-                    varDiffs.push_back( (SignalAnalysisEventOutput *) rightFoot.at(WhichSignals::WINDOWED_VARDIFF) );
+                varDiffs.push_back( (SignalAnalysisEventOutput *) rightFoot.at(WhichSignals::WINDOWED_VARDIFF) );
                 varDiffs.push_back( (SignalAnalysisEventOutput *) back.at(WhichSignals::WINDOWED_VARDIFF) );
                 
                 totalVariance = new MotionDataAverage( vars );

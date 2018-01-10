@@ -130,6 +130,7 @@ namespace InteractiveTango
             pauseForFillOrClose = false;
             fiveStopped = false;
             bvsChangedTo2 = false;
+            
         }
         
         void setBVSMirroring()
@@ -205,6 +206,11 @@ namespace InteractiveTango
             float accompwindow = 2;
             int origbvs = findBusySparse(accompwindow, seconds);
             
+            //send dancer bvs to max
+            ci::osc::Message msg;
+            msg.setAddress(BUSY_SPARSE_DANCERS);
+            msg.addIntArg(scaleBVSFrom20to5(origbvs));
+            harmonyMessages.push_back(msg);
             
             PerceptualEvent *ev = findBusySparseSchema();
 //            std::cout << "Couple Busy Sparse: " <<  origbvs << " range:" << ev->getMinMood() << "-" << ev->getMaxMood() << std::endl;
@@ -228,43 +234,50 @@ namespace InteractiveTango
                 makeBothFivesLessLikely();
             
             percBvsChanged = percbvs != lastPBVS;
-
-            makeBothFivesLessLikely();
-            
+        
             //if bvs did go from 0 to 5 or 4, then add a fill
-            addFills(lastBVS);
-            
+            //addFillsAndSmoothToZeros(lastBVS);
         }
         
-        void addFills(float lastBVS)
+        void addFillsAndSmoothToZeros(float lastBVS)
         {
             //if bvs did go to or from 1, then add a fill or close
-            if( bvs > lastBVS && lastBVS == 1 )
-            {
-                ci::osc::Message msg;
-                msg.setAddress(EXPMUSIC_INTROFILL);
-                harmonyMessages.push_back(msg);
-                pauseForFillOrClose = true;
-            }
-            else if(bvs < lastBVS && bvs == 1)
-            {
-                ci::osc::Message msg;
-                msg.setAddress(EXPMUSIC_CLOSEFILL);
-                harmonyMessages.push_back(msg);
-                pauseForFillOrClose = true;
-            }
+            //only go to 0 at progression end to decreas awkwardness
+            
+        
+                if( bvs > lastBVS && lastBVS == 1 )
+                {
+                    if(generators[curGen]->atProgressionEnd())
+                        generators[curGen]->resetChordIndex(); //so that when it comes in, it comes in on 1
+            
+                    ci::osc::Message msg;
+                    msg.setAddress(EXPMUSIC_INTROFILL);
+                    harmonyMessages.push_back(msg);
+                    pauseForFillOrClose = true;
+                }
+                else if(bvs < lastBVS && bvs == 1)
+                {
+                    if(generators[curGen]->atProgressionEnd())
+                    {
+                        ci::osc::Message msg;
+                        msg.setAddress(EXPMUSIC_CLOSEFILL);
+                        harmonyMessages.push_back(msg);
+                        pauseForFillOrClose = true;
+                    }
+                } else bvs = 2;
         }
         
-        void createSampleHarmonyMessages()
+        void createSampleHarmonyMessages() //now always send -- will filter on max side - since always need these messages for ritard -
         {
-            if(bvs >=3)
-            {
+//            if(bvs >=3)
+//            {
                 ci::osc::Message msg;
                 msg.setAddress(EXPMUSIC_HARMONY);
                 msg.addIntArg(curGen);
                 msg.addIntArg(generators[curGen]->getCurHarmony());
+                msg.addIntArg(bvs>=3); //should play accord samples?
                 harmonyMessages.push_back(msg);
-            }
+//            }
         }
         
         void getChordGenerationNotes(float seconds)
@@ -276,6 +289,8 @@ namespace InteractiveTango
             }
             
             determineBVS(seconds);
+            
+            std::cout << "bvs :" << bvs << std::endl ;
             
             if( !pauseForFillOrClose )
             {
@@ -373,6 +388,7 @@ namespace InteractiveTango
         ExperimentalMusicPlayer() : MusicPlayer()
         {
             main_melody = NULL;
+            deletePlayerTag.clear(); //because of the nature of the errors... 
         }
         
         void addGeneratedMelodySection(GeneratedMelodySection *section)

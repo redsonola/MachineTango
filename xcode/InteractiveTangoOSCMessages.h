@@ -108,6 +108,7 @@
 
 //for sending busy spase to max 7
 #define BUSY_SPARSE_PERCUSSION "/InteractiveTango/BusySparse/Beats"
+#define BUSY_SPARSE_DANCERS "/InteractiveTango/BusySparse/Dancers"
 #define EXPMUSIC_HARMONY "/InteractiveTango/Experimental/Harmony"
 #define EXPMUSIC_INTROFILL "/InteractiveTango/Experimental/HarmonyIntroFill"
 #define EXPMUSIC_CLOSEFILL "/InteractiveTango/Experimental/HarmonyCloseFill"

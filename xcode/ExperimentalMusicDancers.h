@@ -51,8 +51,10 @@ namespace InteractiveTango
             ugens->push_back(bsCouple);
         }
         
-        
+
     };
+    
+    
     
     class ExperimentalDanceFloor : public DanceFloor
     {
@@ -93,6 +95,17 @@ namespace InteractiveTango
         void leaderFakeBusySparse(double m)
         {
             ((PerceptualEvent *) couples[0]->getMappingSchema(BUSY_SPARSE_LEADER))->setFakeMood(m);
+        }
+        
+        void accompFakeBusySparse(double m)
+        {
+            //convert to 1-20 -- hacky I know should fix -- numbers are from scaleBVSFrom20to5() in class ExperimentalAccompanimentSection
+            if(m==2) m = 8;
+            else if(m==3) m = 13;
+            else if(m==4) m= 16;
+            else m=20;
+            
+            ((PerceptualEvent *) ((ExperimentalPareja *)couples[0])->getCoupleBS())->setFakeMood(m);
         }
         
         void loadSong(BeatTiming *timer)
