@@ -158,10 +158,10 @@ class SectionASongLeaderParams : public GeneralMotionParams
 public:
     SectionASongLeaderParams()
     {
-        windowedVarCoEfficients = {0, 0.038};
+        windowedVarCoEfficients = {0, 0.02};
         footOnsetCoEfficients = {0.0, 0.45};
         windowedDiffVarCoEfficients = {0.0, 0.028};
-        stepNumCoEfficients = {0, 3.6};
+        stepNumCoEfficients = {0, 1.9};
         whichDancer = WhichDancer::leader;
 
     };
@@ -191,10 +191,10 @@ class SectionASongFollowerParams : public GeneralMotionParams
 public:
     SectionASongFollowerParams()
     {
-        windowedVarCoEfficients = {0, 0.25};
+        windowedVarCoEfficients = {0, 0.1};
         footOnsetCoEfficients = {0.0, 0.4};
         windowedDiffVarCoEfficients = {0.0, 0.05};
-        stepNumCoEfficients = {0, 5};
+        stepNumCoEfficients = {0, 3};
         whichDancer = WhichDancer::follower;
     };
 };
@@ -213,10 +213,10 @@ public:
 //        windowedDiffVarCoEfficients = {0.0, 0.028};
         crossCoVarCoEfficients = {0.0, 1.5};
 //        stepNumCoEfficients = {0, 4};
-        windowedVarCoEfficients = {0, 0.25};
+        windowedVarCoEfficients = {0, 0.1};
         footOnsetCoEfficients = {0.0, 0.4};
         windowedDiffVarCoEfficients = {0.0, 0.05};
-        stepNumCoEfficients = {0, 2}; //changed for smaller window size
+        stepNumCoEfficients = {0, 2.25}; //changed for smaller window size
         whichDancer = WhichDancer::couple;
 
     };

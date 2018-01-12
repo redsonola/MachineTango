@@ -45,8 +45,9 @@ namespace InteractiveTango
             float eight = quarter / 2.0f;
             float sixteenth = eight / 2.0f;
 
-            int bs = findBusySparse(0.01, seconds);
-            
+            int bs = MusicSection::findBusySparse((int)20);
+            std::cout << "BS: " << bs << endl;
+
             if( timeDiff < sixteenth ) return; // no faster than sixteenth notes but don't place such a hard limit on density... see. 
             
             if(generator->oneToOne() && fo->isStepping() ) //wait for a foot onset to start
@@ -290,7 +291,7 @@ namespace InteractiveTango
             
             determineBVS(seconds);
             
-            std::cout << "bvs :" << bvs << std::endl ;
+//            std::cout << "bvs :" << bvs << std::endl ;
             
             if( !pauseForFillOrClose )
             {
@@ -456,8 +457,6 @@ namespace InteractiveTango
             deleteDeadPlayers();
 
     };
-        
-        
         
         virtual void playerStopped(int tag)
         {

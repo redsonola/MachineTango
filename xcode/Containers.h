@@ -107,6 +107,17 @@ public:
         return ( ( getSum() ) / ( double(_data.size() ) ) );
     };
     
+    //quick fix -- so fix
+    double getAvgOverSample(int sampNum)
+    {
+        double sum = 0;
+        for(int i=0; i< sampNum; i++)
+            sum += _data[_data.size() -1 -i];
+        
+        std::cout << "mood is: " << sum/(double)sampNum << std::endl;
+        return sum/(double)sampNum;
+    }
+    
     
     //TODO: get a subsection of sections from a buffer... via seconds
     //TODO: CHECK THIS SHIT.

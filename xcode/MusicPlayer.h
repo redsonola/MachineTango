@@ -98,6 +98,13 @@ namespace InteractiveTango {
             return bvs;
         };
         
+        virtual int findBusySparse(int samp)
+        {
+            std::cout << "here";
+            PerceptualEvent *ev =  findBusySparseSchema();
+            return ev->getCurMood((int)samp);
+        }
+        
         virtual PerceptualEvent * findBusySparseSchema()
         {
             PerceptualEvent * bvs = NULL;

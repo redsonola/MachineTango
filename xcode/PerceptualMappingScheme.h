@@ -256,6 +256,11 @@ public:
             
     };
     
+    virtual int getCurMood(int sampWin) //returns average over window (confusing, but TODO: refactor
+    {
+        return (int) std::round( moods.getAvgOverSample(sampWin) );
+    }
+    
     virtual void determineMood() = 0;
     
     virtual void updateMotionData()
