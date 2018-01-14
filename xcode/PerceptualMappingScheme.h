@@ -210,6 +210,24 @@ public:
         fakeMode = true;
     }
     
+    //translate a finer granularity mapping to a coarser one with specified cutoffs - cutoffs should be percent  of a whole
+    //note assumes step of 1. !
+    double getNonLinearScalingbyFiat(std::vector<double> cutoffs, double newmax, double mood=-1, double newmin=1)
+    {
+        //accepts mood as param so that can just use however they got it (ie from whenever time averaging) -- todo: FIX
+        if(mood == -1) mood = curMood;
+        
+        int i = 0;
+        bool found = false;
+        while( i < cutoffs.size() && !found)
+        {
+            found = mood <= cutoffs[i] * getMaxMood();
+            i++;
+        }
+
+        return i;
+    }
+    
     void setFakeMood(double m)
     {
         fakeMode = true;

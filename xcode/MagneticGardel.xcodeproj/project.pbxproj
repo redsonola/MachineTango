@@ -158,6 +158,7 @@
 		F1B2A4FA1F55FFE40092E099 /* Containers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Containers.h; sourceTree = "<group>"; };
 		F1B2A4FB1F5600020092E099 /* MotionAnalysisParameterRanges.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MotionAnalysisParameterRanges.h; sourceTree = "<group>"; };
 		F1B2A4FC1F5608C70092E099 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = QTKit.framework; sourceTree = "<group>"; };
+		F1BA87D71FF6CDBC00154D36 /* FindSignalRegularities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FindSignalRegularities.h; sourceTree = "<group>"; };
 		F1C6B56F1F53394C0084960D /* MagneticTime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MagneticTime.h; path = ../include/MagneticTime.h; sourceTree = "<group>"; };
 		F1D07BEF1FBCE8B000AC4558 /* InteractiveTangoStepDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InteractiveTangoStepDetection.h; sourceTree = "<group>"; };
 		F1D07BF01FBCE8B000AC4558 /* BeatTiming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeatTiming.h; sourceTree = "<group>"; };
@@ -305,6 +306,7 @@
 				F1B2A4FB1F5600020092E099 /* MotionAnalysisParameterRanges.h */,
 				F19DCC801FBF7E92008E8136 /* ExperimentalMusicPlayer.h */,
 				F1D07BEF1FBCE8B000AC4558 /* InteractiveTangoStepDetection.h */,
+				F1BA87D71FF6CDBC00154D36 /* FindSignalRegularities.h */,
 				F1D07BF01FBCE8B000AC4558 /* BeatTiming.h */,
 				F11B53281FEC740000D84318 /* ChordGeneration.h */,
 				F117D8761FD1F66800CDE064 /* ReadCSV.cpp */,

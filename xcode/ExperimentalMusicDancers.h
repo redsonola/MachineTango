@@ -10,6 +10,9 @@
 #ifndef ExperimentalMusicDancers_h
 #define ExperimentalMusicDancers_h
 
+
+
+
 namespace InteractiveTango
 {
     class ExperimentalPareja : public Pareja
@@ -59,8 +62,8 @@ namespace InteractiveTango
     class ExperimentalDanceFloor : public DanceFloor
     {
     protected:
-        std::vector<MelodyGenerator> generators;
-        MelodyGenerator follower_gen, leader_gen;
+        std::vector<MelodyGenerator  *> generators;
+        MelodyGenerator *follower_gen, *leader_gen;
         FactorOracle leaderfo, followerfo;
         MelodySection *leaderMelody;
         AccompanimentSection *accompSection;
@@ -69,6 +72,10 @@ namespace InteractiveTango
         {
             if(player != NULL) delete player;
             player = new ExperimentalMusicPlayer();
+            
+            //TODO - make those numbers global variables for busy sparse melody range.
+            follower_gen = new MelodyGenerator(1, 5);
+            leader_gen =  new MelodyGenerator(1, 5);
         };
         
         virtual void loadCourtneyTangoSongNumberOneOrnaments()
@@ -111,22 +118,24 @@ namespace InteractiveTango
         void loadSong(BeatTiming *timer)
         {
             mMappingSchemas[MELODY_BS]->setName("Follower Busy Sparse");
+            ( ( PerceptualEvent * ) couples[0]->getMappingSchema(BUSY_SPARSE_FOLLOWER) )->setMinMaxMood(1, 20); //more gradiations
+
             melody->addSchema( mMappingSchemas[MELODY_BS] );  //not using to choose melodies at the MOMENT //choosing again 8/2014
             melody->addSchema( mMappingSchemas[MELODY_INSTRUMENT_PR] );
+
 
             //leader once controlled only the harmonyr
             //                accompaniment->addSchema( mMappingSchemas[THICK_THIN] ); //7-29 deleting for now... busy/spare more accurate... I think... look at later...
             couples[0]->getMappingSchema(BUSY_SPARSE_LEADER)->setName("Leader Busy Sparse");
             leaderMelody->addSchema( couples[0]->getMappingSchema(BUSY_SPARSE_LEADER) );
             leaderMelody->addSchema( couples[0]->getMappingSchema(POINTY_ROUNDED_CONT_LEADER));
+            ( ( PerceptualEvent * ) couples[0]->getMappingSchema(BUSY_SPARSE_LEADER) )->setMinMaxMood(1, 20); //more gradiations
+
             
             ((ExperimentalMusicPlayer *) player)->addGeneratedMelodySection( (GeneratedMelodySection *) melody );
             ((ExperimentalMusicPlayer *) player)->addGeneratedMelodySection( (GeneratedMelodySection *) leaderMelody );
             player->addAccompaniment(accompaniment);
             
-            follower_gen.setMelodySection(melody);
-            leader_gen.setMelodySection(leaderMelody);
-            leader_gen.turnOn1to1(); 
 //            
 //            follower_gen.turnOn1to1();
 //            leader_gen.turnOn1to1();
@@ -151,16 +160,17 @@ namespace InteractiveTango
             //create new melody generator section
             
             leaderfo.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.v3.mid", 2);
-            leader_gen.addGeneratorAlgorithm(&leaderfo);
+            leader_gen->addGeneratorAlgorithm(&leaderfo);
+            leader_gen->turnOn1to1();
             generators.push_back(leader_gen);
             
             followerfo.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.v3.mid", 1);
-            follower_gen.addGeneratorAlgorithm(&followerfo);
+            follower_gen->addGeneratorAlgorithm(&followerfo);
             generators.push_back(follower_gen);
             
             
-            melody = new GeneratedMelodySection( mTimer, melodyOnsetDancer->getOnsets(), &follower_gen, &instruments );
-            leaderMelody = new GeneratedMelodySection( mTimer, couples[0]->getLeader()->getOnsets(), &leader_gen, &instruments ); //added leader...
+            melody = new GeneratedMelodySection( mTimer, melodyOnsetDancer->getOnsets(), follower_gen, &instruments );
+            leaderMelody = new GeneratedMelodySection( mTimer, couples[0]->getLeader()->getOnsets(), leader_gen, &instruments ); //added leader...
             
             accompaniment = new GeneratedAccompanmentSection( mTimer, &instruments );
             accompaniment->addSchema( ((ExperimentalPareja *) couples[0])->getCoupleBS() );

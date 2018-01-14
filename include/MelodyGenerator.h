@@ -53,45 +53,14 @@ namespace InteractiveTango {
         
     public:
         
-        MelodyGenerator( MelodySection *section=NULL,  int _maxNotesGenerated = 4, float _sparseShortNoteCutOff = 1.0f/8.0f)
+        MelodyGenerator( float minbs, float maxbs, int _maxNotesGenerated = 5, float _sparseShortNoteCutOff = 1.0f/8.0f)
         {
             oneToOneMode = false; //if yes, ignore profile
 //            fo_probability = fp;
             
-            setMelodySection(section);
-            
             maxNotesGenerated = _maxNotesGenerated;
             sparseShortNoteCutOff = _sparseShortNoteCutOff;
-        }
-        
-        void setMelodySection( MelodySection *section)
-        {
-            melodySection = section;
-            
-            if(melodySection!=NULL)
-                schemas = melodySection->getMappingSchemas();
-            
-//            std::cout << "Set melody section. Schemas: " << schemas.size() << std::endl ;
-            
-            int i =0;
-            bool found = false;
-            while (!found && i<schemas.size())
-            {
-                found =  (schemas[i]->getMappingType() == MappingSchema::MappingSchemaType::EVENT) && (
-                         (!schemas[i]->getName().compare("Follower Busy Sparse") )  ||  (!schemas[i]->getName().compare("Leader Busy Sparse") ));
-                i++;
-            }
-            if(found)
-            {
-                bsevent = (PerceptualEvent *)schemas.at(i);
-                setMinMaxBusySparse(bsevent->getMinMood(), bsevent->getMaxMood());
-                oneToOneMode = false;
-            }
-            else
-            {
-                oneToOneMode = true;
-            }
-
+            setMinMaxBusySparse(minbs, maxbs);
         }
         
         void setMinMaxBusySparse(float min, float max)
@@ -155,6 +124,7 @@ namespace InteractiveTango {
             {
                 notesPerUpdate = (int) std::round((((double) std::rand()) / ((double) RAND_MAX) ) * (maxNotesGenerated * (double)bs/(double)bsMax * 0.5 )) +
                 std::round(maxNotesGenerated * (double)bs/(double)bsMax * 0.5);
+                if(notesPerUpdate == 0) notesPerUpdate = 1; //always output at least one note.
             }
             
             //okay so this maps into a 1-3 thing -- 2, 1, 0.5 -- basically makes notes shorter or longer based on busy sparse

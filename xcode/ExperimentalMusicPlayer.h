@@ -45,8 +45,13 @@ namespace InteractiveTango
             float eight = quarter / 2.0f;
             float sixteenth = eight / 2.0f;
 
-            int bs = MusicSection::findBusySparse((int)20);
-            std::cout << "BS: " << bs << endl;
+            int bsorig = std::round( MusicSection::findBusySparse((int)20) );
+            PerceptualEvent *ev = findBusySparseSchema();
+
+            std::vector<double> cutoffs = { 0.3, 0.55, 0.75, 0.85, 0.95 };
+            int bs = std::round(ev->getNonLinearScalingbyFiat(cutoffs, 5, bsorig));
+            
+            std::cout << "Bs before:" <<bsorig<<" BS now: " << bs << " min:" << ev->getMinMood() << " max: "<< ev->getMaxMood() << endl;
 
             if( timeDiff < sixteenth ) return; // no faster than sixteenth notes but don't place such a hard limit on density... see. 
             
@@ -152,26 +157,11 @@ namespace InteractiveTango
         }
         
         //make busy accompaniments less likely and harder to invoke
-        int scaleBVSFrom20to5(int whichBVS)
+        int scaleBVSFrom20to5(int whichBVS, PerceptualEvent *e)
         {
             //ok this is hard-coded yikes but will fix later...
-            if(whichBVS  <= 4 )
-            {
-                return 1;
-            }
-            else if(whichBVS <= 9 )
-            {
-                return 2;
-            }
-            else if(whichBVS <= 14 )
-            {
-                return 3;
-            }
-            else if(whichBVS <= 17 )
-            {
-                return 4;
-            }
-            else return 5;
+            std::vector<double> cutoffs = {4.0/20.0, 9.0/20.0, 14.0/20.0, 17.0/20.0};
+            return e->getNonLinearScalingbyFiat(cutoffs, 5.0, (double) whichBVS);
         }
         
         void makeBothFivesLessLikely()
@@ -206,14 +196,15 @@ namespace InteractiveTango
             
             float accompwindow = 2;
             int origbvs = findBusySparse(accompwindow, seconds);
+            PerceptualEvent *ev = findBusySparseSchema();
+
             
             //send dancer bvs to max
             ci::osc::Message msg;
             msg.setAddress(BUSY_SPARSE_DANCERS);
-            msg.addIntArg(scaleBVSFrom20to5(origbvs));
+            msg.addIntArg(scaleBVSFrom20to5(origbvs, ev));
             harmonyMessages.push_back(msg);
             
-            PerceptualEvent *ev = findBusySparseSchema();
 //            std::cout << "Couple Busy Sparse: " <<  origbvs << " range:" << ev->getMinMood() << "-" << ev->getMaxMood() << std::endl;
             setBVSMirroring();
             if(!bvsMirror)
@@ -227,8 +218,8 @@ namespace InteractiveTango
             }  else percbvs = origbvs;
             
             //favors  low and middle values over higher ones.
-            bvs = scaleBVSFrom20to5(bvs);
-            percbvs = scaleBVSFrom20to5(percbvs);
+            bvs = scaleBVSFrom20to5(bvs, ev);
+            percbvs = scaleBVSFrom20to5(percbvs, ev);
 
             //if both bvs are 5, change to something else 75% of the time -- include 4
             if(percbvs >= 4 && bvs >= 4)
@@ -276,7 +267,10 @@ namespace InteractiveTango
                 msg.setAddress(EXPMUSIC_HARMONY);
                 msg.addIntArg(curGen);
                 msg.addIntArg(generators[curGen]->getCurHarmony());
-                msg.addIntArg(bvs>=3); //should play accord samples?
+            
+                double shouldplay = chooseRandom();
+                int play = bvs>=3 && shouldplay < 0.5;
+                msg.addIntArg(play); //should play accord samples?
                 harmonyMessages.push_back(msg);
 //            }
         }

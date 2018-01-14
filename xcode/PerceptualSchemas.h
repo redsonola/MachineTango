@@ -174,13 +174,13 @@ public:
 //        std::cout << getName() << "," << curMood << std::endl ;
 
         
-        if( !_name.compare("Follower Busy Sparse") )
-        {
-            std::cout << getName() << "," << curMood << "  , Values: ";
-        for( int i=0; i<mData.size(); i++ )
-            std::cout  <<  ((MotionAnalysisEvent *) mData[i] )->scaledValuePolyFit() << ","  ;
-        std::cout << std::endl;
-        }
+//        if( !_name.compare("Follower Busy Sparse") )
+//        {
+//            std::cout << getName() << "," << curMood << "  , Values: ";
+//        for( int i=0; i<mData.size(); i++ )
+//            std::cout  <<  ((MotionAnalysisEvent *) mData[i] )->scaledValuePolyFit() << ","  ;
+//        std::cout << std::endl;
+//        }
         
 //            for( int i=0; i<mData.size(); i++ )
 //                std::cout  << ((MotionAnalysisEvent *) mData[i] )->asFloat() << ","  ;

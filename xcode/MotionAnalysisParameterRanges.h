@@ -191,7 +191,7 @@ class SectionASongFollowerParams : public GeneralMotionParams
 public:
     SectionASongFollowerParams()
     {
-        windowedVarCoEfficients = {0, 0.1};
+        windowedVarCoEfficients = {0, 1.0};
         footOnsetCoEfficients = {0.0, 0.4};
         windowedDiffVarCoEfficients = {0.0, 0.05};
         stepNumCoEfficients = {0, 3};
