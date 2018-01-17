@@ -84,8 +84,7 @@ namespace InteractiveTango
                 where_in_song_structure = where;
             }
             
-            std::cout << "melody section: " << sectionGeneratorIndex+1 << endl;
-
+//            std::cout << "melody section: " << sectionGeneratorIndex+1 << endl;
 
         }
         
@@ -111,7 +110,7 @@ namespace InteractiveTango
             
             //if busy/sparse = 1 then wait a bit (at least an eighth note) before re-genning
             float timeDiff = seconds - lastTimePlayed;
-            float quarter = (1.0f / ((float) generator[sectionGeneratorIndex]->getBPM() /  60.0f)) ; //fix
+            float quarter = (1.0f / ((float) generator[0]->getBPM() /  60.0f)) ; //fix
             float eight = quarter / 2.0f;
             float sixteenth = eight / 2.0f;
 
@@ -205,7 +204,8 @@ namespace InteractiveTango
         
         std::vector<ci::osc::Message> harmonyMessages;
         int curSection;
-        int bandSampleplay;
+        int sampleplay;
+
         
     public:
         
@@ -234,7 +234,7 @@ namespace InteractiveTango
             generatorsEaSection.push_back(std::vector<ChordGeneration *>());
             generatorsEaSection[1].push_back(new ChordGenerationSection2());
             
-            bandSampleplay = 0;
+            sampleplay = 0;
         }
         
         void setBVSMirroring()
@@ -365,15 +365,43 @@ namespace InteractiveTango
                 msg.addIntArg(curGen);
                 msg.addIntArg(generators[curGen]->getCurHarmony());
             
-            
-                if(bandSampleplay==0 && bvs>=3 )
+                //samplePlay -- 0 -- none, 1 - bandoneon, 2 - guitar, 3 - both
+                if( bvs >= 5 )
                 {
-                    double shouldplay = chooseRandom();
-                    bandSampleplay = bvs>=3 && shouldplay < 0.5;
+                    sampleplay = 3;
                 }
-                else if(bvs < 3) bandSampleplay = 0;
+                else if( bvs == 4 )
+                {
+                    if(sampleplay == 0)
+                    {
+                        double shouldplay = chooseRandom(); //both?
+                        if(shouldplay < 0.33 ) sampleplay = 3;
+                        else if(shouldplay < 0.66) sampleplay = 1;
+                        else sampleplay =  2;
+                    }
+                }
+                else if(bvs == 3)
+                {
+                    if(sampleplay == 0 )
+                    {
+                        double shouldplay = chooseRandom(); //both?
+                        if(shouldplay < 0.33 ) sampleplay = 0;
+                        else if(shouldplay < 0.66) sampleplay = 1;
+                        else sampleplay =  2;
+                    }
+                    else if(sampleplay == 3)
+                    {
+                        double shouldplay = chooseRandom(); //both?
+                        if(shouldplay < 0.5 ) sampleplay = 1;
+                        else sampleplay =  2;
+                    }
+                }
+                else
+                {
+                    sampleplay = 0;
+                }
             
-                msg.addIntArg(bandSampleplay); //should play accord samples?
+                msg.addIntArg(sampleplay); //should play accord samples?
                 msg.addIntArg(curSection); //the current section
                 harmonyMessages.push_back(msg);
 //            }
@@ -418,7 +446,7 @@ namespace InteractiveTango
                 generators.clear();
                 generators = generatorsEaSection[curSection-1];
                 
-                std::cout << "Number of current generators: " << generators.size() << std::endl;
+//                std::cout << "Number of current generators: " << generators.size() << std::endl;
             }
         }
     

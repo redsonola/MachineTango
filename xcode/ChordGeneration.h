@@ -241,7 +241,7 @@ public:
             std::string enclosing = "emtango_cmaj_patterns/";
             
             std::vector<std::string> filenames =  {"tonic_1.mid", "dom_2.mid", "dm_3.mid", "cmaj_64invert4.mid", "dom5.mid", "cmaj11_6.mid",
-                "G11_7.mid", "fmaj_8.mid", "am9_9.mid", "Em9_10.mid", "dm9_11" , "E7_12.mid",
+                "G11_7.mid", "fmaj_8.mid", "am9_9.mid", "Em9_10.mid", "dm9_11.mid" , "E7_12.mid",
             };
             
             for(int i=0; i<filenames.size(); i++)

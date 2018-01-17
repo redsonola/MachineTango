@@ -190,8 +190,8 @@ namespace InteractiveTango
             followermel.push_back(follower_gen);
             followermel.push_back(follower_gen2);
             
-            leadermel.push_back(follower_gen);
-            leadermel.push_back(follower_gen2);
+            leadermel.push_back(leader_gen);
+            leadermel.push_back(leader_gen2);
             
             melody = new GeneratedMelodySection( mTimer, melodyOnsetDancer->getOnsets(), followermel, &instruments );
             ( ( GeneratedMelodySection * )melody )->setCoupleBS(  ( (ExperimentalPareja  *) couples[0] )->getCoupleBS() );
