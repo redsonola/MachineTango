@@ -247,7 +247,7 @@ public:
     FactorOracle() : MelodyGeneratorAlgorithm()
     {
         reset();
-        choiceBeweenSuffixProb = 0.5;
+        choiceBeweenSuffixProb = 0.85;
         choiceBetweenNearOrFar = 0.7; //choose something near most of the time
     }
     
@@ -257,7 +257,6 @@ public:
     }
     
 //fix later
-    
     void testTrain()
     {
         oracle.reset();

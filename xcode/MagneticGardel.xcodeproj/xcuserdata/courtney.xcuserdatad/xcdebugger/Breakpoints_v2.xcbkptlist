@@ -213,11 +213,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../include/FactorOracle.h"
-            timestampString = "534746878.478357"
+            timestampString = "537838903.719655"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "444"
-            endingLineNumber = "444"
+            startingLineNumber = "443"
+            endingLineNumber = "443"
             landmarkName = "getFactorTransition()"
             landmarkType = "7">
          </BreakpointContent>
@@ -229,11 +229,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../include/FactorOracle.h"
-            timestampString = "534746878.478357"
+            timestampString = "537838903.719748"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "456"
-            endingLineNumber = "456"
+            startingLineNumber = "455"
+            endingLineNumber = "455"
             landmarkName = "getFactorTransition()"
             landmarkType = "7">
          </BreakpointContent>
@@ -261,12 +261,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "537486189.857699"
+            timestampString = "537838903.719849"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "492"
-            endingLineNumber = "492"
-            landmarkName = "sendNoteSeq(std::vector&lt;MidiNote&gt; notes, int channel )"
+            startingLineNumber = "564"
+            endingLineNumber = "564"
+            landmarkName = "update(float seconds = 0)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -277,12 +277,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "537486189.858066"
+            timestampString = "537838903.719933"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "493"
-            endingLineNumber = "493"
-            landmarkName = "sendNoteSeq(std::vector&lt;MidiNote&gt; notes, int channel )"
+            startingLineNumber = "565"
+            endingLineNumber = "565"
+            landmarkName = "update(float seconds = 0)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -293,12 +293,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "537486189.858284"
+            timestampString = "537838903.720005"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "494"
-            endingLineNumber = "494"
-            landmarkName = "sendNoteSeq(std::vector&lt;MidiNote&gt; notes, int channel )"
+            startingLineNumber = "566"
+            endingLineNumber = "566"
+            landmarkName = "update(float seconds = 0)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -341,7 +341,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicDancers.h"
-            timestampString = "537584273.962095"
+            timestampString = "537838903.720122"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "79"
@@ -357,7 +357,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicDancers.h"
-            timestampString = "537584273.962559"
+            timestampString = "537838903.72019"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "38"
@@ -421,12 +421,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "537486189.858644"
+            timestampString = "537838903.720318"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "292"
-            endingLineNumber = "292"
-            landmarkName = "getChordGenerationNotes(float seconds)"
+            startingLineNumber = "338"
+            endingLineNumber = "338"
+            landmarkName = "addFillsAndSmoothToZeros(float lastBVS)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -437,13 +437,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "537486189.858848"
+            timestampString = "537838903.720389"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "463"
-            endingLineNumber = "463"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "535"
+            endingLineNumber = "535"
+            landmarkName = "update(float seconds = 0)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -453,12 +453,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "537486189.859044"
+            timestampString = "537838903.720461"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "207"
-            endingLineNumber = "207"
-            landmarkName = "determineBVS(float seconds)"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
+            landmarkName = "chooseRandom()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ExperimentalMusicPlayer.h"
+            timestampString = "537838903.720531"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "382"
+            endingLineNumber = "382"
+            landmarkName = "getChordGenerationNotes(float seconds)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

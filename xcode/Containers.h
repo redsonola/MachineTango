@@ -114,7 +114,7 @@ public:
         for(int i=0; i< sampNum; i++)
             sum += _data[_data.size() -1 -i];
         
-        std::cout << "mood is: " << sum/(double)sampNum << std::endl;
+//        std::cout << "mood is: " << sum/(double)sampNum << std::endl;
         return sum/(double)sampNum;
     }
     

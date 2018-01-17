@@ -95,7 +95,7 @@ public:
         chordIndex = 0;
     }
     
-    std::vector<MidiNote> getNextChord()
+    virtual  std::vector<MidiNote> getNextChord()
     {
         if( atProgressionEnd() )
         {
@@ -106,13 +106,13 @@ public:
     }
     
     //returns relevant bass notes
-    std::vector<MidiNote> getBass()
+    virtual std::vector<MidiNote> getBass()
     {
         return bass[possibleProgressions[progressionIndex][chordIndex-1]-1];
     }
     
     //returns relevant top decorative accomp. voice
-    std::vector<MidiNote> getTop()
+    virtual std::vector<MidiNote> getTop()
     {
         return top[possibleProgressions[progressionIndex][chordIndex-1]-1];
     }
@@ -192,17 +192,95 @@ public:
     }
     
     //returns relevant bass notes
-    std::vector<MidiNote> getBass()
+    virtual std::vector<MidiNote> getBass()
     {
         return bass[possibleProgressions[progressionIndex][translateToPizzProg()-1]-1];
     }
     
     //returns relevant top decorative accomp. voice
-    std::vector<MidiNote> getTop()
+    virtual std::vector<MidiNote> getTop()
     {
         return top[possibleProgressions[progressionIndex][translateToPizzProg()-1]-1];
     }
+    
+    virtual  std::vector<MidiNote> getNextChord()
+    {
+        std::cout << "pizz chord\n" ;
+        return ChordGeneration::getNextChord();
+    }
 };
+    
+    class ChordGenerationSection2 : public ChordGeneration
+    {
+    public:
+        ChordGenerationSection2() : ChordGeneration()
+        {
+            possibleProgressions.clear();
+            chords.clear();
+            buildPossibleProgressions3();
+        }
+    
+        virtual void buildPossibleProgressions3()
+        {
+            std::vector<int> pp1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 9};
+            std::vector<int> pp2 = {1, 5, 3, 4, 1, 2, 3, 8, 5, 9};
+        
+            possibleProgressions.push_back(pp1);
+            possibleProgressions.push_back(pp2);
+        
+            loadMidi2();
+        
+            chordIndex = 0;
+            progressionIndex = 0;
+        }
+        
+        //should be in database?
+        virtual void loadMidi2()
+        {
+            std::string enclosingFolder = "/Users/courtney/Documents/Interactive Tango Milonga/emtango chord patterns/";
+            std::string enclosing = "emtango_cmaj_patterns/";
+            
+            std::vector<std::string> filenames =  {"tonic_1.mid", "dom_2.mid", "dm_3.mid", "cmaj_64invert4.mid", "dom5.mid", "cmaj11_6.mid",
+                "G11_7.mid", "fmaj_8.mid", "am9_9.mid", "Em9_10.mid", "dm9_11" , "E7_12.mid",
+            };
+            
+            for(int i=0; i<filenames.size(); i++)
+            {
+                MidiFileUtility midi;
+                
+                midi.readMidiFile(enclosingFolder + enclosing + filenames[i]);
+                chords.push_back(midi.getMelody(1));
+            }
+            
+            //rearrange other parts to make sense kind of -- no bass or top  for now
+//            bass = { bass[0], bass[1] , bass[3], bass[2], bass[3], bass[1]};
+//            top = { top[0], top[1] , top[3], top[2], top[3], top[1]};
+        }
+        
+        //returns relevant bass notes
+        virtual std::vector<MidiNote> getBass()
+        {
+            std::vector<MidiNote> placeholder; //todo -- write a bass part
+            return placeholder;
+        }
+        
+        //returns relevant top decorative accomp. voice
+        virtual std::vector<MidiNote> getTop()
+        {
+            std::vector<MidiNote> placeholder; //todo -- write a bass part
+            return placeholder;
+            
+        }
+        
+        virtual  std::vector<MidiNote> getNextChord()
+        {
+            std::cout << "SECTION 2 chord\n" ;
+            return ChordGeneration::getNextChord();
+        }
+    };
+    
+
+    
 
 };
 

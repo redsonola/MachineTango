@@ -12,6 +12,8 @@
 #include "sequence_player.h"
 
 #define MAX_DEAD_PLAYERS 200
+#define HOW_LONG_TO_STAY_STILL_FOR_CADENCE_WINDOW_SECONDS 2
+#define PERCENTAGE_RANGE_COUNTS_AS_STILL 0.18 //of busy sparse scale
 
 namespace InteractiveTango
 {
@@ -19,13 +21,30 @@ namespace InteractiveTango
     class GeneratedMelodySection : public MainMelodySection
     {
     protected:
-        MelodyGenerator *generator;
+        std::vector<MelodyGenerator *> generator;
+        BusyVsSparseEvent *bsCouple; //need for section changes
+        GeneratedMelodySection *sectionDecisionMaker;
+        
+        //std::vector<int> song_structure; -- inherited
+        //int where_in_song_structure; -- inherited
+        //since we don't have structure-defined phrases, we have min. times
+        std::vector<float> songStructureDurations;
+        int sectionGeneratorIndex;
+        float lastSectionChange;
+        
         float lastTimePlayed;
     public:
         
-        GeneratedMelodySection (BeatTiming *timer, FootOnset *onset, MelodyGenerator *gen, Instruments *ins=NULL, float perWindowSize=1) : MainMelodySection(timer, onset, ins, perWindowSize)
+        GeneratedMelodySection (BeatTiming *timer, FootOnset *onset, std::vector<MelodyGenerator *> gen, Instruments *ins=NULL, float perWindowSize=1) : MainMelodySection(timer, onset, ins, perWindowSize)
         {
             generator = gen;
+            timesToRepeatSection();
+            sectionGeneratorIndex = 0;
+//            where_in_song_structure = 0; - inherited
+            lastSectionChange = timer->getTimeInSeconds();
+            bsCouple = NULL;
+            sectionDecisionMaker = NULL;
+            
         };
         
         virtual void update(boost::shared_ptr<std::vector<int>> hsprofile, float seconds = 0)
@@ -33,15 +52,66 @@ namespace InteractiveTango
             if( fo->isStepping())
                 update(seconds);
         }
+        
+        void setCoupleBS(BusyVsSparseEvent *bs)
+        {
+            bsCouple  = bs;
+        }
+        
+        void changeSectionIfNeeded(float seconds)
+        {
+            if(bsCouple != NULL)  // changing sections actively
+            {
 
+                if( seconds - lastSectionChange >= songStructureDurations[where_in_song_structure] )
+                {
+                    if( bsCouple->getCurMood(HOW_LONG_TO_STAY_STILL_FOR_CADENCE_WINDOW_SECONDS, seconds) <= bsCouple->getMaxMood() * PERCENTAGE_RANGE_COUNTS_AS_STILL)
+                    {
+                        where_in_song_structure++;
+                        if(where_in_song_structure > song_structure.size())
+                            where_in_song_structure = 0; //OR, end;
+                    
+                        sectionGeneratorIndex = song_structure[where_in_song_structure] - 1;
+                        std::cout << "changing section: " << where_in_song_structure << std::endl;
+                        lastSectionChange = seconds;
+                    }
+                }
+            }
+            else if(sectionDecisionMaker != NULL) //getting section changes from somewhere else ------- TODO: FIX SINCE HAVE ANOTHER STRUCT FOR THIS in other tango system
+            {
+                int where = sectionDecisionMaker->getWhereInSong();
+                sectionGeneratorIndex = song_structure[where] - 1;
+                where_in_song_structure = where;
+            }
+            
+            std::cout << "melody section: " << sectionGeneratorIndex+1 << endl;
+
+
+        }
+        
+        void setMelodySectionDecider(GeneratedMelodySection *mel)
+        {
+            sectionDecisionMaker = mel;
+        }
+        
+        int getWhereInSong()
+        {
+            return where_in_song_structure;
+        }
+        
+        int getSection()
+        {
+            return song_structure[where_in_song_structure];
+        }
         
         virtual void update(float seconds = 0)
         {
             curSeconds = seconds;
+            changeSectionIfNeeded(seconds);
             
             //if busy/sparse = 1 then wait a bit (at least an eighth note) before re-genning
             float timeDiff = seconds - lastTimePlayed;
-            float quarter = (1.0f / ((float) generator->getBPM() /  60.0f)) ;
+            float quarter = (1.0f / ((float) generator[sectionGeneratorIndex]->getBPM() /  60.0f)) ; //fix
             float eight = quarter / 2.0f;
             float sixteenth = eight / 2.0f;
 
@@ -51,18 +121,18 @@ namespace InteractiveTango
             std::vector<double> cutoffs = { 0.3, 0.55, 0.75, 0.85, 0.95 };
             int bs = std::round(ev->getNonLinearScalingbyFiat(cutoffs, 5, bsorig));
             
-            std::cout << "Bs before:" <<bsorig<<" BS now: " << bs << " min:" << ev->getMinMood() << " max: "<< ev->getMaxMood() << endl;
+//            std::cout << "Bs before:" <<bsorig<<" BS now: " << bs << " min:" << ev->getMinMood() << " max: "<< ev->getMaxMood() << endl;
 
             if( timeDiff < sixteenth ) return; // no faster than sixteenth notes but don't place such a hard limit on density... see. 
             
-            if(generator->oneToOne() && fo->isStepping() ) //wait for a foot onset to start
+            if(generator[sectionGeneratorIndex]->oneToOne() && fo->isStepping() ) //wait for a foot onset to start
             {
                 //ok now generate a melody
-                generator->update(seconds);
+                generator[sectionGeneratorIndex]->update(seconds);
             } //else implement a non-one to one mode solution
             else if( fo->isStepping())
             {
-                generator->update(bs, seconds);
+                generator[sectionGeneratorIndex]->update(bs, seconds);
                 lastTimePlayed = seconds; //beatTimer->getTimeInSeconds();
             }
         };
@@ -70,7 +140,7 @@ namespace InteractiveTango
         
         std::vector<MidiNote> getBufferedNotes()
         {
-            return generator->getCurNotes();
+            return generator[sectionGeneratorIndex]->getCurNotes();
         }
         
          virtual std::vector<ci::osc::Message> getOSC()
@@ -82,12 +152,28 @@ namespace InteractiveTango
         
         virtual void timesToRepeatSection()
         {
-            song_structure.push_back(1); //only one section for now, but a 2nd section may draw upon different melodic material
+            //2 sections --  hard-coded -- dear god I will refactor this after the deaadline
+            song_structure.clear();
+            song_structure.push_back(1);
+            songStructureDurations.push_back(30);
+            song_structure.push_back(2);
+            songStructureDurations.push_back(45);
+            song_structure.push_back(1);
+            songStructureDurations.push_back(30);
+            song_structure.push_back(2);
+            songStructureDurations.push_back(45);
+            song_structure.push_back(1);
+            songStructureDurations.push_back(45);
+            song_structure.push_back(2);
+            songStructureDurations.push_back(30);
+            song_structure.push_back(1);
+            
+            std::cout << "called\n";
         }
         
         double getTicksPerBeat()
         {
-            return generator->getTicksPerBeat(0);
+            return generator[sectionGeneratorIndex]->getTicksPerBeat(0);
         }
         
     };
@@ -96,6 +182,9 @@ namespace InteractiveTango
     {
     protected:
         std::vector<ChordGeneration *> generators;
+        std::vector<std::vector<ChordGeneration *>> generatorsEaSection;
+        GeneratedMelodySection *sectionDecisionMaker;
+        
         std::vector<std::vector<MidiNote>> notes;
         int BEATSPERMEASURE;
         
@@ -115,14 +204,14 @@ namespace InteractiveTango
         int curGen;
         
         std::vector<ci::osc::Message> harmonyMessages;
+        int curSection;
+        int bandSampleplay;
         
     public:
         
         GeneratedAccompanmentSection(BeatTiming *timer, Instruments *ins) : AccompanimentSection(timer, ins)
         {
             BEATSPERMEASURE = 4;
-            generators.push_back(new ChordGeneration());
-            generators.push_back(new ChordGenerationPizzInspired());
             curGen = 0;
             
             MEASURES_TO_FLIP_BVS_MIRROR_OR_COUNTER = 8;
@@ -137,6 +226,15 @@ namespace InteractiveTango
             fiveStopped = false;
             bvsChangedTo2 = false;
             
+            generatorsEaSection.push_back(std::vector<ChordGeneration *>());
+            generatorsEaSection[0].push_back(new ChordGeneration());
+            generatorsEaSection[0].push_back(new ChordGenerationPizzInspired());
+            generators = generatorsEaSection[0];// 1st section chords
+            
+            generatorsEaSection.push_back(std::vector<ChordGeneration *>());
+            generatorsEaSection[1].push_back(new ChordGenerationSection2());
+            
+            bandSampleplay = 0;
         }
         
         void setBVSMirroring()
@@ -198,7 +296,6 @@ namespace InteractiveTango
             int origbvs = findBusySparse(accompwindow, seconds);
             PerceptualEvent *ev = findBusySparseSchema();
 
-            
             //send dancer bvs to max
             ci::osc::Message msg;
             msg.setAddress(BUSY_SPARSE_DANCERS);
@@ -268,20 +365,27 @@ namespace InteractiveTango
                 msg.addIntArg(curGen);
                 msg.addIntArg(generators[curGen]->getCurHarmony());
             
-                double shouldplay = chooseRandom();
-                int play = bvs>=3 && shouldplay < 0.5;
-                msg.addIntArg(play); //should play accord samples?
+            
+                if(bandSampleplay==0 && bvs>=3 )
+                {
+                    double shouldplay = chooseRandom();
+                    bandSampleplay = bvs>=3 && shouldplay < 0.5;
+                }
+                else if(bvs < 3) bandSampleplay = 0;
+            
+                msg.addIntArg(bandSampleplay); //should play accord samples?
+                msg.addIntArg(curSection); //the current section
                 harmonyMessages.push_back(msg);
 //            }
         }
         
         void getChordGenerationNotes(float seconds)
         {
-            if( generators[curGen]->atProgressionEnd() )
+            if( generators[curGen]->atProgressionEnd() && curSection == 1 )
             {
                 double choose = chooseRandom();
                 if(choose < 0.5) curGen = 1; else curGen = 0;
-            }
+            } else curGen = 0;
             
             determineBVS(seconds);
             
@@ -300,12 +404,31 @@ namespace InteractiveTango
             //we'll see... for 5, maybe send commands to the percussion parts...
             
         }
+        
+        void setMelodySectionDecider(GeneratedMelodySection *mel)
+        {
+            sectionDecisionMaker = mel;
+        }
+        
+        void changeSectionIfNeeded(float seconds)
+        {
+            if(sectionDecisionMaker != NULL) //getting section changes from somewhere else ------- TODO: FIX SINCE HAVE ANOTHER STRUCT FOR THIS in other tango system
+            {
+                curSection  = sectionDecisionMaker->getSection();
+                generators.clear();
+                generators = generatorsEaSection[curSection-1];
+                
+                std::cout << "Number of current generators: " << generators.size() << std::endl;
+            }
+        }
     
         //has to be updated with the harmony/section profile
         virtual void update(float seconds = 0 )
         {
             notes.clear();
             
+            changeSectionIfNeeded(seconds);
+
             
             if( beatTimer->isOnBeat(0.0, seconds) ) //exactly on beat
             {
