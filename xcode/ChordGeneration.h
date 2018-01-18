@@ -34,9 +34,9 @@ public:
     //TODO -- put in database -- ALSO note -- could generate melody ahead of time then choose chord based on melody.... !
     virtual void buildPossibleProgressions()
     {
-        std::vector<int> pp1 = {1, 2, 3, 4, 5, 2};
-        std::vector<int> pp2 = {1, 1, 2, 2};
-        std::vector<int> pp3 = {1, 1, 3, 2, 2, 4, 5, 2};
+        std::vector<int> pp1 = {1, 2, 3, 4, 5, 2, 1};
+        std::vector<int> pp2 = {1, 1, 2, 2, 1};
+        std::vector<int> pp3 = {1, 1, 3, 2, 2, 4, 5, 2, 1};
         
         possibleProgressions.push_back(pp1);
         possibleProgressions.push_back(pp2);
@@ -168,8 +168,8 @@ public:
     
     virtual void buildPossibleProgressions2()
     {
-        std::vector<int> pp1 = {1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3};
-        std::vector<int> pp2 = {1, 1, 3, 3, 1, 1, 2, 2, 1, 1, 3, 3};
+        std::vector<int> pp1 = {1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3, 1};
+        std::vector<int> pp2 = {1, 1, 3, 3, 1, 1, 2, 2, 1, 1, 3, 3, 1};
             
         possibleProgressions.push_back(pp1);
         possibleProgressions.push_back(pp2);

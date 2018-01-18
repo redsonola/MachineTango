@@ -205,6 +205,8 @@ namespace InteractiveTango
         std::vector<ci::osc::Message> harmonyMessages;
         int curSection;
         int sampleplay;
+        
+        int where_in_song_structure;
 
         
     public:
@@ -245,6 +247,13 @@ namespace InteractiveTango
                 measureBVSCount = 0;
                 bvsMirror = chooseRandom() <= 0.5;
                 percBvsMirror = chooseRandom() <= 0.5;
+            }
+            
+            //if at the beginning or near end-ish, bvs should always mirror so that music stops when dancers stop
+            if(where_in_song_structure==0 || beatTimer->getTimeInSeconds() >= 4.5*60)
+            {
+                bvsMirror = true;
+                percBvsMirror = true;
             }
         }
         
@@ -306,7 +315,7 @@ namespace InteractiveTango
             setBVSMirroring();
             if(!bvsMirror)
             {
-                //then do opposite -- TODO: FIX FOR IF I DON'T KNOW MIN MAX --> THIS WAY HACKY VERY FAST TO CHECK!!!!! YIUKES HORRIBLE
+                //then do opposite
                 bvs = ev->getMaxMood() + origbvs * -1 + ev->getMinMood(); //max + bvs*-1 + min
             } else bvs = origbvs;
             if(!percBvsMirror)
@@ -322,10 +331,25 @@ namespace InteractiveTango
             if(percbvs >= 4 && bvs >= 4)
                 makeBothFivesLessLikely();
             
+            makePercLessLikely(lastPBVS);
+            
             percBvsChanged = percbvs != lastPBVS;
         
             //if bvs did go from 0 to 5 or 4, then add a fill
-            //addFillsAndSmoothToZeros(lastBVS);
+            addFillsAndSmoothToZeros(lastBVS); //ok, try
+        }
+        
+        void makePercLessLikely(int last)
+        {
+            if(beatTimer->getTimeInSeconds() < 60 ) //none at beginning
+                percbvs = 1;
+            
+            if(percbvs > last ) //only escalate  60% of the time conditions are for it
+            {
+                double choose = chooseRandom();
+                if(choose >  0.6)
+                    percbvs =  last;
+            }
         }
         
         void addFillsAndSmoothToZeros(float lastBVS)
@@ -443,6 +467,7 @@ namespace InteractiveTango
             if(sectionDecisionMaker != NULL) //getting section changes from somewhere else ------- TODO: FIX SINCE HAVE ANOTHER STRUCT FOR THIS in other tango system
             {
                 curSection  = sectionDecisionMaker->getSection();
+                where_in_song_structure = sectionDecisionMaker->getWhereInSong();
                 generators.clear();
                 generators = generatorsEaSection[curSection-1];
                 

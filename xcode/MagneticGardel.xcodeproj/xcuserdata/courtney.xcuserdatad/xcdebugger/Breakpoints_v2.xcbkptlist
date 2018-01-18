@@ -426,7 +426,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "338"
             endingLineNumber = "338"
-            landmarkName = "addFillsAndSmoothToZeros(float lastBVS)"
+            landmarkName = "determineBVS(float seconds)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -442,8 +442,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "563"
             endingLineNumber = "563"
-            landmarkName = "update(float seconds = 0)"
-            landmarkType = "9">
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -458,7 +458,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "254"
             endingLineNumber = "254"
-            landmarkName = "chooseRandom()"
+            landmarkName = "setBVSMirroring()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -474,7 +474,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "410"
             endingLineNumber = "410"
-            landmarkName = "getChordGenerationNotes(float seconds)"
+            landmarkName = "createSampleHarmonyMessages()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
