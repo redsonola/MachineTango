@@ -751,11 +751,14 @@ protected:
     
     double xThresh, yThresh, zThresh;
     bool stepOnlyOnBeat;
+    int peakcount;
     
 public:
     SnapPeaks( int id1, std::string portz1, SignalAnalysis *s, BeatTiming *bt=NULL, bool onbeat = false) : StepDetection( id1, portz1, s )
     {
 
+        peakcount = 0;
+        
         xPeak = false;
         yPeak = false;
         zPeak = false;
@@ -926,9 +929,13 @@ public:
 //        double zmax = 6.87796;
         
         //min as the thresh & the max is +5 standard deviations (from a long test run)... anything above is super high, so
-        double scaledValueMaxX = 2.75;
-        double scaledValueMaxY = 6;
-        double scaledValueMaxZ = 1.85;
+//        double scaledValueMaxX = 2.75;
+//        double scaledValueMaxY = 6;
+//        double scaledValueMaxZ = 1.85;
+        
+        double scaledValueMaxX = 2.4;
+        double scaledValueMaxY = 5.5;
+        double scaledValueMaxZ = 1.5;
         
         //scale 0-1 for like to like comparisions... of course, this is only relevant in terms of steps
         double normX =  ( x - xThresh) / ( scaledValueMaxX - xThresh );
@@ -984,9 +991,11 @@ public:
         combinedPeak = ( combinedPeak ) && ( peakTimer.readyForNextPeak() );
 //        if( combinedPeak )
 //        {
-//            std::cout << "PEAK" << std::endl;
+//            peakcount++;
+//            std::cout << "PEAK: " << peakcount << std::endl;
 //        }
-        if(combinedPeak) peakTimer.peakHappened();
+        if(combinedPeak)
+            peakTimer.peakHappened();
         curPeakHeight = findNormalizedPeakHeight(peakx, peaky, peakz);
     };
     

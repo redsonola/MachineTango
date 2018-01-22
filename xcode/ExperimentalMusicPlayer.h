@@ -29,13 +29,18 @@ namespace InteractiveTango
         //int where_in_song_structure; -- inherited
         //since we don't have structure-defined phrases, we have min. times
         std::vector<float> songStructureDurations;
+        std::vector<int> expInstrumentsforSections; //this will be hardcoded for this performance -- TODO: fix
         int sectionGeneratorIndex;
         float lastSectionChange;
         
         float lastTimePlayed;
+        
+        int whichDancer;
+        
+        std::vector<ci::osc::Message> melodyMessages; 
     public:
         
-        GeneratedMelodySection (BeatTiming *timer, FootOnset *onset, std::vector<MelodyGenerator *> gen, Instruments *ins=NULL, float perWindowSize=1) : MainMelodySection(timer, onset, ins, perWindowSize)
+        GeneratedMelodySection (BeatTiming *timer, FootOnset *onset, std::vector<MelodyGenerator *> gen, int whichDancer_, Instruments *ins=NULL, float perWindowSize=1) : MainMelodySection(timer, onset, ins, perWindowSize)
         {
             generator = gen;
             timesToRepeatSection();
@@ -44,6 +49,8 @@ namespace InteractiveTango
             lastSectionChange = timer->getTimeInSeconds();
             bsCouple = NULL;
             sectionDecisionMaker = NULL;
+            
+            whichDancer = whichDancer_;
             
         };
         
@@ -56,6 +63,11 @@ namespace InteractiveTango
         void setCoupleBS(BusyVsSparseEvent *bs)
         {
             bsCouple  = bs;
+        }
+        
+        void setExpInstrumentsforSections(std::vector<int> ins)
+        {
+            expInstrumentsforSections = ins;
         }
         
         void changeSectionIfNeeded(float seconds)
@@ -82,6 +94,15 @@ namespace InteractiveTango
                 int where = sectionDecisionMaker->getWhereInSong();
                 sectionGeneratorIndex = song_structure[where] - 1;
                 where_in_song_structure = where;
+            }
+            
+            if(expInstrumentsforSections.size() == song_structure.size())
+            {
+                ci::osc::Message msg;
+                msg.setAddress(EXPMUSIC_MELODY_INSTRUMENT);
+                msg.addIntArg(whichDancer);
+                msg.addIntArg(expInstrumentsforSections[where_in_song_structure]);
+                melodyMessages.push_back(msg);
             }
             
 //            std::cout << "melody section: " << sectionGeneratorIndex+1 << endl;
@@ -146,6 +167,12 @@ namespace InteractiveTango
         {
             //probably do nothing here... we'll see
             std::vector<ci::osc::Message> msgs = MainMelodySection::getOSC(); //this should return nothing so far.
+            
+            for(int i =0; i<melodyMessages.size(); i++)
+                msgs.push_back(melodyMessages[i]);
+            
+            melodyMessages.clear();
+            
             return msgs;
         }
         
@@ -154,19 +181,18 @@ namespace InteractiveTango
             //2 sections --  hard-coded -- dear god I will refactor this after the deaadline
             song_structure.clear();
             song_structure.push_back(1);
-            songStructureDurations.push_back(30);
-            song_structure.push_back(2);
             songStructureDurations.push_back(45);
-            song_structure.push_back(1);
-            songStructureDurations.push_back(30);
             song_structure.push_back(2);
             songStructureDurations.push_back(45);
             song_structure.push_back(1);
             songStructureDurations.push_back(45);
             song_structure.push_back(2);
-            songStructureDurations.push_back(30);
+            songStructureDurations.push_back(45);
             song_structure.push_back(1);
-            
+            songStructureDurations.push_back(45);
+            song_structure.push_back(2);
+            songStructureDurations.push_back(45);
+
             std::cout << "called\n";
         }
         
@@ -182,6 +208,8 @@ namespace InteractiveTango
     protected:
         std::vector<ChordGeneration *> generators;
         std::vector<std::vector<ChordGeneration *>> generatorsEaSection;
+        std::vector<std::vector<int>> expInstrumentsforSections; //this will be hardcoded for this performance -- TODO: fix
+
         GeneratedMelodySection *sectionDecisionMaker;
         
         std::vector<std::vector<MidiNote>> notes;
@@ -235,6 +263,8 @@ namespace InteractiveTango
             
             generatorsEaSection.push_back(std::vector<ChordGeneration *>());
             generatorsEaSection[1].push_back(new ChordGenerationSection2());
+            
+            defaultExpInstrumentsforSections();
             
             sampleplay = 0;
         }
@@ -336,7 +366,7 @@ namespace InteractiveTango
             percBvsChanged = percbvs != lastPBVS;
         
             //if bvs did go from 0 to 5 or 4, then add a fill
-            addFillsAndSmoothToZeros(lastBVS); //ok, try
+//            addFillsAndSmoothToZeros(lastBVS); //ok, try
         }
         
         void makePercLessLikely(int last)
@@ -471,8 +501,38 @@ namespace InteractiveTango
                 generators.clear();
                 generators = generatorsEaSection[curSection-1];
                 
+                if(where_in_song_structure < expInstrumentsforSections.size())
+                {
+                    //create a message to send re: main & top instrumentation
+                    ci::osc::Message msg;
+                    msg.setAddress(EXPMUSIC_ACCOMP_INSTRUMENT);
+                    
+                    //add instruments - first main, then bass, then top
+                    for(int i=0; i<expInstrumentsforSections.size(); i++)
+                        msg.addIntArg(expInstrumentsforSections[i].at(where_in_song_structure));
+                    
+                    harmonyMessages.push_back(msg);
+                }
 //                std::cout << "Number of current generators: " << generators.size() << std::endl;
             }
+        }
+        
+        void defaultExpInstrumentsforSections()
+        {
+            //these correspond to midi channels in Kontakt on the max side
+            std::vector<int> mainChords = { 1, 3, 5, 16, 1, 3 };
+            std::vector<int> bassIns = { 4, 4, 16, 16, 4, 4  };
+            std::vector<int> topIns = { 5, 3, 1, 16, 3, 5  };
+
+            expInstrumentsforSections.push_back(mainChords);
+            expInstrumentsforSections.push_back(bassIns);
+            expInstrumentsforSections.push_back(topIns);
+
+        }
+        
+        void setExpInstrumentsforSections(std::vector<std::vector<int>> ins)
+        {
+            expInstrumentsforSections = ins;
         }
     
         //has to be updated with the harmony/section profile

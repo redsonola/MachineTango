@@ -274,7 +274,6 @@ public:
         
         virtual  std::vector<MidiNote> getNextChord()
         {
-            std::cout << "SECTION 2 chord\n" ;
             return ChordGeneration::getNextChord();
         }
     };

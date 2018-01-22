@@ -17,7 +17,7 @@
 #define SHIMMER_PORT 57121
 #define SC_LANG_PORT 57120
 #define G_FORCE 9.80665
-#define FRAMERATE 51
+#define FRAMERATE 8000
 
 #define TYPE_ACCEL 0
 #define TYPE_GYR 1
@@ -112,7 +112,8 @@
 #define EXPMUSIC_HARMONY "/InteractiveTango/Experimental/Harmony"
 #define EXPMUSIC_INTROFILL "/InteractiveTango/Experimental/HarmonyIntroFill"
 #define EXPMUSIC_CLOSEFILL "/InteractiveTango/Experimental/HarmonyCloseFill"
-
+#define EXPMUSIC_MELODY_INSTRUMENT "/InteractiveTango/Experimental/Melody/Instrument"
+#define EXPMUSIC_ACCOMP_INSTRUMENT "/InteractiveTango/Experimental/Accompaniment/Instrument"
 
 
 //Wekinator messages to send

@@ -34,7 +34,7 @@ const int SAMPLE_SZ = 4096;
 
 namespace InteractiveTango {
     
-    static const double SR = 102.4; // Sample rate
+    static const double SR = 51.2; // Sample rate
     
 class UGEN
 {
