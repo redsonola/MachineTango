@@ -56,8 +56,9 @@ namespace InteractiveTango
         
         virtual void update(boost::shared_ptr<std::vector<int>> hsprofile, float seconds = 0)
         {
-            if( fo->isStepping())
+            if( fo->isStepping()){
                 update(seconds);
+            }
         }
         
         void setCoupleBS(BusyVsSparseEvent *bs)
@@ -80,7 +81,7 @@ namespace InteractiveTango
                     if( bsCouple->getCurMood(HOW_LONG_TO_STAY_STILL_FOR_CADENCE_WINDOW_SECONDS, seconds) <= bsCouple->getMaxMood() * PERCENTAGE_RANGE_COUNTS_AS_STILL)
                     {
                         where_in_song_structure++;
-                        if(where_in_song_structure > song_structure.size())
+                        if(where_in_song_structure >= song_structure.size())
                             where_in_song_structure = 0; //OR, end;
                     
                         sectionGeneratorIndex = song_structure[where_in_song_structure] - 1;
@@ -96,7 +97,7 @@ namespace InteractiveTango
                 where_in_song_structure = where;
             }
             
-            if(expInstrumentsforSections.size() == song_structure.size())
+            if(where_in_song_structure < expInstrumentsforSections.size())
             {
                 ci::osc::Message msg;
                 msg.setAddress(EXPMUSIC_MELODY_INSTRUMENT);
@@ -155,6 +156,7 @@ namespace InteractiveTango
                 generator[sectionGeneratorIndex]->update(bs, seconds);
                 lastTimePlayed = seconds; //beatTimer->getTimeInSeconds();
             }
+            
         };
         
         
@@ -181,19 +183,17 @@ namespace InteractiveTango
             //2 sections --  hard-coded -- dear god I will refactor this after the deaadline
             song_structure.clear();
             song_structure.push_back(1);
-            songStructureDurations.push_back(45);
+            songStructureDurations.push_back(40);
             song_structure.push_back(2);
-            songStructureDurations.push_back(45);
+            songStructureDurations.push_back(30);
             song_structure.push_back(1);
-            songStructureDurations.push_back(45);
+            songStructureDurations.push_back(30);
             song_structure.push_back(2);
-            songStructureDurations.push_back(45);
+            songStructureDurations.push_back(30);
             song_structure.push_back(1);
-            songStructureDurations.push_back(45);
+            songStructureDurations.push_back(30);
             song_structure.push_back(2);
-            songStructureDurations.push_back(45);
-
-            std::cout << "called\n";
+            songStructureDurations.push_back(30);
         }
         
         double getTicksPerBeat()
@@ -480,6 +480,7 @@ namespace InteractiveTango
                 if(bvs >= 3) notes.push_back(generators[curGen]->getBass());
                 if(bvs >= 5) notes.push_back(generators[curGen]->getTop());
                 createSampleHarmonyMessages();
+//                std::cout << "getting notes:" << notes.size();
             }
             else pauseForFillOrClose = false;
         
@@ -520,9 +521,9 @@ namespace InteractiveTango
         void defaultExpInstrumentsforSections()
         {
             //these correspond to midi channels in Kontakt on the max side
-            std::vector<int> mainChords = { 1, 3, 5, 16, 1, 3 };
+            std::vector<int> mainChords = { 3, 5, 3, 16, 3, 3 };
             std::vector<int> bassIns = { 4, 4, 16, 16, 4, 4  };
-            std::vector<int> topIns = { 5, 3, 1, 16, 3, 5  };
+            std::vector<int> topIns = { 5, 3, 3, 5, 3, 5  };
 
             expInstrumentsforSections.push_back(mainChords);
             expInstrumentsforSections.push_back(bassIns);
@@ -575,6 +576,7 @@ namespace InteractiveTango
         
         std::vector<MidiNote> getBufferedNotes(int i=0)
         {
+//            std::cout << "harmony notes..." << notes[i].size();
             return notes[i];
         }
         size_t voiceCount()

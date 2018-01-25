@@ -195,12 +195,12 @@ namespace InteractiveTango
             
             melody = new GeneratedMelodySection( mTimer, melodyOnsetDancer->getOnsets(), followermel, couples[0]->getFollower()->getDancerID(), &instruments );
             ( ( GeneratedMelodySection * )melody )->setCoupleBS(  ( (ExperimentalPareja  *) couples[0] )->getCoupleBS() );
-            std::vector<int> instrumentsForFollower = {1, 3, 4, 1, 4, 1};
+            std::vector<int> instrumentsForFollower = {1, 3, 4, 2, 4, 1};
             ((GeneratedMelodySection *)melody)->setExpInstrumentsforSections(instrumentsForFollower);
             
             leaderMelody = new GeneratedMelodySection( mTimer, couples[0]->getLeader()->getOnsets(), leadermel, couples[0]->getLeader()->getDancerID(), &instruments ); //added leader...
             ( ( GeneratedMelodySection * )leaderMelody )->setMelodySectionDecider(  (GeneratedMelodySection *) melody );
-            std::vector<int> instrumentsForLeader = {1, 2, 3, 4, 2, 1};
+            std::vector<int> instrumentsForLeader = {1, 3, 3, 4, 2, 1};
             ((GeneratedMelodySection *)leaderMelody)->setExpInstrumentsforSections(instrumentsForLeader);
             
             accompaniment = new GeneratedAccompanmentSection( mTimer, &instruments );
