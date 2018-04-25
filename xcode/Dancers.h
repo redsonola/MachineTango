@@ -1649,7 +1649,7 @@ namespace InteractiveTango
         };
         
         //temp here, I think....... this restarts the music player to the beginning
-        void restartPlayer()
+        virtual void restartPlayer()
         {
             player->reset();
         }

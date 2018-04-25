@@ -95,12 +95,24 @@ namespace InteractiveTango
         
         void leaderFakeStep()
         {
-            couples[0]->getFollower()->getOnsets()->createFakeStep();
+            couples[0]->getLeader()->getOnsets()->createFakeStep();
         }
         
         void followerFakeStep()
         {
-            couples[0]->getLeader()->getOnsets()->createFakeStep();
+            couples[0]->getFollower()->getOnsets()->createFakeStep();
+        }
+        
+        //start song from the beginning
+        virtual void restartPlayer()
+        {
+            if(player==NULL)
+                std::cout << "Song cannot reset as music player does not exist.\n";
+            else
+            {
+                std::cout << "Song restarted.\n";
+                ((ExperimentalMusicPlayer *)player)->resetSong();
+            }
         }
         
         void followerFakeBusySparse(double m)

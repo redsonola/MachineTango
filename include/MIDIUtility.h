@@ -45,12 +45,16 @@ public:
         velocity = vel;
         tick = t;
         duration = d;
+        channel = -1; //if -1 use default
     }
     
     double tick;
+    double absTick;
     double duration;
     int    pitch;
     int velocity;
+    double tpb; //ticks per beat
+    int channel; //which midi channel
     
     bool operator==(MidiNote note)
     {
@@ -72,6 +76,8 @@ private:
     double timeSigNumerator;
     double timeSigDenom;
     double ticksPerBeat;
+    
+    double lastTick; //the last note, at what tick is it?
     
     std::vector<std::vector<MidiNote>> melody;
     
@@ -96,6 +102,7 @@ public:
         }
         fixTicks(reader);
         
+        
         ticksPerBeat = reader.getTicksPerQuarterNote();
 //        std::cout << "beatsPerMinute:" << beatsPerMinute << std::endl;
         
@@ -114,6 +121,44 @@ public:
     std::vector<MidiNote> getMelody(int track)
     {
         return melody[track];
+    }
+    
+    //returns melody note that is at the checked tick, if not absolute, will look for the one that closest after rather than closest before
+    //if not found, returns null
+    MidiNote *getMelodyNoteAtAbsTick(int track, double tick, int indexOfLastChecked=0)
+    {
+        std::vector<MidiNote> mel = getMelody(track);
+        int i = indexOfLastChecked;
+        bool  found = false;
+        MidiNote *note = NULL;
+        while(!found && i < mel.size() )
+        {
+            found  = mel[i].absTick >= tick;
+            i++;
+        }
+        if(found) note = &mel[i-1];
+        return note;
+    }
+    
+    std::vector<MidiNote *>getAccompNotesAtAbsTick(int track, double tickStart, double tickEnd, int indexOfLastChecked=0)
+    {
+        std::vector<MidiNote> accompFile  = getMelody(track); //this gets everything all the track
+        std::vector<MidiNote *> accomp;
+        
+        int i = indexOfLastChecked;
+        bool found = false;
+        while(i < accompFile.size() && !found )
+        {
+            std::cout << accompFile[i].pitch << " " << accompFile[i].tick << " " << accompFile[i].absTick << "\n";
+
+            found  = accompFile[i].absTick > tickEnd;
+            if(!found && accompFile[i].absTick >= tickStart)
+            {
+                accomp.push_back(&accompFile[i]);
+            }
+            i++;
+        }
+        return accomp;
     }
 
     void convertToMelody(MidiFile& midifile) {
@@ -169,15 +214,21 @@ public:
                 mtemp.duration = midifile[track][i].tick - state[pitch];
                 mtemp.pitch = pitch;
                 mtemp.velocity = velocity;
+                mtemp.tpb = midifile.getTicksPerQuarterNote();
                 melody[track].push_back(mtemp);
                 state[pitch] = -1;
             }
         }
     }
+    double getLastTick()
+    {
+        return lastTick;
+    }
     
     void fixTicks(MidiFile& midifile)
     {
         std::vector<std::vector<MidiNote>> tmp;
+        lastTick = 0;
         for(int track=0; track<midifile.getTrackCount(); track++)
         {
             tmp.push_back(std::vector<MidiNote>());
@@ -188,6 +239,8 @@ public:
                 double newTicks = melody[track].at(i).tick - melody[track].at(i-1).tick;
                 tmp[track].push_back(melody[track].at(i));
                 tmp[track].at(i).tick = newTicks;
+                tmp[track].at(i).absTick = melody[track].at(i).tick;
+                if(melody[track].at(i).tick > lastTick) lastTick = melody[track].at(i).tick;
             }
             }
         }
@@ -202,7 +255,7 @@ protected:
     
     mm::MidiOutput *midiout;
 public:
-   MidiOutUtility(std::string portname = "IAC Driver IAC Bus 1")
+   MidiOutUtility(std::string portname = "ITM Port 1")
  //   MidiOutUtility(std::string portname = "IAC Bus 1")
     {
         midiout = new mm::MidiOutput("midiout");
@@ -233,7 +286,10 @@ public:
     void send(MidiNote note, int channel=1)
     {
 //        std::cout << "note: " << note.pitch << "," << channel << std::endl;
-        midiout->send(mm::MakeNoteOn(channel, note.pitch, note.velocity));
+        if(note.channel > -1)
+            midiout->send(mm::MakeNoteOn(note.channel, note.pitch, note.velocity));
+        else
+             midiout->send(mm::MakeNoteOn(channel, note.pitch, note.velocity));
     };
     
     

@@ -45,17 +45,18 @@ namespace InteractiveTango
             generator = gen;
             timesToRepeatSection();
             sectionGeneratorIndex = 0;
-//            where_in_song_structure = 0; - inherited
             lastSectionChange = timer->getTimeInSeconds();
             bsCouple = NULL;
             sectionDecisionMaker = NULL;
             
             whichDancer = whichDancer_;
+            where_in_song_structure =0;
             
         };
         
         virtual void update(boost::shared_ptr<std::vector<int>> hsprofile, float seconds = 0)
         {
+            changeSectionIfNeeded(seconds);
             if( fo->isStepping()){
                 update(seconds);
             }
@@ -69,6 +70,15 @@ namespace InteractiveTango
         void setExpInstrumentsforSections(std::vector<int> ins)
         {
             expInstrumentsforSections = ins;
+        }
+        
+        void resetSong()
+        {
+            where_in_song_structure = 0;
+            lastSectionChange = beatTimer->getTimeInSeconds();
+            sectionGeneratorIndex = song_structure[where_in_song_structure] - 1;
+            std::cout << "changing section (reset): " << where_in_song_structure << " instr: " << expInstrumentsforSections[where_in_song_structure] << std::endl;
+
         }
         
         void changeSectionIfNeeded(float seconds)
@@ -85,7 +95,7 @@ namespace InteractiveTango
                             where_in_song_structure = 0; //OR, end;
                     
                         sectionGeneratorIndex = song_structure[where_in_song_structure] - 1;
-                        std::cout << "changing section: " << where_in_song_structure << std::endl;
+                        std::cout << "changing section: " << where_in_song_structure << " instr: " << expInstrumentsforSections[where_in_song_structure] << std::endl;
                         lastSectionChange = seconds;
                     }
                 }
@@ -95,15 +105,6 @@ namespace InteractiveTango
                 int where = sectionDecisionMaker->getWhereInSong();
                 sectionGeneratorIndex = song_structure[where] - 1;
                 where_in_song_structure = where;
-            }
-            
-            if(where_in_song_structure < expInstrumentsforSections.size())
-            {
-                ci::osc::Message msg;
-                msg.setAddress(EXPMUSIC_MELODY_INSTRUMENT);
-                msg.addIntArg(whichDancer);
-                msg.addIntArg(expInstrumentsforSections[where_in_song_structure]);
-                melodyMessages.push_back(msg);
             }
             
 //            std::cout << "melody section: " << sectionGeneratorIndex+1 << endl;
@@ -129,6 +130,16 @@ namespace InteractiveTango
         {
             curSeconds = seconds;
             changeSectionIfNeeded(seconds);
+//
+            //NOTE TO SELF -- UNCOMMENT THIS AFTTER RECORDING!!!!
+//            if(where_in_song_structure < expInstrumentsforSections.size())
+//            {
+//                ci::osc::Message msg;
+//                msg.setAddress(EXPMUSIC_MELODY_INSTRUMENT);
+//                msg.addIntArg(whichDancer);
+//                msg.addIntArg(expInstrumentsforSections[where_in_song_structure]);
+//                melodyMessages.push_back(msg);
+//            }a
             
             //if busy/sparse = 1 then wait a bit (at least an eighth note) before re-genning
             float timeDiff = seconds - lastTimePlayed;
@@ -541,7 +552,6 @@ namespace InteractiveTango
         {
             notes.clear();
             
-            changeSectionIfNeeded(seconds);
 
             
             if( beatTimer->isOnBeat(0.0, seconds) ) //exactly on beat
@@ -645,6 +655,13 @@ namespace InteractiveTango
 //            
 //        }
         
+        void resetSong()
+        {
+            if(main_melody == NULL)
+                std::cout << "Cannot reset. No assigned melody\n";
+            else
+                ((GeneratedMelodySection *)main_melody)->resetSong();
+        }
         
         virtual void update(float seconds = 0)
         {
@@ -731,7 +748,10 @@ namespace InteractiveTango
             
             mm::MidiSequencePlayer *player = new mm::MidiSequencePlayer(*midiOut.getOut());
             
-            for(int i=0; i<notes.size(); i++)
+            //send the first note out immediately
+            midiOut.send(notes[0], channel);
+            
+            for(int i=1; i<notes.size(); i++)
             {
 //                if(notes[i].tick > 0){
                     //mm::MessageType::NOTE_ON

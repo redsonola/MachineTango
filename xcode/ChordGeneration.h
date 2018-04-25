@@ -205,7 +205,6 @@ public:
     
     virtual  std::vector<MidiNote> getNextChord()
     {
-        std::cout << "pizz chord\n" ;
         return ChordGeneration::getNextChord();
     }
 };

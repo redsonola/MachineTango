@@ -53,7 +53,7 @@ namespace InteractiveTango {
         
     public:
         
-        MelodyGenerator( float minbs, float maxbs, int _maxNotesGenerated = 5, float _sparseShortNoteCutOff = 1.0f/8.0f)
+        MelodyGenerator( float minbs, float maxbs, int _maxNotesGenerated = 6, float _sparseShortNoteCutOff = 1.0f/8.0f)
         {
             oneToOneMode = false; //if yes, ignore profile
 //            fo_probability = fp;
@@ -120,6 +120,10 @@ namespace InteractiveTango {
             
             if(bs == 1)
                 notesPerUpdate = 1;
+            else if(bs == bsMax)
+            {
+                notesPerUpdate = maxNotesGenerated;
+            }
             else
             {
                 notesPerUpdate = (int) std::round((((double) std::rand()) / ((double) RAND_MAX) ) * (maxNotesGenerated * (double)bs/(double)bsMax * 0.5 )) +
@@ -130,7 +134,9 @@ namespace InteractiveTango {
             //okay so this maps into a 1-3 thing -- 2, 1, 0.5 -- basically makes notes shorter or longer based on busy sparse
             float which = (float)bs/(float)bsMax ;
             if(which <= 1.0f/3.0f){ note_rhythm_ratio_mod = 2; }
-            else {if(which <= 2.0f/3.0f) note_rhythm_ratio_mod = 1; else { note_rhythm_ratio_mod = 0.5; } }
+            else {if(which <= 2.0f/3.0f) note_rhythm_ratio_mod = 1;
+            else {if(which > 4.0f/5.0f) note_rhythm_ratio_mod = 0.25;
+                else  note_rhythm_ratio_mod = 0.5; } } 
             
             
             for(int i=0; i<notesPerUpdate; i++)
