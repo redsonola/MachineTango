@@ -491,14 +491,16 @@ void ExperimentalMusicInteractiveTango::stopStartOSCToAbleton()
 void ExperimentalMusicInteractiveTango::startOSCToAbleton()
 {
     shouldSendOSC = true;
-    std::cout << "Sending OSC\n";
+    std::cout << "Sending OSC & Midi\n";
+    danceFloor->startMidi();
     std::flush(std::cout);
 }
 
 void ExperimentalMusicInteractiveTango::stopOSCToAbleton()
 {
     shouldSendOSC = false;
-    std::cout << "Stopped sending OSC\n";
+    std::cout << "Stopped sending OSC & MIDI\n";
+    danceFloor->stopMidi();
     restartSong();
     std::flush(std::cout);
 }

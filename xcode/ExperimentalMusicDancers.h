@@ -115,6 +115,32 @@ namespace InteractiveTango
             }
         }
         
+        virtual void startMidi()
+        {
+            if(player==NULL)
+                std::cout << "Song cannot start midi as music player does not exist.\n";
+            else
+            {
+                std::cout << "Song sending midi.\n";
+                ((ExperimentalMusicPlayer *)player)->startMidi();
+            }
+            
+            
+        }
+        
+        virtual void stopMidi()
+        {
+            if(player==NULL)
+                std::cout << "Song cannot stop midi as music player does not exist.\n";
+            else
+            {
+                std::cout << "Song stopping midi.\n";
+                ((ExperimentalMusicPlayer *)player)->stopMidi();
+            }
+            
+            
+        }
+        
         void followerFakeBusySparse(double m)
         {
             ((PerceptualEvent *) couples[0]->getMappingSchema(BUSY_SPARSE_FOLLOWER))->setFakeMood(m);

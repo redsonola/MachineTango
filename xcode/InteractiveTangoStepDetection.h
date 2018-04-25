@@ -788,6 +788,11 @@ public:
         yThresh = 1.0;
         zThresh = 0.4;
         
+//        xThresh = 0.6;
+//        yThresh = 0.8;
+//        zThresh = 0.4;
+
+        
         stepOnlyOnBeat = onbeat;
 
     };
@@ -890,6 +895,7 @@ public:
             inputX.push_back( data1[i]->getData(dataIndex) );
         }
         
+        //take the derivative -- trying from just aceel to test
         for(int i=0; i<takeDerivative; i++){
             inputX = derivative(inputX);
         }
@@ -929,13 +935,13 @@ public:
 //        double zmax = 6.87796;
         
         //min as the thresh & the max is +5 standard deviations (from a long test run)... anything above is super high, so
-//        double scaledValueMaxX = 2.75;
-//        double scaledValueMaxY = 6;
-//        double scaledValueMaxZ = 1.85;
+        double scaledValueMaxX = 2.75;
+        double scaledValueMaxY = 6;
+        double scaledValueMaxZ = 1.85;
         
-        double scaledValueMaxX = 2.4;
-        double scaledValueMaxY = 5.5;
-        double scaledValueMaxZ = 1.5;
+//        double scaledValueMaxX = 1.5;
+//        double scaledValueMaxY = 3;
+//        double scaledValueMaxZ = 1.5;
         
         //scale 0-1 for like to like comparisions... of course, this is only relevant in terms of steps
         double normX =  ( x - xThresh) / ( scaledValueMaxX - xThresh );
@@ -969,7 +975,7 @@ public:
         return p;
     };
     
-    void update(float seconds)
+    virtual void update(float seconds)
     {
         SignalAnalysis::update(seconds);
         combinedPeak = false; //CHECK -- but should solve problem of multiple beeps
@@ -979,7 +985,7 @@ public:
         curPeakHeight = NO_DATA;
         
         double peakx=0, peaky=0, peakz=0;
-        combinedPeak = ( findIC(2, peakx, xThresh ) || findIC(4, peaky, yThresh ) || findIC(3, peakz, zThresh ) );
+        combinedPeak = ( findIC(2, peakx, xThresh) || findIC(4, peaky, yThresh) || findIC(3, peakz, zThresh) );
         
         if( stepOnlyOnBeat ) combinedPeak = beatTimer->isOnBeat() && combinedPeak;
         
@@ -989,11 +995,11 @@ public:
 //        }
         
         combinedPeak = ( combinedPeak ) && ( peakTimer.readyForNextPeak() );
-//        if( combinedPeak )
-//        {
-//            peakcount++;
-//            std::cout << "PEAK: " << peakcount << std::endl;
-//        }
+        if( combinedPeak )
+        {
+            peakcount++;
+            std::cout << "PEAK: " << peakcount << std::endl;
+        }
         if(combinedPeak)
             peakTimer.peakHappened();
         curPeakHeight = findNormalizedPeakHeight(peakx, peaky, peakz);
@@ -1021,6 +1027,47 @@ protected:
 
 //---------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------
+    
+    //previous was jerk -- try with snap
+class SnapPeaksFromSnap: public SnapPeaks
+{
+    SnapPeaksFromSnap( int id1, std::string portz1, SignalAnalysis *s, BeatTiming *bt=NULL, bool onbeat = false) :
+        SnapPeaks(  id1,  portz1,  s,  bt,  onbeat )
+    {
+     
+    };
+    
+    virtual void update(float seconds)
+    {
+        SignalAnalysis::update(seconds);
+        combinedPeak = false; //CHECK -- but should solve problem of multiple beeps
+        if( data1.size() < windowSizeB ) return ;
+        if( getNewSampleCount() <=0 ) return ;
+        peakTimer.update(seconds);
+        curPeakHeight = NO_DATA;
+        
+        double peakx=0, peaky=0, peakz=0;
+        combinedPeak = ( findIC(2, peakx, xThresh, 2 ) || findIC(4, peaky, yThresh, 2 ) || findIC(3, peakz, zThresh, 2 ) );
+        
+        if( stepOnlyOnBeat ) combinedPeak = beatTimer->isOnBeat() && combinedPeak;
+        
+        //        if ( beatTimer->isOnBeat() )
+        //        {
+        //            std::cout << "is it on: " << std::endl;
+        //        }
+        
+        combinedPeak = ( combinedPeak ) && ( peakTimer.readyForNextPeak() );
+        //        if( combinedPeak )
+        //        {
+        //            peakcount++;
+        //            std::cout << "PEAK: " << peakcount << std::endl;
+        //        }
+        if(combinedPeak)
+            peakTimer.peakHappened();
+        curPeakHeight = findNormalizedPeakHeight(peakx, peaky, peakz);
+    };
+
+};
 
     //TODO: add measure of how syncopated something is...
 class FootOnset : public SignalAnalysisEventOutput

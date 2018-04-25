@@ -625,13 +625,15 @@ namespace InteractiveTango
         std::vector<mm::MidiSequencePlayer *> players;
         std::vector<int> deletePlayerTag;
         double ticksPerBeat;
+        bool sendMidi;
 
 
     public:
         ExperimentalMusicPlayer() : MusicPlayer()
         {
             main_melody = NULL;
-            deletePlayerTag.clear(); //because of the nature of the errors... 
+            deletePlayerTag.clear(); //because of the nature of the errors...
+            sendMidi = true;
         }
         
         void addGeneratedMelodySection(GeneratedMelodySection *section)
@@ -644,6 +646,16 @@ namespace InteractiveTango
             {
                 addCounterMelody(section);
             }
+        }
+        
+        void startMidi()
+        {
+            sendMidi = true;
+        }
+        
+        void stopMidi()
+        {
+            sendMidi = false;
         }
         
 //        virtual void update(float seconds = 0)
@@ -702,7 +714,7 @@ namespace InteractiveTango
             curHarmonyProfile.reset();
             curHarmonyProfile = hsprofile;
         
-            sendMidiMessages();
+            if(sendMidi) sendMidiMessages();
             deleteDeadPlayers();
 
     };
