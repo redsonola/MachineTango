@@ -998,7 +998,7 @@ public:
         if( combinedPeak )
         {
             peakcount++;
-            std::cout << "PEAK: " << peakcount << std::endl;
+//            std::cout << "PEAK: " << peakcount << std::endl;
         }
         if(combinedPeak)
             peakTimer.peakHappened();

@@ -78,7 +78,7 @@ namespace InteractiveTango
             lastSectionChange = beatTimer->getTimeInSeconds();
             sectionGeneratorIndex = song_structure[where_in_song_structure] - 1;
             std::cout << "changing section (reset): " << where_in_song_structure << " instr: " << expInstrumentsforSections[where_in_song_structure] << std::endl;
-
+            changeInstrument();
         }
         
         void changeSectionIfNeeded(float seconds)
@@ -106,9 +106,22 @@ namespace InteractiveTango
                 sectionGeneratorIndex = song_structure[where] - 1;
                 where_in_song_structure = where;
             }
-            
+            changeInstrument();
 //            std::cout << "melody section: " << sectionGeneratorIndex+1 << endl;
 
+        }
+        
+        void changeInstrument()
+        {
+            if(where_in_song_structure < expInstrumentsforSections.size())
+            {
+                ci::osc::Message msg;
+                msg.setAddress(EXPMUSIC_MELODY_INSTRUMENT);
+                msg.addIntArg(whichDancer);
+                msg.addIntArg(expInstrumentsforSections[where_in_song_structure]);
+                melodyMessages.push_back(msg);
+            }
+            
         }
         
         void setMelodySectionDecider(GeneratedMelodySection *mel)
@@ -192,19 +205,33 @@ namespace InteractiveTango
         virtual void timesToRepeatSection()
         {
             //2 sections --  hard-coded -- dear god I will refactor this after the deaadline
+//            song_structure.clear();
+//            song_structure.push_back(1);
+//            songStructureDurations.push_back(40);
+//            song_structure.push_back(2);
+//            songStructureDurations.push_back(30);
+//            song_structure.push_back(1);
+//            songStructureDurations.push_back(30);
+//            song_structure.push_back(2);
+//            songStructureDurations.push_back(30);
+//            song_structure.push_back(1);
+//            songStructureDurations.push_back(30);
+//            song_structure.push_back(2);
+//            songStructureDurations.push_back(30);
+            
             song_structure.clear();
             song_structure.push_back(1);
-            songStructureDurations.push_back(40);
+            songStructureDurations.push_back(10);
             song_structure.push_back(2);
-            songStructureDurations.push_back(30);
+            songStructureDurations.push_back(10);
             song_structure.push_back(1);
-            songStructureDurations.push_back(30);
+            songStructureDurations.push_back(10);
             song_structure.push_back(2);
-            songStructureDurations.push_back(30);
+            songStructureDurations.push_back(10);
             song_structure.push_back(1);
-            songStructureDurations.push_back(30);
+            songStructureDurations.push_back(10);
             song_structure.push_back(2);
-            songStructureDurations.push_back(30);
+            songStructureDurations.push_back(10);
         }
         
         double getTicksPerBeat()
