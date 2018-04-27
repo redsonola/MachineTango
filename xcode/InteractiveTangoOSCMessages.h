@@ -161,5 +161,12 @@
 #define WII_RIGHT "/wii/1/button/Right"
 #define WII_UP "/wii/1/button/Up"
 
+//TouchOSC messages from the iphone
+#define IPHONE_TOGGLE1 "/1/toggle1"
+#define IPHONE_TOGGLE2 "/1/toggle1"
+#define IPHONE_TOGGLE3 "/1/toggle1"
+#define IPHONE_TOGGLE4 "/1/toggle1"
+
+
 
 #endif /* InteractiveTangoOSCMessages_h */
