@@ -651,17 +651,14 @@ void ExperimentalMusicInteractiveTango::handleOSC(float seconds)
         {
             restartSong();
         }
-        else if( !addr.compare(IPHONE_TOGGLE2))
-        {
-            if(message.getArgAsInt32(0) == 1)
-            {
-                startOSCToAbleton();
-            }
-            else
-            {
-                stopOSCToAbleton();
-            }
-        }
+//        else if( !addr.compare(IPHONE_TOGGLE2))
+//        {
+//            startOSCToAbleton();
+//        }
+//        else if( !addr.compare(IPHONE_TOGGLE3))
+//        {
+//            stopOSCToAbleton();
+//        }
         else
         {
             

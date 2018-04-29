@@ -52,6 +52,8 @@ namespace InteractiveTango
             whichDancer = whichDancer_;
             where_in_song_structure =0;
             
+            std::cout << "Number of current generators: " << generator.size() << std::endl;
+
         };
         
         virtual void update(boost::shared_ptr<std::vector<int>> hsprofile, float seconds = 0)
@@ -120,6 +122,7 @@ namespace InteractiveTango
                 msg.addIntArg(whichDancer);
                 msg.addIntArg(expInstrumentsforSections[where_in_song_structure]);
                 melodyMessages.push_back(msg);
+//                std::cout << "instrument;"<< whichDancer<< "," << expInstrumentsforSections[where_in_song_structure] << endl;
             }
             
         }
@@ -152,7 +155,7 @@ namespace InteractiveTango
 //                msg.addIntArg(whichDancer);
 //                msg.addIntArg(expInstrumentsforSections[where_in_song_structure]);
 //                melodyMessages.push_back(msg);
-//            }a
+//            }
             
             //if busy/sparse = 1 then wait a bit (at least an eighth note) before re-genning
             float timeDiff = seconds - lastTimePlayed;
@@ -205,33 +208,19 @@ namespace InteractiveTango
         virtual void timesToRepeatSection()
         {
             //2 sections --  hard-coded -- dear god I will refactor this after the deaadline
-//            song_structure.clear();
-//            song_structure.push_back(1);
-//            songStructureDurations.push_back(40);
-//            song_structure.push_back(2);
-//            songStructureDurations.push_back(30);
-//            song_structure.push_back(1);
-//            songStructureDurations.push_back(30);
-//            song_structure.push_back(2);
-//            songStructureDurations.push_back(30);
-//            song_structure.push_back(1);
-//            songStructureDurations.push_back(30);
-//            song_structure.push_back(2);
-//            songStructureDurations.push_back(30);
-            
             song_structure.clear();
             song_structure.push_back(1);
-            songStructureDurations.push_back(10);
-            song_structure.push_back(2);
-            songStructureDurations.push_back(10);
+            songStructureDurations.push_back(30);
+            song_structure.push_back(3);
+            songStructureDurations.push_back(30);
             song_structure.push_back(1);
             songStructureDurations.push_back(10);
             song_structure.push_back(2);
             songStructureDurations.push_back(10);
+            song_structure.push_back(3);
+            songStructureDurations.push_back(30);
             song_structure.push_back(1);
-            songStructureDurations.push_back(10);
-            song_structure.push_back(2);
-            songStructureDurations.push_back(10);
+            songStructureDurations.push_back(30);
         }
         
         double getTicksPerBeat()
@@ -299,8 +288,14 @@ namespace InteractiveTango
             generatorsEaSection[0].push_back(new ChordGenerationPizzInspired());
             generators = generatorsEaSection[0];// 1st section chords
             
+            //section 2 is a variation of section 1 kind oof...
             generatorsEaSection.push_back(std::vector<ChordGeneration *>());
-            generatorsEaSection[1].push_back(new ChordGenerationSection2());
+            generatorsEaSection[1].push_back(new ChordGeneration());
+            generatorsEaSection[1].push_back(new ChordGenerationPizzInspired());
+            
+            //section 3 is in the contrasting key... 
+            generatorsEaSection.push_back(std::vector<ChordGeneration *>());
+            generatorsEaSection[2].push_back(new ChordGenerationSection2());
             
             defaultExpInstrumentsforSections();
             
@@ -309,14 +304,14 @@ namespace InteractiveTango
         
         void setBVSMirroring()
         {
-            
+
             if(measureBVSCount >= MEASURES_TO_FLIP_BVS_MIRROR_OR_COUNTER && generators[curGen]->atProgressionEnd() )
             {
                 measureBVSCount = 0;
                 bvsMirror = chooseRandom() <= 0.5;
                 percBvsMirror = chooseRandom() <= 0.5;
             }
-            
+
             //if at the beginning or near end-ish, bvs should always mirror so that music stops when dancers stop
             if(where_in_song_structure==0 || beatTimer->getTimeInSeconds() >= 4.5*60)
             {
@@ -420,36 +415,37 @@ namespace InteractiveTango
             }
         }
         
-        void addFillsAndSmoothToZeros(float lastBVS)
-        {
-            //if bvs did go to or from 1, then add a fill or close
-            //only go to 0 at progression end to decreas awkwardness
-            
-        
-                if( bvs > lastBVS && lastBVS == 1 )
-                {
-                    if(generators[curGen]->atProgressionEnd())
-                        generators[curGen]->resetChordIndex(); //so that when it comes in, it comes in on 1
-            
-                    ci::osc::Message msg;
-                    msg.setAddress(EXPMUSIC_INTROFILL);
-                    harmonyMessages.push_back(msg);
-                    pauseForFillOrClose = true;
-                }
-                else if(bvs < lastBVS && bvs == 1)
-                {
-                    if(generators[curGen]->atProgressionEnd())
-                    {
-                        ci::osc::Message msg;
-                        msg.setAddress(EXPMUSIC_CLOSEFILL);
-                        harmonyMessages.push_back(msg);
-                        pauseForFillOrClose = true;
-                    }
-                } else bvs = 2;
-        }
+//        void addFillsAndSmoothToZeros(float lastBVS)
+//        {
+//            //if bvs did go to or from 1, then add a fill or close
+//            //only go to 0 at progression end to decreas awkwardness
+//
+//
+//                if( bvs > lastBVS && lastBVS == 1 )
+//                {
+//                    if(generators[curGen]->atProgressionEnd())
+//                        generators[curGen]->resetChordIndex(); //so that when it comes in, it comes in on 1
+//
+//                    ci::osc::Message msg;
+//                    msg.setAddress(EXPMUSIC_INTROFILL);
+//                    harmonyMessages.push_back(msg);
+//                    pauseForFillOrClose = true;
+//                }
+//                else if(bvs < lastBVS && bvs == 1)
+//                {
+//                    if(generators[curGen]->atProgressionEnd())
+//                    {
+//                        ci::osc::Message msg;
+//                        msg.setAddress(EXPMUSIC_CLOSEFILL);
+//                        harmonyMessages.push_back(msg);
+//                        pauseForFillOrClose = true;
+//                    }
+//                } else bvs = 2;
+//        }
         
         void createSampleHarmonyMessages() //now always send -- will filter on max side - since always need these messages for ritard -
         {
+        
 //            if(bvs >=3)
 //            {
                 ci::osc::Message msg;
@@ -511,12 +507,15 @@ namespace InteractiveTango
             
 //            std::cout << "bvs :" << bvs << std::endl ;
             
+//            bvs = 5;
+            pauseForFillOrClose = false;
+            
             if( !pauseForFillOrClose )
             {
                 //ok... well for now just add lines for each bvs step
                 if(bvs >= 2) notes.push_back(generators[curGen]->getNextChord());
                 if(bvs >= 3) notes.push_back(generators[curGen]->getBass());
-                if(bvs >= 5) notes.push_back(generators[curGen]->getTop());
+                if(bvs >= 4) notes.push_back(generators[curGen]->getTop());
                 createSampleHarmonyMessages();
 //                std::cout << "getting notes:" << notes.size();
             }
@@ -547,10 +546,11 @@ namespace InteractiveTango
                     msg.setAddress(EXPMUSIC_ACCOMP_INSTRUMENT);
                     
                     //add instruments - first main, then bass, then top
-                    for(int i=0; i<expInstrumentsforSections.size(); i++)
+                    for(int i=0; i<expInstrumentsforSections.size(); i++){
                         msg.addIntArg(expInstrumentsforSections[i].at(where_in_song_structure));
-                    
+                    }
                     harmonyMessages.push_back(msg);
+
                 }
 //                std::cout << "Number of current generators: " << generators.size() << std::endl;
             }
@@ -592,6 +592,7 @@ namespace InteractiveTango
                 shouldStartFile = true;
                 measureBVSCount++;
                 
+                changeSectionIfNeeded(seconds);
                 getChordGenerationNotes(seconds);
 
                 //switch the constant instrument

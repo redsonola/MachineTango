@@ -66,10 +66,11 @@ namespace InteractiveTango
         std::vector<MelodyGenerator *> followermel, leadermel;
 
         MelodyGenerator *follower_gen, *leader_gen;
-        MelodyGenerator *follower_gen2, *leader_gen2;
+        MelodyGenerator *follower_gen2, *leader_gen2, *leader_gen3, *follower_gen3;
 
         FactorOracle leaderfo, followerfo;
         FactorOracle leaderfo2, followerfo2;
+        FactorOracle leaderfo3, followerfo3;
 
         MelodySection *leaderMelody;
         AccompanimentSection *accompSection;
@@ -85,6 +86,9 @@ namespace InteractiveTango
             
             follower_gen2 = new MelodyGenerator(1, 5);
             leader_gen2 =  new MelodyGenerator(1, 5);
+            
+            follower_gen3 = new MelodyGenerator(1, 5);
+            leader_gen3 =  new MelodyGenerator(1, 5);
         };
         
         virtual void loadCourtneyTangoSongNumberOneOrnaments()
@@ -215,25 +219,39 @@ namespace InteractiveTango
             follower_gen->addGeneratorAlgorithm(&followerfo);
             generators.push_back(follower_gen);
             
+            leaderfo3.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango1.2.mid", 2);
+            leader_gen3->addGeneratorAlgorithm(&leaderfo3);
+            leader_gen3->turnOn1to1();
+            generators.push_back(leader_gen3);
+            
+            followerfo3.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango1.2.mid", 1);
+            follower_gen3->addGeneratorAlgorithm(&followerfo3);
+            generators.push_back(follower_gen3);
+            
             //create new melody generator section
-            leaderfo2.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.Cmaj.mid", 2);
+            leaderfo2.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.Amaj.mid", 2);
             leader_gen2->addGeneratorAlgorithm(&leaderfo2);
             leader_gen2->turnOn1to1();
             generators.push_back(leader_gen);
             
-            followerfo2.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.Cmaj.mid", 1);
+            followerfo2.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.Amaj.mid", 1);
             follower_gen2->addGeneratorAlgorithm(&followerfo2);
             generators.push_back(follower_gen);
             
             followermel.push_back(follower_gen);
             followermel.push_back(follower_gen2);
+            followermel.push_back(follower_gen3);
+
             
             leadermel.push_back(leader_gen);
             leadermel.push_back(leader_gen2);
+            leadermel.push_back(leader_gen3);
+
             
             melody = new GeneratedMelodySection( mTimer, melodyOnsetDancer->getOnsets(), followermel, couples[0]->getFollower()->getDancerID(), &instruments );
             ( ( GeneratedMelodySection * )melody )->setCoupleBS(  ( (ExperimentalPareja  *) couples[0] )->getCoupleBS() );
-            std::vector<int> instrumentsForFollower = {1, 3, 4, 2, 4, 1};
+            std::vector<int> instrumentsForFollower = {1, 3, 4, 2, 2, 1};
+
             ((GeneratedMelodySection *)melody)->setExpInstrumentsforSections(instrumentsForFollower);
             
             leaderMelody = new GeneratedMelodySection( mTimer, couples[0]->getLeader()->getOnsets(), leadermel, couples[0]->getLeader()->getDancerID(), &instruments ); //added leader...

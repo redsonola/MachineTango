@@ -237,10 +237,10 @@ public:
         virtual void loadMidi2()
         {
             std::string enclosingFolder = "/Users/courtney/Documents/Interactive Tango Milonga/emtango chord patterns/";
-            std::string enclosing = "emtango_cmaj_patterns/";
+            std::string enclosing = "emtango_amaj_patterns/";
             
-            std::vector<std::string> filenames =  {"tonic_1.mid", "dom_2.mid", "dm_3.mid", "cmaj_64invert4.mid", "dom5.mid", "cmaj11_6.mid",
-                "G11_7.mid", "fmaj_8.mid", "am9_9.mid", "Em9_10.mid", "dm9_11.mid" , "E7_12.mid",
+            std::vector<std::string> filenames =  {"tonic1.mid", "dom2.mid", "four3.mid", "onesixfour4.mid", "dom5.mid", "one_elven6.mid",
+                "five_eleven7.mid", "fourelven8.mid", "six9.mid", "three10.mid", "two11.mid" , "fiveofsix12.mid",
             };
             
             for(int i=0; i<filenames.size(); i++)
