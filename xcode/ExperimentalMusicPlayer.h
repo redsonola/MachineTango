@@ -181,6 +181,7 @@ namespace InteractiveTango
             else if( fo->isStepping())
             {
                 generator[sectionGeneratorIndex]->update(bs, seconds);
+//                std::cout << generator[sectionGeneratorIndex]->getFile();
                 lastTimePlayed = seconds; //beatTimer->getTimeInSeconds();
             }
             
@@ -445,7 +446,9 @@ namespace InteractiveTango
         
         void createSampleHarmonyMessages() //now always send -- will filter on max side - since always need these messages for ritard -
         {
-        
+            //do not have for section 3 yet
+            if (curSection == 3) return;
+            
 //            if(bvs >=3)
 //            {
                 ci::osc::Message msg;

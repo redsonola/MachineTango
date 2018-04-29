@@ -82,6 +82,11 @@ namespace InteractiveTango {
             return generators[i]->getBPM();
         }
         
+        std::string getFile()
+        {
+            return generators[0]->getFile(); 
+        }
+        
         void addGeneratorAlgorithm(MelodyGeneratorAlgorithm *alg)
         {
             if(alg->isTrained())

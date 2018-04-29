@@ -17,6 +17,7 @@ namespace InteractiveTango {
     protected:
         float bpm;
         double tpb;
+        std::string dbfile;
     public:
         MelodyGeneratorAlgorithm()
         {
@@ -26,10 +27,19 @@ namespace InteractiveTango {
         virtual void train(std::string _dbfileName, int track = 1)
         {
             trained = true;
+            dbfile = _dbfileName;
         };
 
+        std::string getFile()
+        {
+            return dbfile; 
+        }
+
         virtual MidiNote generateNext()
-        {};
+        {
+            
+            
+        };
         
         virtual bool isTrained()
         {

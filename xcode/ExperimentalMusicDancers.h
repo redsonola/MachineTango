@@ -232,31 +232,31 @@ namespace InteractiveTango
             leaderfo2.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.Amaj.mid", 2);
             leader_gen2->addGeneratorAlgorithm(&leaderfo2);
             leader_gen2->turnOn1to1();
-            generators.push_back(leader_gen);
+            generators.push_back(leader_gen2);
             
             followerfo2.train("/Users/courtney/Documents/Interactive Tango Milonga/EMTango_Melody/emtango.Amaj.mid", 1);
             follower_gen2->addGeneratorAlgorithm(&followerfo2);
-            generators.push_back(follower_gen);
+            generators.push_back(follower_gen2);
             
             followermel.push_back(follower_gen);
-            followermel.push_back(follower_gen2);
             followermel.push_back(follower_gen3);
+            followermel.push_back(follower_gen2);
 
             
             leadermel.push_back(leader_gen);
-            leadermel.push_back(leader_gen2);
             leadermel.push_back(leader_gen3);
+            leadermel.push_back(leader_gen2);
 
             
             melody = new GeneratedMelodySection( mTimer, melodyOnsetDancer->getOnsets(), followermel, couples[0]->getFollower()->getDancerID(), &instruments );
             ( ( GeneratedMelodySection * )melody )->setCoupleBS(  ( (ExperimentalPareja  *) couples[0] )->getCoupleBS() );
-            std::vector<int> instrumentsForFollower = {1, 3, 4, 2, 2, 1};
+            std::vector<int> instrumentsForFollower = {1, 3, 2, 4, 2, 1};
 
             ((GeneratedMelodySection *)melody)->setExpInstrumentsforSections(instrumentsForFollower);
             
             leaderMelody = new GeneratedMelodySection( mTimer, couples[0]->getLeader()->getOnsets(), leadermel, couples[0]->getLeader()->getDancerID(), &instruments ); //added leader...
             ( ( GeneratedMelodySection * )leaderMelody )->setMelodySectionDecider(  (GeneratedMelodySection *) melody );
-            std::vector<int> instrumentsForLeader = {1, 3, 3, 4, 2, 1};
+            std::vector<int> instrumentsForLeader = {2, 3, 3, 4, 2, 4};
             ((GeneratedMelodySection *)leaderMelody)->setExpInstrumentsforSections(instrumentsForLeader);
             
             accompaniment = new GeneratedAccompanmentSection( mTimer, &instruments );
