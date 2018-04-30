@@ -53,6 +53,8 @@ namespace InteractiveTango
             where_in_song_structure =0;
             
             std::cout << "Number of current generators: " << generator.size() << std::endl;
+            changeInstrument();
+            sendSection();
 
         };
         
@@ -81,6 +83,7 @@ namespace InteractiveTango
             sectionGeneratorIndex = song_structure[where_in_song_structure] - 1;
             std::cout << "changing section (reset): " << where_in_song_structure << " instr: " << expInstrumentsforSections[where_in_song_structure] << std::endl;
             changeInstrument();
+            sendSection();
         }
         
         void changeSectionIfNeeded(float seconds)
@@ -99,6 +102,7 @@ namespace InteractiveTango
                         sectionGeneratorIndex = song_structure[where_in_song_structure] - 1;
                         std::cout << "changing section: " << where_in_song_structure << " instr: " << expInstrumentsforSections[where_in_song_structure] << std::endl;
                         lastSectionChange = seconds;
+                        sendSection();
                     }
                 }
             }
@@ -107,6 +111,8 @@ namespace InteractiveTango
                 int where = sectionDecisionMaker->getWhereInSong();
                 sectionGeneratorIndex = song_structure[where] - 1;
                 where_in_song_structure = where;
+                sendSection();
+
             }
             changeInstrument();
 //            std::cout << "melody section: " << sectionGeneratorIndex+1 << endl;
@@ -125,6 +131,15 @@ namespace InteractiveTango
 //                std::cout << "instrument;"<< whichDancer<< "," << expInstrumentsforSections[where_in_song_structure] << endl;
             }
             
+        }
+        
+        void sendSection()
+        {
+            //sends where in song structure... not really sectiion...  to max or ableton
+            ci::osc::Message msg;
+            msg.setAddress(EXPMUSIC_SECTION);
+            msg.addIntArg(where_in_song_structure+1);
+            melodyMessages.push_back(msg);
         }
         
         void setMelodySectionDecider(GeneratedMelodySection *mel)
@@ -146,6 +161,8 @@ namespace InteractiveTango
         {
             curSeconds = seconds;
             changeSectionIfNeeded(seconds);
+            sendSection(); //for now
+
 //
             //NOTE TO SELF -- UNCOMMENT THIS AFTTER RECORDING!!!!
 //            if(where_in_song_structure < expInstrumentsforSections.size())
@@ -214,10 +231,8 @@ namespace InteractiveTango
             songStructureDurations.push_back(30);
             song_structure.push_back(3);
             songStructureDurations.push_back(30);
-            song_structure.push_back(1);
-            songStructureDurations.push_back(10);
             song_structure.push_back(2);
-            songStructureDurations.push_back(10);
+            songStructureDurations.push_back(30);
             song_structure.push_back(3);
             songStructureDurations.push_back(30);
             song_structure.push_back(1);

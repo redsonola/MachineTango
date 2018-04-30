@@ -114,6 +114,7 @@
 #define EXPMUSIC_CLOSEFILL "/InteractiveTango/Experimental/HarmonyCloseFill"
 #define EXPMUSIC_MELODY_INSTRUMENT "/InteractiveTango/Experimental/Melody/Instrument"
 #define EXPMUSIC_ACCOMP_INSTRUMENT "/InteractiveTango/Experimental/Accompaniment/Instrument"
+#define EXPMUSIC_SECTION "/InteractiveTango/Experimental/Section"
 
 
 //Wekinator messages to send
