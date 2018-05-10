@@ -120,7 +120,15 @@ public:
     
     std::vector<MidiNote> getMelody(int track)
     {
-        return melody[track];
+        try {
+            return melody[track];
+        }
+        catch(...)
+        {
+            std::cerr << "Track " << track << " does not exist!!\n";
+            std::vector<MidiNote> empty;
+            return empty;
+        }
     }
     
     //returns melody note that is at the checked tick, if not absolute, will look for the one that closest after rather than closest before
@@ -145,18 +153,28 @@ public:
         std::vector<MidiNote> accompFile  = getMelody(track); //this gets everything all the track
         std::vector<MidiNote *> accomp;
         
+//        std::cout << "track: " << track << " tickStart: " << tickStart << " tickEnd: " << tickEnd << " indexOf " << indexOfLastChecked << std::endl;
+        
         int i = indexOfLastChecked;
         bool found = false;
         while(i < accompFile.size() && !found )
         {
-            std::cout << accompFile[i].pitch << " " << accompFile[i].tick << " " << accompFile[i].absTick << "\n";
+//            std::cout << accompFile[i].pitch << " " << accompFile[i].tick << " " << accompFile[i].absTick << "\n";
 
-            found  = accompFile[i].absTick > tickEnd;
-            if(!found && accompFile[i].absTick >= tickStart)
-            {
-                accomp.push_back(&accompFile[i]);
+            try{
+                found  = accompFile[i].absTick > tickEnd;
+                if(!found && accompFile[i].absTick >= tickStart)
+                {
+                    accomp.push_back(&accompFile[i]);
+                }
+                i++;
             }
-            i++;
+            catch(...)
+            {
+                std::cerr << "problem with getting notes\n";
+                std::cout << "i: " << i << " accompFile size " << accompFile.size() << std::endl;
+                exit(1);
+            }
         }
         return accomp;
     }
