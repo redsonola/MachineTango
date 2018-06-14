@@ -35,39 +35,43 @@ namespace InteractiveTango {
 
 #define MIDI_MESSAGE_DATA_PITCH_NOTE_ON 1
 #define MIDI_MESSAGE_DATA_VEL_NOTE_ON 2
+    
+#define INDEX_FROM_MELODY_END_COUNTS_AS_LAST 4
 
-class MidiNote
-{
-public:
-    MidiNote(int p = 60, int vel = 100, double t =0, double d = 0.25)
+    class MidiNote
     {
-        pitch = p;
-        velocity = vel;
-        tick = t;
-        duration = d;
-        channel = -1; //if -1 use default
-    }
-    
-    double tick;
-    double absTick;
-    double duration;
-    int    pitch;
-    int velocity;
-    double tpb; //ticks per beat
-    int channel; //which midi channel
-    
-    bool operator==(MidiNote note)
-    {
-        return (tick == note.tick && pitch == note.pitch);
-    }
-};
-    
+    public:
+        MidiNote(int p = 60, int vel = 100, double t =0, double d = 0.25, bool l=false)
+        {
+            pitch = p;
+            velocity = vel;
+            tick = t;
+            duration = d;
+            channel = -1; //if -1 use default
+            oneOftheLastMelodyNotes = l; 
+        }
+        
+        double tick;
+        double absTick;
+        double duration;
+        int    pitch;
+        int velocity;
+        double tpb; //ticks per beat
+        int channel; //which midi channel
+        int oneOftheLastMelodyNotes;
+        
+        bool operator==(MidiNote note)
+        {
+            return (tick == note.tick && pitch == note.pitch);
+        }
+    };
+
     
 class MidiFileUtility
 {
 
 private:
-    
+
 
     int track;
     double microsecondsPerBeat;
@@ -101,6 +105,7 @@ public:
 
         }
         fixTicks(reader);
+        setLastMidiNotes();
         
         
         ticksPerBeat = reader.getTicksPerQuarterNote();
@@ -251,6 +256,7 @@ public:
         {
             tmp.push_back(std::vector<MidiNote>());
             if(melody[track].size() > 0){
+                melody[track].at(0).absTick=0;
             tmp[track].push_back(melody[track].at(0));
             for(int i=1; i<melody[track].size(); i++)
             {
@@ -263,6 +269,23 @@ public:
             }
         }
         melody = tmp;
+    }
+    
+    void setLastMidiNotes()
+    {
+        //std::vector<std::vector<MidiNote>> melody;
+        for(int i=1; i<melody.size(); i++)
+        {
+            std::vector<MidiNote> track = melody[i];
+            int sz;
+            if(track.size() > INDEX_FROM_MELODY_END_COUNTS_AS_LAST)
+                sz = track.size()-INDEX_FROM_MELODY_END_COUNTS_AS_LAST;
+            else sz = track.size();
+            for(int j=sz;j < track.size(); j++ )
+            {
+                track[j].oneOftheLastMelodyNotes = true;
+            }
+        }
     }
     
 };
