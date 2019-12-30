@@ -12,8 +12,14 @@
 
 //NOTE: TODO RAISE THE SAMPLE RATE ON OUR PHONES WILL MAKE THE STEP DETECTION MUCH BETTER!!!!!
 
-#include "cinder/app/AppNative.h"
+#include "cinder/app/App.h"
+#include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
+#include "cinder/Capture.h" //needed for capture
+#include "cinder/Log.h" //needed to log errors
+
+//#include "cinder/app/AppNative.h"
+//#include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 //#include "cinder/Capture.h"
 #include "cinder/ip/Resize.h"
@@ -24,6 +30,7 @@
 #include <assert.h>
 
 #define _COUT_DEBUG_ 0
+#define SAVE_ALL_OSC 1
 
 
 #include "OscSender.h"
@@ -71,6 +78,8 @@
 #include "ExperimentalMusicPlayer.h"
 #include "ExperimentalMusicDancers.h"
 #include "sequence_player.h"
+#include "SaveOSC.h"
+
 
 //#include "MagneticTime.h"
 
@@ -95,7 +104,7 @@ using namespace std;
 //}
 
 
-class ExperimentalMusicInteractiveTango : public AppNative {
+class ExperimentalMusicInteractiveTango : public App {
 public:
     void setup();
     void keyDown( KeyEvent event );
@@ -212,6 +221,10 @@ private:
     osc::Sender         backSender;
     osc::Sender         backSenderFollower;
     
+    //saving OSC that the program receives
+    InteractiveTango::SaveOSC *mSaveOSC;
+    InteractiveTango::PlayOSC *mPlayOSC;
+    
     
     void sendOSCMessages( std::vector<ci::osc::Message> msgs, float seconds  );
     
@@ -275,6 +288,15 @@ void ExperimentalMusicInteractiveTango::prepareSettings(Settings *settings)
 
 void ExperimentalMusicInteractiveTango::setup()
 {
+    #ifdef SAVE_ALL_OSC
+        fs::path savePath  = getSaveFilePath();
+        mSaveOSC = new InteractiveTango::SaveOSC(savePath.c_str());
+    #else
+        mSaveOSC = NULL;
+    #endif
+    
+    //always starts null -- need to press 'p' to open an file to play the saved OSC
+    mPlayOSC = NULL;
     
     //just in case
     clearListeningUDPSocket();
@@ -287,8 +309,8 @@ void ExperimentalMusicInteractiveTango::setup()
     mSaveFilePath = "";
     
     // set up the camera for screen display
-    mCamera.setEyePoint(Vec3f(5.0f, 10.0f, 10.0f));
-    mCamera.setCenterOfInterestPoint(Vec3f(0.0f, 0.0f, 0.0f));
+    mCamera.setEyePoint(vec3(5.0f, 10.0f, 10.0f));
+    mCamera.lookAt(vec3(0.0f, 0.0f, 0.0f));
     mCamera.setPerspective(60.0f, getWindowAspectRatio(), 1.0f, 1000.0f);
     
     // start timer and init variables for mocap replay
@@ -471,6 +493,11 @@ void ExperimentalMusicInteractiveTango::keyDown( KeyEvent event )
             fakeBSAccompMode = true;
         }
     }
+    else if( event.getChar()=='p' )
+    {
+        fs::path openPath = getOpenFilePath();
+        mPlayOSC = new InteractiveTango::PlayOSC(openPath.c_str(), SELF_IPADDR, OSC_LISTENING_PORT);
+    }
     
 
 
@@ -564,6 +591,11 @@ void ExperimentalMusicInteractiveTango::update()
     
     float seconds = mTimer.getSeconds() ;
     
+    //play saved OSC messages, if valid.
+    if( mPlayOSC != NULL )
+        mPlayOSC->update(seconds);
+    
+    ///yeeeah ok prob. not going to do this.
     if( playing_done){
         std::cout << "Playing current sensor file is done\n";
         return; //don't update after everything is done playing
@@ -581,14 +613,15 @@ void ExperimentalMusicInteractiveTango::update()
     for(int i=0; i<mSensorData.size() && !playing_done; i++)
     {
         mSensorData[i]->update(seconds);
-        
-        //check if done playing loaded sensor
-        if( !addLiveDancers )
-        {
-            LoadedSensor *s = (LoadedSensor *) mSensorData[i];
-            playing_done = s->done();
-            if(playing_done) std::cout << "Done playing sensor file.\n";
-        }
+     
+    //depreciated
+//        //check if done playing loaded sensor
+//        if( !addLiveDancers )
+//        {
+//            LoadedSensor *s = (LoadedSensor *) mSensorData[i];
+//            playing_done = s->done();
+//            if(playing_done) std::cout << "Done playing sensor file.\n";
+//        }
         
     }
     mBeatTimer.update(seconds);
@@ -619,6 +652,10 @@ void ExperimentalMusicInteractiveTango::handleOSC(float seconds)
         osc::Message message;
         mListener.getNextMessage( &message );
         std::string addr = message.getAddress();
+        
+        //save all received messages here
+        if(mSaveOSC!=NULL)
+            mSaveOSC->add(message, seconds); //add this line to save the OSC
         
         if( !addr.compare( ABLETON_SYNC ) )
         {
@@ -681,7 +718,7 @@ void ExperimentalMusicInteractiveTango::handleOSC(float seconds)
             
             if( !addr.compare( OSC_SHIMMERDATA ) )
             {
-                ci::Vec4d quat;
+                ci::vec4 quat;
                 
                 for( int i=3; i<6; i++ )
                 {
@@ -1306,15 +1343,15 @@ void ExperimentalMusicInteractiveTango::clearListeningUDPSocket()
 
 void ExperimentalMusicInteractiveTango::addMarkerToSensorFile(std::string marker)
 {
-    if( mSensorData.size() <= 0 ) return;
-    
-    float seconds = mTimer.getSeconds() ;
-    
-    for(int i=0; i<mSensorData.size(); i++)
-    {
-        mSensorData[i]->markerInFile(marker, seconds);
-    }
-    std::cout << "Added marker " << marker << "in file at " << seconds << "seconds.\n";
+//    if( mSensorData.size() <= 0 ) return;
+//
+//    float seconds = mTimer.getSeconds() ;
+//
+//    for(int i=0; i<mSensorData.size(); i++)
+//    {
+//        mSensorData[i]->markerInFile(marker, seconds);
+//    }
+    std::cout << "You just called a depreciated function: addMarkerToSensorFile().  OH NO!!! \n";
 }
 
 void ExperimentalMusicInteractiveTango::printWekModeMenu()
@@ -1701,7 +1738,7 @@ void ExperimentalMusicInteractiveTango::draw()
     drawGrid();
     
     gl::color(1,0,1,1);
-    ci::gl::drawSphere(ci::Vec3f(0, 0, 0), 0.05f);
+    ci::gl::drawSphere(ci::vec3(0, 0, 0), 0.05f);
     
     for (int i = 0; i < visualizers.size(); i++)
     {
@@ -1724,11 +1761,17 @@ void ExperimentalMusicInteractiveTango::drawGrid(float size, float step)
     gl::color(Colorf(0.2f, 0.2f, 0.2f));
     for (float i = -size; i <= size; i += step)
     {
-        gl::drawLine(Vec3f(i, 0.0f, -size), Vec3f(i, 0.0f, size));
-        gl::drawLine(Vec3f(-size, 0.0f, i), Vec3f(size, 0.0f, i));
+        gl::drawLine(vec3(i, 0.0f, -size), vec3(i, 0.0f, size));
+        gl::drawLine(vec3(-size, 0.0f, i), vec3(size, 0.0f, i));
     }
 }
 
 
 
-CINDER_APP_NATIVE( ExperimentalMusicInteractiveTango, RendererGl )
+CINDER_APP( ExperimentalMusicInteractiveTango, RendererGl,
+           []( ExperimentalMusicInteractiveTango::Settings *settings ) //note: this part is to fix the display after updating OS X 1/15/18
+           {
+               settings->setHighDensityDisplayEnabled( true );
+               settings->setTitle("Puente: A Study in Interactive Tango Dance");
+               settings->setFrameRate(FRAMERATE); //set fastest framerate
+           } )

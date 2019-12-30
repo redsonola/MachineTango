@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
+   uuid = "64DAD407-0821-4D89-B092-CFD6BA255608"
    type = "1"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "31784CAD-8ABE-4D11-82F5-725BE974F4CE"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -22,54 +24,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../include/MIDIUtility.h"
-            timestampString = "532324872.666736"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "MidiNote(int p = 60, int vel = 100, double t =0, double d = 0.25)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../include/MIDIUtility.h"
-            timestampString = "532324872.666736"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
-            landmarkName = "MidiFileUtility"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../include/MIDIUtility.h"
-            timestampString = "532324872.666736"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
-            landmarkName = "MidiFileUtility"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
+            uuid = "5B67BA50-954B-4EC0-9B6A-788DCDB31020"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -81,6 +36,7 @@
             endingLineNumber = "1">
             <Locations>
                <Location
+                  uuid = "5B67BA50-954B-4EC0-9B6A-788DCDB31020 - 753033262079a2ab"
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -96,6 +52,7 @@
                   offsetFromSymbolStart = "16">
                </Location>
                <Location
+                  uuid = "5B67BA50-954B-4EC0-9B6A-788DCDB31020 - 2c5c2e547c2ca8ea"
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -111,6 +68,7 @@
                   offsetFromSymbolStart = "16">
                </Location>
                <Location
+                  uuid = "5B67BA50-954B-4EC0-9B6A-788DCDB31020 - 2c5c2e547c2ca8ea"
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -126,6 +84,7 @@
                   offsetFromSymbolStart = "16">
                </Location>
                <Location
+                  uuid = "5B67BA50-954B-4EC0-9B6A-788DCDB31020 - 753033262079a2ab"
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -141,6 +100,7 @@
                   offsetFromSymbolStart = "15">
                </Location>
                <Location
+                  uuid = "5B67BA50-954B-4EC0-9B6A-788DCDB31020 - 2c5c2e547c2ca8ea"
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -161,27 +121,29 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "17B3D03D-C59C-44F2-BBF8-84DFE28739B6"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../include/MIDIUtility.h"
-            timestampString = "536278694.976445"
+            timestampString = "554780596.569504"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "226"
             endingLineNumber = "226"
-            landmarkName = "MidiOutUtility(std::string portname = &quot;IAC Driver IAC Bus 1&quot;)"
+            landmarkName = "convertToMelody(MidiFile&amp; midifile)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "6303D61F-2254-4825-96B7-4E755A553532"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/ExperimentalMusicInteractiveTango.cpp"
-            timestampString = "538450210.5907151"
+            timestampString = "587320247.2221479"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "223"
@@ -193,22 +155,24 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "D65F60D0-85D6-432F-866D-2F56FEC47E5C"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../include/MelodyGenerator.h"
-            timestampString = "538591564.502001"
+            timestampString = "546831930.025929"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "56"
             endingLineNumber = "56"
-            landmarkName = "MelodyGenerator( float minbs, float maxbs, int _maxNotesGenerated = 5, float _sparseShortNoteCutOff = 1.0f/8.0f)"
+            landmarkName = "MelodyGenerator( float minbs, float maxbs, int _maxNotesGenerated = 4, float _sparseShortNoteCutOff = 1.0f/8.0f)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "155C7C42-44C3-44D6-8634-0E30784F9216"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -225,6 +189,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "4C446E9B-60EA-4B9D-916F-3D90660480FD"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -241,31 +206,33 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "0AD89CA5-22F1-46BE-9C7E-5E52B40438AA"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../include/MIDIUtility.h"
-            timestampString = "536278694.976445"
+            timestampString = "554780596.5696239"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "236"
             endingLineNumber = "236"
-            landmarkName = "send(MidiNote note, int channel=1)"
+            landmarkName = "convertToMelody(MidiFile&amp; midifile)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "4ED07D02-4A8B-45DD-8CAC-C290999AA66F"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "538465890.09484"
+            timestampString = "546901388.675102"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "673"
-            endingLineNumber = "673"
+            startingLineNumber = "748"
+            endingLineNumber = "748"
             landmarkName = "update(float seconds = 0)"
             landmarkType = "9">
          </BreakpointContent>
@@ -273,15 +240,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "A6101BD2-5A2F-458F-AE99-784A7830109B"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "538465890.095161"
+            timestampString = "546901388.675158"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "674"
-            endingLineNumber = "674"
+            startingLineNumber = "749"
+            endingLineNumber = "749"
             landmarkName = "update(float seconds = 0)"
             landmarkType = "9">
          </BreakpointContent>
@@ -289,15 +257,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "EEC7BEE7-3EBF-4CDC-9239-639A9973B618"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "538465890.095376"
+            timestampString = "546901388.675198"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "675"
-            endingLineNumber = "675"
+            startingLineNumber = "750"
+            endingLineNumber = "750"
             landmarkName = "update(float seconds = 0)"
             landmarkType = "9">
          </BreakpointContent>
@@ -305,6 +274,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "A7272D14-90D0-4215-9A41-D01DFA85AEFA"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -321,11 +291,12 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "F79D1621-A6A4-4FC5-92E1-926C64ED353D"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sequence_player.cpp"
-            timestampString = "537233878.6665879"
+            timestampString = "546494774.62767"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "137"
@@ -337,15 +308,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "0F700EBD-E783-4CE8-9871-8AB632020593"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicDancers.h"
-            timestampString = "538465890.095764"
+            timestampString = "546755746.602181"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "ExperimentalDanceFloor(BeatTiming *timer)"
             landmarkType = "7">
          </BreakpointContent>
@@ -353,11 +325,12 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "E22F2DFA-84E6-48B2-9A93-DDF8CAEA8439"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicDancers.h"
-            timestampString = "538465890.095813"
+            timestampString = "546755746.602228"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "38"
@@ -369,31 +342,33 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "143E6C99-550E-4BC1-BCE6-E28409A9398A"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/ExperimentalMusicInteractiveTango.cpp"
-            timestampString = "538450210.591189"
+            timestampString = "587320247.22241"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1200"
-            endingLineNumber = "1200"
-            landmarkName = "ExperimentalMusicInteractiveTango::collectMessagesforDifferentPortsBack(std::vector&lt;ci::osc::Message&gt; *msgs)"
+            startingLineNumber = "1264"
+            endingLineNumber = "1264"
+            landmarkName = "ExperimentalMusicInteractiveTango::collectMessagesforDifferentPortsBack(msgs)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "9B5E067A-F054-42DD-924D-498AA40163B2"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/ExperimentalMusicInteractiveTango.cpp"
-            timestampString = "538450210.591386"
+            timestampString = "587320247.222453"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1507"
-            endingLineNumber = "1507"
+            startingLineNumber = "1571"
+            endingLineNumber = "1571"
             landmarkName = "ExperimentalMusicInteractiveTango::addTestDancersNoSensors()"
             landmarkType = "7">
          </BreakpointContent>
@@ -401,47 +376,33 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "9A2385B9-D938-4465-B184-1EA1C1778277"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/ExperimentalMusicInteractiveTango.cpp"
-            timestampString = "538450210.5915689"
+            timestampString = "587320247.222489"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1565"
-            endingLineNumber = "1565"
-            landmarkName = "ExperimentalMusicInteractiveTango::addLivePareja(std::map&lt;int, int&gt; &amp;l, std::map&lt;int, int&gt; &amp;f, int lID, int fID)"
+            startingLineNumber = "1629"
+            endingLineNumber = "1629"
+            landmarkName = "ExperimentalMusicInteractiveTango::addLivePareja(l, f, lID, fID)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "BE113798-E9F8-4876-8816-657161853E29"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "538465890.095912"
+            timestampString = "546901388.6753089"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "386"
-            endingLineNumber = "386"
-            landmarkName = "addFillsAndSmoothToZeros(float lastBVS)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "538465890.096123"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "644"
-            endingLineNumber = "644"
+            startingLineNumber = "712"
+            endingLineNumber = "712"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -449,33 +410,35 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "972E151A-62F8-443F-AD17-97B0AE8405CD"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "538465890.096323"
+            timestampString = "546901388.675347"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "287"
-            endingLineNumber = "287"
-            landmarkName = "setBVSMirroring()"
+            startingLineNumber = "510"
+            endingLineNumber = "510"
+            landmarkName = "createSampleHarmonyMessages()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "8D30758B-5679-4111-BE54-7DAF3D9900E1"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ExperimentalMusicPlayer.h"
-            timestampString = "538465890.096519"
+            filePath = "PerceptualMappingScheme.h"
+            timestampString = "544134359.728534"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "458"
-            endingLineNumber = "458"
-            landmarkName = "createSampleHarmonyMessages()"
-            landmarkType = "7">
+            startingLineNumber = "176"
+            endingLineNumber = "176"
+            landmarkName = "class PerceptualEvent"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

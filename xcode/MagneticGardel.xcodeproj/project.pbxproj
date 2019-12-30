@@ -78,8 +78,10 @@
 		6A069804A9D24469A011FFE8 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
 		71D08D871B9E4A02B1BDF663 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* MagneticGardel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagneticGardel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F117703022FE156300E96181 /* TangoFragmentsSectionALoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TangoFragmentsSectionALoader.h; path = ../../InteractiveTangoMilongaNewDB/include/TangoFragmentsSectionALoader.h; sourceTree = "<group>"; };
 		F117D8761FD1F66800CDE064 /* ReadCSV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReadCSV.cpp; sourceTree = "<group>"; };
 		F11B53281FEC740000D84318 /* ChordGeneration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChordGeneration.h; sourceTree = "<group>"; };
+		F123317423BA957900AF9D3A /* SaveOSC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SaveOSC.h; path = ../include/SaveOSC.h; sourceTree = "<group>"; };
 		F1365EA91FB1005C00DD0B69 /* rtmidi_c.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtmidi_c.cpp; sourceTree = "<group>"; };
 		F1365EAA1FB1005C00DD0B69 /* rtmidi_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtmidi_c.h; sourceTree = "<group>"; };
 		F1365EAB1FB1005C00DD0B69 /* rtmidi-config.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "rtmidi-config.in"; sourceTree = "<group>"; };
@@ -296,6 +298,8 @@
 		29B97315FDCFA39411CA2CEA /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				F123317423BA957900AF9D3A /* SaveOSC.h */,
+				F117703022FE156300E96181 /* TangoFragmentsSectionALoader.h */,
 				F1E35A451FBE31460041E5A0 /* MappingSchemaEventInContinuousOut.h */,
 				F1E35A441FBE30A80041E5A0 /* SendOSCUGENs.h */,
 				F1E35A431FBE2FC00041E5A0 /* Dancers.h */,
@@ -634,7 +638,7 @@
 					/usr/local/lib,
 				);
 				OTHER_LDFLAGS = (
-					"\"$(CINDER_PATH)/lib/libcinder_d.a\"",
+					"\"$(CINDER_PATH)/lib/macosx/$(CONFIGURATION)/libcinder.a\"",
 					/usr/local/lib/libitpp.dylib,
 					"-lcurl",
 					"\"/usr/lib/libblas.dylib\"",
@@ -684,7 +688,7 @@
 					/usr/local/lib,
 				);
 				OTHER_LDFLAGS = (
-					"\"$(CINDER_PATH)/lib/libcinder.a\"",
+					"\"$(CINDER_PATH)/lib/macosx/$(CONFIGURATION)/libcinder.a\"",
 					/usr/local/lib/libitpp.dylib,
 					"-lcurl",
 					"\"/usr/lib/libblas.dylib\"",
@@ -703,7 +707,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CINDER_PATH = ../..;
+				CINDER_PATH = ../../..;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -737,7 +741,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CINDER_PATH = ../..;
+				CINDER_PATH = ../../..;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_CXX_LIBRARY = "libc++";

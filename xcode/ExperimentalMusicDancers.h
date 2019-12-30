@@ -57,8 +57,6 @@ namespace InteractiveTango
 
     };
     
-    
-    
     class ExperimentalDanceFloor : public DanceFloor
     {
     protected:
